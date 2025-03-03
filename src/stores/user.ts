@@ -90,6 +90,8 @@ export const useUserStore = defineStore('user', () => {
       .post(url, payload)
       .then((response) => {
         extractValuesFromResponse(response)
+
+        console.log(token.value, refreshToken.value)
         login.visible = false // закрываем модал
         loadUser() // загружаем пользователя по установленному userId
         saveLog(1, '') // записываем, что авторизовались
@@ -151,13 +153,11 @@ export const useUserStore = defineStore('user', () => {
   function getToken(): string {
     return token.value
   }
-
-  function setToken(newToken: string) {
-    token.value = newToken
-  }
-
   function getRefreshToken(): string {
     return refreshToken.value
+  }
+  function setToken(newToken: string) {
+    token.value = newToken
   }
   function setRefreshToken(newRefreshToken: string) {
     refreshToken.value = newRefreshToken

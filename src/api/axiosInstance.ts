@@ -32,11 +32,14 @@ export const getHeader = (source: string = '') => {
   if (user.isUser()) {
     header.headers!['Authorization'] = 'Token ' + user.getToken()
   }
+  console.log('header', header)
+
   return header
 }
 
 const getAuthHeader = () => {
-  return `Bearer ${user.getToken()}`
+  console.log('qqq1')
+  return `Token ${user.getToken()}`
 }
 
 const AxiosInstanceReductors = axios.create(getHeader('reductors'))
@@ -77,6 +80,60 @@ function _debounce(inner: any, ms = 0) {
  * Если пользователь авторизован, но с истёкшим Access Token, то обновляем Access Token, тобавляем его в запрос
  */
 AxiosInstanceAuth.interceptors.request.use(
+  (request) => {
+    if (user.isUser()) {
+      request.headers.authorization = getAuthHeader()
+
+      // if access token expired and refreshToken is exist >> go to API and get new access token
+      if (user.isAccessTokenExpired() && user.hasRefreshToken()) {
+        return debounceRefreshTokens()
+          .then(() => {
+            request.headers.authorization = getAuthHeader()
+            return request
+          })
+          .catch((error) => Promise.reject(error))
+      } else {
+        // console.log('Пользователь авторизован', request)
+        return request // Если токен не истёк
+      }
+    } else {
+      // console.log('Пользователь не авторизован', request)
+      return request // Если пользователь не авторизован
+    }
+  },
+  (error: any) => {
+    return Promise.reject(error)
+  },
+)
+
+AxiosInstanceInvertors.interceptors.request.use(
+  (request) => {
+    if (user.isUser()) {
+      request.headers.authorization = getAuthHeader()
+
+      // if access token expired and refreshToken is exist >> go to API and get new access token
+      if (user.isAccessTokenExpired() && user.hasRefreshToken()) {
+        return debounceRefreshTokens()
+          .then(() => {
+            request.headers.authorization = getAuthHeader()
+            return request
+          })
+          .catch((error) => Promise.reject(error))
+      } else {
+        // console.log('Пользователь авторизован', request)
+        return request // Если токен не истёк
+      }
+    } else {
+      // console.log('Пользователь не авторизован', request)
+      return request // Если пользователь не авторизован
+    }
+  },
+  (error: any) => {
+    return Promise.reject(error)
+  },
+)
+
+AxiosInstanceReductors.interceptors.request.use(
   (request) => {
     if (user.isUser()) {
       request.headers.authorization = getAuthHeader()
