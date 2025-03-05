@@ -110,7 +110,7 @@ onBeforeMount(async () => {
 
       <Column field="ex_ratio" header="i" style="width: 10%" sortable></Column>
 
-      <Column header="Крутящий выходной момент Na, Hм" style="width: 10%">
+      <Column header="об/мин" style="width: 10%">
         <template #body="{ data }">
           {{ (props.commonData.inputSpeed / data.ex_ratio).toFixed(2) }} об/мин
         </template>
