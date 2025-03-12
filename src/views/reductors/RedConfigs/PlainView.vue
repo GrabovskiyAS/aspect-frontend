@@ -859,7 +859,7 @@ onBeforeMount(async () => {
                     {{ data.description }}
                   </template>
                 </Column>
-                <Column header="Цена" headerStyle="width: 15%">
+                <!--Column header="Цена" headerStyle="width: 15%">
                   <template #body="{ data }">
                     <DisplayPrice
                       :price="data.price"
@@ -868,7 +868,7 @@ onBeforeMount(async () => {
                       size="S"
                     />
                   </template>
-                </Column>
+                </Column-->
                 <Column header="" headerStyle="width: 50%"></Column>
               </DataTable>
             </div>
@@ -876,23 +876,23 @@ onBeforeMount(async () => {
             <div class="mt-5" style="width: 100%">
               <Tag value="Масло" severity="primary" />
               {{ options.oil_options.description }},
-              <DisplayPrice
+              <!--DisplayPrice
                 :price="options.oil_options.price"
                 :discount="0"
                 currency-symbol="&#165;"
                 size="S"
-              />
+              /-->
             </div>
 
             <div class="mt-5" style="width: 100%">
               <Tag value="Покарска" severity="info" />
               {{ options.color_options.description }},
-              <DisplayPrice
+              <!--DisplayPrice
                 :price="options.color_options.price"
                 :discount="0"
                 currency-symbol="&#165;"
                 size="S"
-              />
+              /-->
             </div>
 
             <div class="mt-5" style="width: 100%">
