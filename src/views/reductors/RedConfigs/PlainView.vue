@@ -848,21 +848,6 @@ onBeforeMount(async () => {
         </div>
         <Divider />
 
-        <label class="col-fixed font-semibold" style="width: 200px">Цена редуктора</label>
-        <div class="col">
-          <div>
-            <div class="mt-1" style="width: 100%">
-              <DisplayPrice
-                :price="red.data[0].gear_price"
-                :discount="red.data[0].discount"
-                currency-symbol="&#165;"
-                size="S"
-              />
-            </div>
-          </div>
-        </div>
-        <Divider />
-
         <label class="col-fixed font-semibold" style="width: 200px">Опции</label>
         <div class="col">
           <div>
