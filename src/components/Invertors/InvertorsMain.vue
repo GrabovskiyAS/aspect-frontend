@@ -26,6 +26,7 @@ const selectedInvertor = ref<IInvertor>({
   type_of_dc_drossel_id: 0,
   type_of_emc_drossel_id: 0,
   name: '',
+  altern_name: '',
   p_heavy_g: '',
   p_pumps_p: '',
   current_g: '',
