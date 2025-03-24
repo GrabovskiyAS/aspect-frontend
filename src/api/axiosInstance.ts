@@ -32,13 +32,10 @@ export const getHeader = (source: string = '') => {
   if (user.isUser()) {
     header.headers!['Authorization'] = 'Token ' + user.getToken()
   }
-  console.log('header', header)
-
   return header
 }
 
 const getAuthHeader = () => {
-  console.log('qqq1')
   return `Token ${user.getToken()}`
 }
 

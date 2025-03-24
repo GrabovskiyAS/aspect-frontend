@@ -65,7 +65,8 @@ loadData()
       >
         <Column field="name" header="Наименование" sortable style="width: 15%">
           <template #body="{ data }">
-            {{ data.name }}
+            <p class="text-500">{{ data.name }}</p>
+            <p>{{ data.altern_name }}</p>
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText

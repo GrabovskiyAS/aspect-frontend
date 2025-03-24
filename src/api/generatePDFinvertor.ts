@@ -111,8 +111,8 @@ export async function generatePDF(
       priceFormat(Number(invertor.price) + optionsPrice) + ' руб.',
     ])
   }
-  invertor_table_body.push(['Наименование', invertor.name])
-  invertor_table_body.push(['Серия', serie.name])
+  invertor_table_body.push(['Наименование', invertor.altern_name])
+  invertor_table_body.push(['Серия', serie.altern_name])
   invertor_table_body.push([
     'Мощность',
     'Режим G: ' +
@@ -201,7 +201,7 @@ export async function generatePDF(
   optionsSelected.forEach((item: IInvOption, index: number) => {
     if (print_price)
       options_table_body_w_price[index] = [
-        item.name, // Наименование
+        item.altern_name, // Наименование
         item.full_title, // Описание
         item.short_title, // Доп.описание
         getValueFromDictionary(typeOfOptions.value.data, item.option_id), // Тип
@@ -210,7 +210,7 @@ export async function generatePDF(
     // Цена
     else
       options_table_body_wo_price[index] = [
-        item.name, // Наименование
+        item.altern_name, // Наименование
         item.full_title, // Описание
         item.short_title, // Доп.описание
         getValueFromDictionary(typeOfOptions.value.data, item.option_id),

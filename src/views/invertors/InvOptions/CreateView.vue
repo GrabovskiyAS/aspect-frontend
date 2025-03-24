@@ -23,6 +23,7 @@ const typeOfOption = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, 
 const invOption = ref<IInvOption>({
   item_name: '',
   name: '',
+  altern_name: '',
   short_title: '',
   full_title: '',
   series: '',
@@ -111,6 +112,13 @@ loadData()
       <FloatLabel>
         <InputText id="title" v-model="invOption.name" class="w-full" />
         <label for="title">Наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <InputText id="altern_name" v-model="invOption.altern_name" class="w-full" />
+        <label for="altern_name">Альтернативное наименование</label>
       </FloatLabel>
     </div>
 

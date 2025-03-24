@@ -136,6 +136,13 @@ loadData()
       </FloatLabel>
     </div>
 
+    <div class="field pt-5">
+      <FloatLabel>
+        <InputText id="altern_name" v-model="data.data[0].altern_name" disabled class="w-full" />
+        <label for="altern_name">Альтернативное наименование</label>
+      </FloatLabel>
+    </div>
+
     <div class="field">
       <div class="grid">
         <div class="col-6">
@@ -283,6 +290,11 @@ loadData()
         />
         <label for="serie">Уровень защиты</label>
       </FloatLabel>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <Checkbox id="is_active" v-model="data.data[0].is_active" binary />
+      <label for="is_active">Активная серия</label>
     </div>
 
     <div class="flex flex-wrap justify-center gap-4 pt-5">

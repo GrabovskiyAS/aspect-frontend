@@ -102,6 +102,13 @@ loadData()
 
     <div class="field pt-5">
       <FloatLabel>
+        <InputText id="altern_name" v-model="invOption.data[0].altern_name" disabled class="w-full" />
+        <label for="altern_name">Альтернативное наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
         <InputText id="title" v-model="invOption.data[0].full_title" disabled class="w-full" />
         <label for="title">Наименование полное</label>
       </FloatLabel>

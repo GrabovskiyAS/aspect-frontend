@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useFetch } from '@/api/useFetch'
 import type { IDocument, ISimpleDictionary, IFile, IInvSerie } from '@/Interfaces/invertors'
 import Button from 'primevue/button'
+import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
@@ -19,6 +20,7 @@ const router = useRouter()
 
 const data = ref<IInvSerie>({
   name: '',
+  altern_name: '',
   description: '',
   manufactory_id: 0,
   output_voltage_id: 0,
@@ -32,6 +34,7 @@ const data = ref<IInvSerie>({
   max_power: '',
   photo: '',
   schema: '',
+  is_active: true,
 })
 const manufactoryData = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true })
 const outputVoltageData = ref<IDocument<ISimpleDictionary>>({
@@ -82,6 +85,7 @@ const submission = async () => {
 
   const payload: IInvSerie = {
     name: data.value.name,
+    altern_name: data.value.altern_name,
     description: data.value.description,
     manufactory_id: manufactory.value.id!,
     output_voltage_id: outputVoltage.value.id!,
@@ -95,6 +99,7 @@ const submission = async () => {
     max_power: String(max_power.value),
     photo: '',
     schema: '',
+    is_active: data.value.is_active,
   }
 
   // photo.value && photo.value.file_blob && formData.append("photo", photo.value.file_blob, String(photo.value.file_name))
@@ -140,6 +145,13 @@ loadData()
       <FloatLabel>
         <InputText id="title" v-model="data.name" class="w-full" />
         <label for="title">Наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <InputText id="title" v-model="data.altern_name" class="w-full" />
+        <label for="title">Альтернативное наименование</label>
       </FloatLabel>
     </div>
 
@@ -319,6 +331,12 @@ loadData()
         <label for="serie">Уровень защиты</label>
       </FloatLabel>
     </div>
+
+    <div class="flex items-center gap-2">
+      <Checkbox id="is_active" v-model="data.is_active" binary />
+      <label for="is_active">Активная серия</label>
+    </div>
+
 
     <div class="flex flex-wrap justify-center gap-4 pt-5">
       <RouterLink :to="`/invertors/InvSeries/List`" rel="noopener">

@@ -29,6 +29,7 @@ const data = ref<IInvertor>({
   type_of_emc_drossel_id: 0,
   type_of_control_id: 0,
   name: '',
+  altern_name: '',
   p_heavy_g: '0',
   p_pumps_p: '0',
   current_g: '0',
@@ -77,6 +78,7 @@ const submission = async () => {
     const payload: IInvertor = {
       item_name: item.value.name,
       name: data.value.name,
+      altern_name: data.value.altern_name,
       serie_id: invSerieData.value.id,
       size_id: invSizeData.value.id,
       type_of_emc_drossel_id: invEMCdata.value.id,
@@ -148,6 +150,13 @@ loadData()
       <FloatLabel>
         <InputText id="title" v-model="data.name" class="w-full" />
         <label for="title">Наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <InputText id="altern_name" v-model="data.altern_name" class="w-full" />
+        <label for="altern_name">Альтернативное наименование</label>
       </FloatLabel>
     </div>
 

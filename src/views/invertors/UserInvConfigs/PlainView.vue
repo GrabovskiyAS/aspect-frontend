@@ -242,8 +242,8 @@ loadData()
           class="ml-2"
         />
         <!-- <p class="text-sm mt-5">Преобразователь частоты</p> -->
-        <p class="text-3xl font-bold mt-5">{{ invertor.data[0].name }}</p>
-        <p class="text-sm">Серия: {{ serie.data[0].name }}</p>
+        <p class="text-3xl font-bold mt-5">{{ invertor.data[0].altern_name }}</p>
+        <p class="text-sm">Серия: {{ serie.data[0].altern_name }}</p>
         <p class="text-sm pb-5">Призводитель: {{ invertor.data[0].manufactory_str }}/Аспект</p>
 
         <div class="mt-5">
@@ -465,7 +465,11 @@ loadData()
       tableStyle="min-width: 50rem"
     >
       <template #empty> <tag severity="contrast"> Нет выбранных опций </tag> </template>
-      <Column field="name" header="Наименование" headerStyle="width: 10%"></Column>
+      <Column header="Наименование" headerStyle="width: 10%">
+        <template #body="{ data }">
+          <p>{{ data.altern_name }} </p>
+        </template>
+      </Column>
       <Column field="full_title" header="Описание" headerStyle="width: 10%"></Column>
       <Column field="short_title" header="Доп. описание" headerStyle="width: 10%"></Column>
       <Column header="Тип" headerStyle="width: 10%">
@@ -510,7 +514,7 @@ loadData()
     <Divider class="mt-5" />
 
     <p class="font-semibold text-lg">
-      Цена частотного преобразователя {{ invertor.data[0].name }}:
+      Цена частотного преобразователя {{ invertor.data[0].altern_name }}:
       <a
         class="font-bold text-xl line-through border-round m-2"
         style="min-width: 80px; min-height: 40px"

@@ -2,6 +2,7 @@
 import { onBeforeMount, ref } from 'vue'
 import { useFetch } from '@/api/useFetch'
 import type { IDocument, IInvSerie, ISimpleDictionary } from '@/Interfaces/invertors'
+import Checkbox from 'primevue/checkbox';
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
@@ -89,6 +90,7 @@ const submission = async () => {
 
   const payload: IInvSerie = {
     name: data.value.data[0].name,
+    altern_name: data.value.data[0].altern_name,
     description: data.value.data[0].description,
     manufactory_id: manufactory.value.id!,
     output_voltage_id: outputVoltage.value.id!,
@@ -102,6 +104,7 @@ const submission = async () => {
     max_power: String(max_power.value),
     photo: data.value.data[0].photo,
     schema: data.value.data[0].schema,
+    is_active: data.value.data[0].is_active,
   }
 
   updateData(`/data/Inv_series/${props.id}`, payload)
@@ -174,6 +177,13 @@ onBeforeMount(() => {
       <FloatLabel>
         <InputText id="title" v-model="data.data[0].name" class="w-full" />
         <label for="title">Наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <InputText id="altern_name" v-model="data.data[0].altern_name" class="w-full" />
+        <label for="altern_name">Альтернативное наименование</label>
       </FloatLabel>
     </div>
 
@@ -341,6 +351,11 @@ onBeforeMount(() => {
         />
         <label for="serie">Уровень защиты</label>
       </FloatLabel>
+    </div>
+
+    <div class="flex items-center gap-2">
+        <Checkbox id="is_active" v-model="data.data[0].is_active" binary />
+        <label for="is_active">Активная серия</label>
     </div>
 
     <div class="flex flex-wrap justify-center gap-4 pt-5">

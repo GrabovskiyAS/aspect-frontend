@@ -20,6 +20,8 @@ import OverlayBadge from 'primevue/overlaybadge'
 import ProgressSpinner from 'primevue/progressspinner'
 import SelectButton from 'primevue/selectbutton'
 import { filterInvertors } from '@/api/filtterInvertors'
+import { getValueFromDictionary } from '@/api/getValueFromDictionary'
+
 
 const user = useUserStore()
 const props = defineProps([
@@ -40,14 +42,12 @@ const selectInv = (inv: IInvertor) => {
 
 const discontGroups = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true }) // Группы скидок. Отопбаржается только для аспекта
 const discontGroupSelected = ref<ISimpleDictionary>() // Выбранная группа скидок. Отопбаржается только для аспекта
-// const discontGroupId         = ref<number>(0)            // Id Выбранной группа скидок. Отопбаржается только для аспекта
-
 const data = ref<IDocument<IInvertor>>({ data: [], error: null, loading: true }) // Все инверторы
 const dataDisplay = ref<IInvertor[]>([]) // Инверторы после фильтров
-
 const invAvalControl = ref<IDocument<IInvAvalControl>>({ data: [], error: null, loading: true }) // способ управления для серии
 const userInvDisount = ref<IDocument<IUser>>({ data: [], error: null, loading: true }) // скидка для пользователя
 const serieDiscounts = ref<IDocument<IInvSerieDiscount>>({ data: [], error: null, loading: true }) // скидка для серий
+const brakModule = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true }) // тормозной модуль
 
 //------- модал выбора опций }
 
@@ -62,6 +62,7 @@ async function loadData() {
   invAvalControl.value = await useFetch('/data/Inv_type_of_control')
   data.value = await useFetch('/data/Invertors')
   discontGroups.value = await useFetch('/data/InvDiscountGroup')
+  brakModule.value = await useFetch('/data/Inv_breake_module')
   await loadDiscounts()
   dataDisplay.value = data.value.data
 }
@@ -159,8 +160,20 @@ onBeforeMount(async () => {
         :rows="20"
         :rowsPerPageOptions="[10, 20, 50]"
       >
-        <Column field="name" header="Модель" sortable headerStyle="width: 10em"></Column>
-        <Column field="serie_str" header="Серия" sortable headerStyle="width: 3em"></Column>
+        <Column header="Модель" sortable headerStyle="width: 10em">
+          <template #body="{ data }">
+            <template v-if="user.isStaff()"><p class="text-500">{{ data.name }}</p></template>
+            <p>{{ data.altern_name }}</p>
+          </template>
+        </Column>
+
+        <Column header="Серия" sortable headerStyle="width: 3em">
+          <template #body="{ data }">
+            <template v-if="user.isStaff()"><p class="text-500">{{ data.serie_str }}</p></template>
+            <p>{{ data.serie_altern_str }}</p>
+          </template>
+        </Column>
+
         <Column header="Мощность" headerStyle="width: 6em">
           <template #body="{ data }">
             <div class="mt-1" style="width: 100%">
@@ -171,6 +184,7 @@ onBeforeMount(async () => {
             </div>
           </template>
         </Column>
+
         <Column header="Ток" headerStyle="width: 6em">
           <template #body="{ data }">
             <div class="mt-1" style="width: 100%">
@@ -181,6 +195,7 @@ onBeforeMount(async () => {
             </div>
           </template>
         </Column>
+
         <Column header="Перегрузка" headerStyle="width: 15em">
           <template #body="{ data }">
             <div class="mt-1" style="width: 100%">
@@ -191,8 +206,18 @@ onBeforeMount(async () => {
             </div>
           </template>
         </Column>
+
         <Column field="type_of_control_str" header="Управление" headerStyle="width: 10em"></Column>
-        <Column field="type_of_panel_str" header="Панель" headerStyle="width: 10em"></Column>
+
+        <Column header="Особенности" headerStyle="width: 15em">
+          <template #body="{ data }">
+            <p><Tag value="Панель" severity="info" class="mt-1"/> {{ data.type_of_panel_str }}</p>
+            <p><Tag value="Тормозной модуль" severity="info"  class="mt-1"/> {{ getValueFromDictionary(brakModule.data, data.type_of_break_module_id) }}</p>
+            <p><Tag value="DC дроссель" severity="info"  class="mt-1"/> {{ data.type_of_dc_drossel_str }}</p>
+            <p><Tag value="EMC дроссель" severity="info"  class="mt-1"/> {{ data.type_of_emc_drossel_str }}</p>
+            <p><Tag value="Степень защиты" severity="info"  class="mt-1"/> {{ data.level_IP_str }}</p>
+          </template>
+        </Column>
         <Column header="Количество" field="quantity" sortable headerStyle="width: 5em">
           <template #body="{ data }">
             <div class="font-bold text-xl w-full">{{ data.quantity }}</div>

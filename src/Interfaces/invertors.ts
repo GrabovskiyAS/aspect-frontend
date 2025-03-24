@@ -64,6 +64,7 @@ export interface IInvertor {
   type_of_dc_drossel_id: number
   type_of_emc_drossel_id: number
   name: string
+  altern_name: string
   p_heavy_g: string
   p_pumps_p: string
   current_g: string
@@ -105,6 +106,7 @@ export interface IPower {
 export interface IInvSerie {
   id?: number
   name: string
+  altern_name: string
   description: string
   manufactory_id: number
   output_voltage_id: number
@@ -118,12 +120,14 @@ export interface IInvSerie {
   max_power: string
   photo: string
   schema: string
+  is_active: boolean
 }
 
 export interface IInvOption {
   id?: number
   item_name: string
   name: string
+  altern_name: string
   short_title: string
   full_title: string
   series: string

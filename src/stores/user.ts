@@ -91,7 +91,6 @@ export const useUserStore = defineStore('user', () => {
       .then((response) => {
         extractValuesFromResponse(response)
 
-        console.log(token.value, refreshToken.value)
         login.visible = false // закрываем модал
         loadUser() // загружаем пользователя по установленному userId
         saveLog(1, '') // записываем, что авторизовались

@@ -103,6 +103,13 @@ loadData()
 
     <div class="field pt-5">
       <FloatLabel>
+        <InputText id="altern_name" v-model="data.data[0].altern_name" disabled class="w-full" />
+        <label for="altern_name">Альтернативное наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
         <Select
           v-model="invSerieData"
           :options="series.data"

@@ -32,13 +32,14 @@ const submission = async () => {
   seriesForm.value.map((item) => (seriesStr += item.id + ','))
   seriesStr = seriesStr.substring(0, seriesStr.length - 1)
 
-  const formData = {
+  const formData: IInvOption = {
     item_name: invOption.value.data[0].item_name,
     name: invOption.value.data[0].name,
+    altern_name: invOption.value.data[0].altern_name,
     short_title: invOption.value.data[0].short_title,
     full_title: invOption.value.data[0].full_title,
     series: seriesStr,
-    option_id: optionForm.value.id,
+    option_id: optionForm.value.id!,
   }
 
   updateData(url, formData).then(() => {
@@ -89,6 +90,13 @@ loadData()
       <FloatLabel>
         <InputText id="title" v-model="invOption.data[0].name" class="w-full" />
         <label for="title">Наименование</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <InputText id="title" v-model="invOption.data[0].altern_name" class="w-full" />
+        <label for="title">Альтернативное наименование</label>
       </FloatLabel>
     </div>
 

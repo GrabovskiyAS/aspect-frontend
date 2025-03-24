@@ -133,7 +133,7 @@ watch(selectedOptions, () => {
   <Dialog
     v-model:visible="dialogOpened"
     :style="{ width: '1280px' }"
-    :header="invertor.name"
+    :header="invertor.altern_name"
     :modal="true"
   >
     <InvertorInfoForModal :serie="serie" :invertor="invertor" :loading="loading" />
@@ -156,7 +156,7 @@ watch(selectedOptions, () => {
       tableStyle="min-width: 50rem"
     >
       <Column selectionMode="multiple" headerStyle="width: 5%"></Column>
-      <Column field="name" header="Наименование" headerStyle="width: 10%"></Column>
+      <Column field="altern_name" header="Наименование" headerStyle="width: 10%"></Column>
       <Column field="full_title" header="Описание" headerStyle="width: 10%"></Column>
       <Column field="short_title" header="Доп. описание" headerStyle="width: 10%"></Column>
       <Column header="Тип" headerStyle="width: 10%">
@@ -214,7 +214,7 @@ watch(selectedOptions, () => {
 
     <Divider class="mt-5" />
     <p class="font-semibold text-lg">
-      Цена частотного преобразователя {{ invertor.name }}:
+      Цена частотного преобразователя {{ invertor.altern_name }}:
       <span class="font-bold text-xl" v-if="!user.isUser()">
         {{ priceFormat(invertor.price) }} &#8381;</span
       >

@@ -82,7 +82,12 @@ loadData()
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50]"
       >
-        <Column field="name" header="Серия" sortable style="width: 10%"></Column>
+        <Column field="name" header="Серия" sortable style="width: 10%">
+          <template #body="{ data }">
+            <p>{{ data.name }}</p>
+            <p>{{ data.altern_name }}</p>
+          </template>
+        </Column>
         <Column header="Изображение" width="10%">
           <template #body="{ data }">
             <img v-if="data.photo" :src="`${baseUrl.s3Storage}/${data.photo}`" width="100" />
@@ -157,6 +162,12 @@ loadData()
             <span>{{
               getValueFromDictionary(ambientTemperatureData.data, data.ambient_temperature_id)
             }}</span>
+          </template>
+        </Column>
+        <Column field="is_active" header="Активный" sortable>
+          <template #body="{ data }">
+            <Tag value="ACTIVE" severity="success" v-if="data.is_active"/>
+            <Tag value="UNACTIVE" severity="danger" v-if="!data.is_active"/>
           </template>
         </Column>
 
