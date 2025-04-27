@@ -195,8 +195,8 @@ export async function generatePDFReductor(red: any, totalPrice: number, print_pr
   switch (red.gear.gear_size.gear_type.id) {
     case 10: mountTypeImageUrl = red.mount_type.K; break;
     case 20: mountTypeImageUrl = red.mount_type.C; break;
-    case 30: mountTypeImageUrl = red.mount_type.F; break;
-    case 40: mountTypeImageUrl = red.mount_type.S; break;
+    case 30: mountTypeImageUrl = red.mount_type.S; break;
+    case 40: mountTypeImageUrl = red.mount_type.F; break;
   }
   await axios.get(`${baseUrl.s3url}/dms/getBase64/${mountTypeImageUrl}`).then((response) => {
     mounting_type_image = response.data
@@ -263,8 +263,8 @@ let gearTypeImageUrl: string = '';
 switch (red.gear.gear_size.gear_type.id) {
   case 10: gearTypeImageUrl = red.mount_type.K_figure; break;
   case 20: gearTypeImageUrl = red.mount_type.C_figure; break;
-  case 30: gearTypeImageUrl = red.mount_type.F_figure; break;
-  case 40: gearTypeImageUrl = red.mount_type.S_figure; break;
+  case 30: gearTypeImageUrl = red.mount_type.S_figure; break;
+  case 40: gearTypeImageUrl = red.mount_type.F_figure; break;
 }
 await axios
 .get(`${baseUrl.s3url}/dms/getBase64/${gearTypeImageUrl}`)
@@ -543,7 +543,7 @@ f1: ` + flnageDimention.value.data[0].f])
   let outputShaftSizeData = ''
   switch (red.shaft_type.id) {
     case 10: outputShaftSizeData = `d6 x E7 = ` + outputShaftSize.value?.SD6 + ` x ` + outputShaftSize.value?.SE7 + `
-t9/b = ` + outputShaftSize.value?.Sb + `/` + outputShaftSize.value?.St9;  break;
+t9/b = ` + outputShaftSize.value?.St9 + '/' + outputShaftSize.value?.Sb; break;
     case 20: outputShaftSizeData = `D = ` + outputShaftSize.value?.HD + `
 T/b = ` + outputShaftSize.value?.St9 + `/` + outputShaftSize.value?.Sb + `
 Q/Q1/Q3 = ` + outputShaftSize.value?.HQ + `/` + outputShaftSize.value?.HQ1 + `/` + outputShaftSize.value?.HQ3; break;

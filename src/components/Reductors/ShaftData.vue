@@ -11,7 +11,7 @@ const props = defineProps(['shaft_type_id', 'outputShaftSize'])
       {{ outputShaftSize?.SE7 }}
     </div>
     <div class="mt-1" style="width: 100%">
-      <Tag severity="info" value="t9/b" /> = {{ outputShaftSize?.Sb }}/{{ outputShaftSize?.St9 }}
+      <Tag severity="info" value="t9/b" /> = {{ outputShaftSize?.St9 }}/{{ outputShaftSize?.Sb }}
     </div>
   </div>
 

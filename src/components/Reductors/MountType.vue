@@ -61,14 +61,14 @@ watch(selectedMountType, () => {
               v-if="props.gear_type_id == 20"
             />
             <img
-              :src="`${baseUrl.s3Storage}/${data.F}`"
-              style="height: 100px"
-              v-if="props.gear_type_id == 40"
-            />
-            <img
               :src="`${baseUrl.s3Storage}/${data.S}`"
               style="height: 100px"
               v-if="props.gear_type_id == 30"
+            />
+            <img
+              :src="`${baseUrl.s3Storage}/${data.F}`"
+              style="height: 100px"
+              v-if="props.gear_type_id == 40"
             />
           </template>
         </Column>

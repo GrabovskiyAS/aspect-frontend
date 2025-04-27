@@ -324,11 +324,11 @@ onBeforeMount(async () => {
                 v-if="red.data[0].gear.gear_size.gear_type.id == 20"
               />
               <img
-                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.F}`"
+                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.S}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 30"
               />
               <img
-                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.S}`"
+                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.F}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 40"
               />
             </div>
@@ -665,11 +665,11 @@ onBeforeMount(async () => {
                 v-if="red.data[0].gear.gear_size.gear_type.id == 20"
               />
               <img
-                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.F_figure}`"
+                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.S_figure}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 30"
               />
               <img
-                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.S_figure}`"
+                :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.F_figure}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 40"
               />
             </div>
@@ -727,7 +727,7 @@ onBeforeMount(async () => {
             <!-- Сплошной вал -->
             <div v-if="red.data[0].shaft_type.id === 10">
               <p>d6 x E7 = {{ outputShaftSize?.SD6 }} x {{ outputShaftSize?.SE7 }}</p>
-              <p>t9/b = {{ outputShaftSize?.Sb }}/{{ outputShaftSize?.St9 }}</p>
+              <p>t9/b = {{ outputShaftSize?.St9 }}/{{ outputShaftSize?.Sb }}</p>
             </div>
 
             <!-- Полый вал -->
