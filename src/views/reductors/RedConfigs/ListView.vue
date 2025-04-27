@@ -104,6 +104,8 @@ const filters = ref({
     <div v-if="data.data.length > 0">
       <DataTable
         :value="data.data"
+        sortField="date"
+        :sortOrder="-1"
         stripedRows
         tableStyle="min-width: 50rem"
         removableSort
