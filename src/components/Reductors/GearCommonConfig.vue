@@ -79,6 +79,7 @@ const model = defineModel<IRedCommonData>()
               inputId="horizontal-buttons"
               showButtons
               buttonLayout="horizontal"
+              :maxFractionDigits="2"
               :step="0.25"
               :min="0.4"
               :max="4"

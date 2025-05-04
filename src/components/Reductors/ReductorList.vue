@@ -118,13 +118,21 @@ onBeforeMount(async () => {
 
       <Column header="Сервис фактор, Sf" style="width: 10%">
         <template #body="{ data }">
-          {{
+          <!-- По мощности подключаемого электродвигателя -->
+          <template v-if="props.typeConfig.type == 1">
+            {{
             (
               (data.t2n * props.commonData.inputSpeed) /
               (9550 * data.ex_ratio) /
               props.typeConfig.value
             ).toFixed(2)
-          }}
+            }}
+          </template>
+
+          <!-- Выходной момент, Нм -->
+          <template v-else>
+            {{ (data.t2n / props.typeConfig.value).toFixed(2) }}
+          </template>
         </template>
       </Column>
 

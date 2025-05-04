@@ -208,6 +208,8 @@ onBeforeMount(async () => {
     <div class="grid">
       <div class="col-4">
         <p class="font-semibold mb-2">Переходной адаптер</p>
+        <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
+        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
         <div
           v-for="adapter in flangeAdaptersFiltered"
           :key="adapter"

@@ -64,6 +64,7 @@ onBeforeMount(() => {
           inputId="horizontal-buttons"
           showButtons
           buttonLayout="horizontal"
+          :maxFractionDigits="2"
           :step="0.01"
           :min="0.12"
           :max="90"

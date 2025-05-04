@@ -59,6 +59,7 @@ const nominal_power = ref<number>(0)
 const loadData = async (red: any) => {
   discountGroups.value = await useFetch('/data/RedDiscounts', 'reductors')
   shaftDimentionData.value = await useFetch(`/data/ShaftDimentionDatas`, 'reductors')
+
   // Опции { ===================================================================================================================================================================
   oilL.value = await useFetch(
     `data/RedOilIs?mounting_position_id=${red.mount_position_id}&size_id=${red.gear.gear_size_id}`,
@@ -77,18 +78,6 @@ const loadData = async (red: any) => {
   // Опции } ===================================================================================================================================================================
 
   // Картинки }
-  if (red.mount_position_id === 20)
-    flangeDimentionImages.value = await useFetch(
-      `/data/flangeDimentionImages/${red.flange_adapter.flange_name_ref.flange_imageB5_id}`,
-      'reductors',
-    )
-
-  if (red.mount_position_id === 30)
-    flangeDimentionImages.value = await useFetch(
-      `/data/flangeDimentionImages/${red.flange_adapter.flange_name_ref.flange_imageB14_id}`,
-      'reductors',
-    )
-
   adapterImage2.value = await useFetch(
     `/data/flangeDimentionImages/${red.flange_adapter.flange_name_ref.flange_image_id}`,
     'reductors',
@@ -110,11 +99,25 @@ const loadData = async (red: any) => {
     `/data/FlangeDimentionAddons?gear_type_id=${gear_type_id}&gearbox_size_id=${gear_size_id}&mount_type_id=${red.mount_type.id}`,
     'reductors',
   )
-  if (flnageDimentionAddon.value.data.length > 0)
+  if (flnageDimentionAddon.value.data.length > 0) {
     flnageDimention.value = await useFetch(
       `/data/FlangeDimentionsExtends?name=${flnageDimentionAddon.value.data[0].flange_name}`,
       'reductors',
     )
+    if (red.mount_position_id === 20)
+      flangeDimentionImages.value = await useFetch(
+        `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
+        'reductors',
+      )
+
+    if (red.mount_position_id === 30)
+      flangeDimentionImages.value = await useFetch(
+        `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB14_id}`,
+        'reductors',
+      )
+
+
+  }
   // Размеры фланца выходного вала }
 
 
@@ -336,9 +339,10 @@ await axios
   adapter_gabarit_image2 = response.data
 })
 let adapter_gabarit_image2_ratio: number = 1;
-getMeta(adapter_gabarit_image2, (err: any, img: any) => {
-  adapter_gabarit_image2_ratio = img.naturalWidth / img.naturalHeight
-})
+if (adapter_gabarit_image2)
+  getMeta(adapter_gabarit_image2, (err: any, img: any) => {
+    adapter_gabarit_image2_ratio = img.naturalWidth / img.naturalHeight
+  })
 
   const reductor_table_header = ['Параметр', 'Значение']
   const reductor_table_body: Array<[string, string]> = []
@@ -371,11 +375,24 @@ getMeta(adapter_gabarit_image2, (err: any, img: any) => {
     `, red.mount_type.description])
 
   if (flangeDimentionImages.value.data.length > 0)
-    reductor_table_body.push(['Фланец выходного вала', 'm1' + flnageDimention.value.data[0].m + '<br>' +
-                                                       'N1' + flnageDimention.value.data[0].n + '<br>' +
-                                                       'P1' + flnageDimention.value.data[0].p + '<br>' +
-                                                       's1' + flnageDimention.value.data[0].s + '<br>' +
-                                                       'f1' + flnageDimention.value.data[0].f + '<br>']);
+    reductor_table_body.push([`Фланец выходного вала
+
+
+
+
+
+
+
+
+
+
+
+      `, `m1` + flnageDimention.value.data[0].m + `
+N1` + flnageDimention.value.data[0].n + `
+P1` + flnageDimention.value.data[0].p + `
+s1` + flnageDimention.value.data[0].s + `
+f1` + flnageDimention.value.data[0].f]);
+  else reductor_table_body.push([`Фланец выходного вала`, `Отсутствует`]);
 
   let info1: string = '';
   switch (red.shaft_type.id) {
@@ -384,16 +401,7 @@ getMeta(adapter_gabarit_image2, (err: any, img: any) => {
     case 30: info1 = 'D2' + outputShaftSize.value?.JD2; break;
     case 40: info1 = 'D5' + outputShaftSize.value?.LD5; break;
   }
-  reductor_table_body.push([`Выходной вал
-
-
-
-
-
-
-
-
-    `, red.shaft_type.description + `
+  reductor_table_body.push([`Выходной вал`, red.shaft_type.description + `
 ` + info1])
 
   reductor_table_body.push(['Направление выходного вала', red.shaft_diirection.description + `
@@ -413,9 +421,11 @@ getMeta(adapter_gabarit_image2, (err: any, img: any) => {
   reductor_table_body.push(['Передаточное число', `Точное: ` + red.gear.ex_ratio + `
 Код: ` + red.gear.ratio_code.ratio]);
 
+  const from_user_power = red.user_power ? `
+Исходя из данных двигателя: ` + ((9550 * Number(red.user_power)) / Number(red.user_input_speed / red.gear.ex_ratio)).toFixed(2) + ` Нм` : ``;
+
   reductor_table_body.push(['Момент', `Номинальный: ` + red.gear.t2n + ` Нм
-Необходимый: ` + (red.user_torque > 0 ? red.user_torque + ` Нм`: `Не задано`) + `
-Исходя из данных: ` + ((9550 * 11) / Number(red.user_input_speed / red.gear.ex_ratio)).toFixed(2) + ` Нм`])
+Необходимый: ` + (red.user_torque > 0 ? red.user_torque + ` Нм`: `Не задано`) + from_user_power ])
 
   reductor_table_body.push(['Мощность', `Подключаемого двигателя: ` + red.user_power + ` кВт
 Номинальная входная мощность редуктора: ` + nominal_power.value + ` кВт`]);
@@ -456,21 +466,22 @@ b1: ` + flangeSize.value!.Sb ])
   reductor_table_body.push(['Масса', `редуктора: ` + mass.value.data[0].mass + ` кг
 адаптера: ` + red.flange_adapter.mass + ` кг`]);
 
+
   pdf.addFileToVFS('DejaVuSans-normal.ttf', dejavuFont)
   pdf.addFont('DejaVuSans-normal.ttf', 'DejaVuSans', 'normal')
   pdf.setFont('DejaVuSans', 'normal')
 
-  // -------- Предварительное ценовое предложение
+// -------- Предварительное ценовое предложение
   pdf.addImage(logo, 'JPEG', 50, 20, 130, 30)
   pdf.setFontSize(6)
   pdf.text('ООО "АСПЕКТ". +7 (343) 204‐94‐50, info@ids‐drives.ru, ids‐drives.ru', 50, 62)
 
 
-  const docNumber: string = red.short_order_number + red.user_id.toString() + '/' + red.id!.toString() + ' от ' + moment(red.date).format('DD.MM.YYYY')
+  const docNumber: string = red.full_order_number
   pdf.setFontSize(12)
 
   autoTable(pdf, {
-    head: [['Технико-коммерческое предложение № ']],
+    head: [['Технико-коммерческое предложение № ' + moment(red.date).format('DD') + '/' + moment(red.date).format('MM') + moment(red.date).format('YY') + '-' + red.id!.toString() + ' от ' + moment(red.date).format('DD.MM.YYYY HH:mm')]],
     body: [[docNumber]],
     startY: 70,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
@@ -482,27 +493,29 @@ b1: ` + flangeSize.value!.Sb ])
     startY: 120,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
     didDrawCell: (data) => {
+      // Способ монтажа
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 4)
         pdf.addImage(mounting_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / mountTypeImageRaio)
 
       // Выходной вал
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 5)
-        pdf.addImage(shaft_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / shaft_type_image_ratio)
+        pdf.addImage(shaft_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 50, 100, 100 / shaft_type_image_ratio)
 
       // Напревление выходного вала
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 6)
+      if (data.section === 'body' && data.column.index === 1 && data.row.index === 7)
         pdf.addImage(shaft_direction_image, 'JPEG', data.cell.x + 2, data.cell.y + 30, 100, 100 / shaft_direction_image_ratio)
 
       // Положение редуктора в пространстве
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 14)
+      if (data.section === 'body' && data.column.index === 1 && data.row.index === 15)
         pdf.addImage(mounting_position_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / mounting_position_ratio)
 
       // Переходной адаптер
-      if (data.section === 'body' && data.column.index === 0 && data.row.index === 15)
+      if (data.section === 'body' && data.column.index === 0 && data.row.index === 16)
         pdf.addImage(adapter_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_image_ratio)
 
     },
   })
+
 
 
 //================================================================================================================================
@@ -531,7 +544,18 @@ b1: ` + flangeSize.value!.Sb ])
 `, '') ])
 
     if (flnageDimention.value.data.length > 0)
-      reductor_table_gabarit_body.push([`Габариты фланца`, `m1: ` + flnageDimention.value.data[0].m + `
+      reductor_table_gabarit_body.push([`Габариты фланца
+
+
+
+
+
+
+
+
+
+
+`, `m1: ` + flnageDimention.value.data[0].m + `
 N1: ` + flnageDimention.value.data[0].n + `
 P1: ` + flnageDimention.value.data[0].p + `
 s1: ` + flnageDimention.value.data[0].s + `
@@ -556,7 +580,6 @@ W6 = ` + outputShaftSize.value?.LW6 + `
 Q/W3/W4/Q4/S6 = ` + outputShaftSize.value?.LQ + `/` + outputShaftSize.value?.LW3 + `/` + outputShaftSize.value?.LW4 + `/` + outputShaftSize.value?.LQ4 + `/` + outputShaftSize.value?.LS6; break;
   }
   reductor_table_gabarit_body.push([`Габариты вала
-
 
 
 
@@ -601,29 +624,30 @@ t1: ` + flangeSize.value!.St9 + `
 b1: ` + flangeSize.value!.Sb])
 
 
-  autoTable(pdf, {
-    head: [reductor_table_header],
-    body: reductor_table_gabarit_body,
-    startY: 60,
-    styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
-    didDrawCell: (data) => {
-      if (data.section === 'body' && data.column.index === 0 && data.row.index === 0)
-        pdf.addImage(gear_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 30, 180, 180 / gear_type_image_ratio)
-      // ==== Габариты фланца
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 1) {
-        pdf.addImage(flangeDimentionImage, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / flangeDimentionImageRatio)
-        pdf.addImage(flangeDimentionImage2, 'JPEG', data.cell.x + 2, data.cell.y + 70, 100, 100 / flangeDimentionImage2Ratio)
-      }
-      //======== Габариты вала
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 2)
-        pdf.addImage(shaft_type_image2, 'JPEG', data.cell.x + 2, data.cell.y + 40, 100, 100 / shaft_type_image2_ratio)
-      //======== Габариты адаптера
-      if (data.section === 'body' && data.column.index === 0 && data.row.index === 3) {
-        pdf.addImage(adapter_gabarit_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_gabarit_image_ratio)
-        pdf.addImage(adapter_gabarit_image2, 'JPEG', data.cell.x + 2, data.cell.y + 110, 100, 100 /adapter_gabarit_image2_ratio)
-      }
-    },
-  })
+
+autoTable(pdf, {
+  head: [reductor_table_header],
+  body: reductor_table_gabarit_body,
+  startY: 60,
+  styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
+  didDrawCell: (data) => {
+    if (data.section === 'body' && data.column.index === 0 && data.row.index === 0)
+      pdf.addImage(gear_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 30, 180, 180 / gear_type_image_ratio)
+    // ==== Габариты фланца
+    if (data.section === 'body' && data.column.index === 0 && data.row.index === 1) {
+      pdf.addImage(flangeDimentionImage, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / flangeDimentionImageRatio)
+      // pdf.addImage(flangeDimentionImage2, 'JPEG', data.cell.x + 2, data.cell.y + 70, 100, 100 / flangeDimentionImage2Ratio)
+    }
+    //======== Габариты вала
+    if (data.section === 'body' && data.column.index === 0 && data.row.index === 2)
+      pdf.addImage(shaft_type_image2, 'JPEG', data.cell.x + 2, data.cell.y + 40, 100, 100 / shaft_type_image2_ratio)
+    //======== Габариты адаптера
+    if (data.section === 'body' && data.column.index === 0 && data.row.index === 3) {
+      pdf.addImage(adapter_gabarit_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_gabarit_image_ratio)
+      pdf.addImage(adapter_gabarit_image2, 'JPEG', data.cell.x + 2, data.cell.y + 110, 100, 100 /adapter_gabarit_image2_ratio)
+    }
+  },
+})
 
 //================================================================================================================================
 //================================================== Опции =======================================================================
@@ -650,5 +674,5 @@ b1: ` + flangeSize.value!.Sb])
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
   })
 
-  pdf.save(`${filename}.pdf`)
+  pdf.save(`${filename} ${docNumber}.pdf`)
 }

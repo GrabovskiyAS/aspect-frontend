@@ -120,17 +120,6 @@ const loadData = async () => {
   // Опции } ===================================================================================================================================================================
 
   // Картинки }
-  if (red.value.data[0].mount_position_id === 20)
-    flangeDimentionImages.value = await useFetch(
-      `/data/flangeDimentionImages/${red.value.data[0].flange_adapter.flange_name_ref.flange_imageB5_id}`,
-      'reductors',
-    )
-
-  if (red.value.data[0].mount_position_id === 30)
-    flangeDimentionImages.value = await useFetch(
-      `/data/flangeDimentionImages/${red.value.data[0].flange_adapter.flange_name_ref.flange_imageB14_id}`,
-      'reductors',
-    )
 
   adapterImage2.value = await useFetch(
     `/data/flangeDimentionImages/${red.value.data[0].flange_adapter.flange_name_ref.flange_image_id}`,
@@ -153,11 +142,25 @@ const loadData = async () => {
     `/data/FlangeDimentionAddons?gear_type_id=${gear_type_id}&gearbox_size_id=${gear_size_id}&mount_type_id=${red.value.data[0].mount_type.id}`,
     'reductors',
   )
-  if (flnageDimentionAddon.value.data.length > 0)
+  if (flnageDimentionAddon.value.data.length > 0) {
     flnageDimention.value = await useFetch(
       `/data/FlangeDimentionsExtends?name=${flnageDimentionAddon.value.data[0].flange_name}`,
       'reductors',
     )
+
+    if (red.value.data[0].mount_position_id === 20)
+      flangeDimentionImages.value = await useFetch(
+        `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
+        'reductors',
+      )
+
+    if (red.value.data[0].mount_position_id === 30)
+      flangeDimentionImages.value = await useFetch(
+        `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB14_id}`,
+        'reductors',
+      )
+
+  }
   // Размеры фланца выходного вала }
 
 
@@ -204,8 +207,6 @@ const loadData = async () => {
       mountData.value = red.value.data[0].mount_type.K_data;
       break;
   }
-  // console.log('mountData.value', mountData.value)
-
   // Группа накруток
   discontGroupSelected.value = discountGroups.value.data.find((item: RedDiscount) => item.discount == red.value.data[0].discount)
 
@@ -470,11 +471,11 @@ onBeforeMount(async () => {
                 >{{ red.data[0].user_torque }} Нм</span
               ><span v-else> Не задано</span>
             </div>
-            <div class="mt-1" style="width: 100%">
-              <Tag value="Исходя из данных" severity="secondary" />
+            <div class="mt-1" style="width: 100%" v-if="red.data[0]?.user_power">
+              <Tag value="Исходя из данных двигателя" severity="secondary" />
               {{
                 (
-                  (9550 * 11) /
+                  (9550 * Number(red.data[0].user_power) ) /
                   Number(red.data[0].user_input_speed / red.data[0].gear.ex_ratio)
                 ).toFixed(2)
               }}
