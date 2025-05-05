@@ -90,7 +90,7 @@ onBeforeMount(() => {
   <div class="mt-5" v-if="!loading">
     <span class="text-2xl font-semibold mt-5 text-primary">Вал</span>
     <div class="grid">
-      <div class="col-6">
+      <div class="col-4">
         <p class="font-semibold mb-2">Тип</p>
         <div v-for="shaft in shaftTypes.data" :key="shaft.id" class="flex items-center gap-2 mt-1">
           <RadioButton v-model="shaftType" :inputId="shaft.d" name="dynamic" :value="shaft" />
@@ -98,18 +98,22 @@ onBeforeMount(() => {
         </div>
       </div>
 
-      <div class="col-6">
+      <div class="col-5">
         <img v-bind:src="`${baseUrl.s3Storage}/${shaftType!.image}`" height="200" />
         <!-- {{ outputShaftSize }} -->
+      </div>
+
+      <div class="col-3 align-items-start">
         <ShaftData
           :outputShaftSize="outputShaftSize"
           :shaft_type_id="shaftType!.id"
           v-if="outputShaftSize"
         />
       </div>
+
     </div>
     <div class="grid  mt-5">
-      <div class="col-6">
+      <div class="col-4">
         <p class="font-semibold mb-2">Направление</p>
 
         <div
@@ -126,9 +130,10 @@ onBeforeMount(() => {
           <label :for="direction.d">{{ direction.d }}</label>
         </div>
       </div>
-      <div class="col-6">
-        <img :src="`${baseUrl.s3Storage}/${shaftDirection!.shaft_direction_image}`" />
+      <div class="col-5">
+        <img :src="`${baseUrl.s3Storage}/${shaftDirection!.shaft_direction_image}`" height="200"/>
       </div>
+      <div class="col-3"></div>
     </div>
   </div>
 </template>

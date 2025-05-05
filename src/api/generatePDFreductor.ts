@@ -333,6 +333,8 @@ getMeta(adapter_gabarit_image, (err: any, img: any) => {
   adapter_gabarit_image_ratio = img.naturalWidth / img.naturalHeight
 })
 
+console.log('adapter_gabarit_image', adapter_gabarit_image);
+
 await axios
 .get(`${baseUrl.s3url}/dms/getBase64/${adapterImage2.value.data[0].image}`)
 .then((response) => {
@@ -343,6 +345,8 @@ if (adapter_gabarit_image2)
   getMeta(adapter_gabarit_image2, (err: any, img: any) => {
     adapter_gabarit_image2_ratio = img.naturalWidth / img.naturalHeight
   })
+
+  console.log('adapter_gabarit_image2', adapter_gabarit_image2);
 
   const reductor_table_header = ['Параметр', 'Значение']
   const reductor_table_body: Array<[string, string]> = []
@@ -561,7 +565,7 @@ P1: ` + flnageDimention.value.data[0].p + `
 s1: ` + flnageDimention.value.data[0].s + `
 f1: ` + flnageDimention.value.data[0].f])
 
-    else reductor_table_gabarit_body.push([`Габариты фланца`, ``])
+    else reductor_table_gabarit_body.push([`Габариты фланца`, `Отсутствуют`])
 
 
   let outputShaftSizeData = ''

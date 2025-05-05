@@ -191,7 +191,7 @@ onBeforeMount(async () => {
     <span class="text-2xl font-semibold mt-5 text-primary">Адаптер</span>
 
     <div class="grid">
-      <div class="col-6">
+      <div class="col-4">
         <p class="font-semibold mb-2">Тип переходного адаптера</p>
 
         <div v-for="flange in flangeTypes" :key="flange.id" class="flex items-center gap-2 mt-1">
@@ -200,9 +200,10 @@ onBeforeMount(async () => {
         </div>
       </div>
 
-      <div class="col-6">
-        <img :src="`${baseUrl.s3Storage}/${flangeType.image}`" />
+      <div class="col-5">
+        <img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/>
       </div>
+      <div class="col-3"></div>
     </div>
 
     <div class="grid">
@@ -225,10 +226,10 @@ onBeforeMount(async () => {
         </div>
       </div>
 
-      <div class="col-4">
-        <img :src="`${baseUrl.s3Storage}/${flangeAdapterImage}`" />
+      <div class="col-5">
+        <img :src="`${baseUrl.s3Storage}/${flangeAdapterImage}`" height="200"/>
       </div>
-      <div class="col-2">
+      <div class="col-1">
         <div>
           <div class="mt-1" style="width: 100%">
             <Tag value="L" severity="primary" /> {{ flangeAdapter!.L }}

@@ -37,7 +37,7 @@ watch(mountingPosition, () => {
 <template>
   <template v-if="!loading && props.gearTypeId">
     <div class="grid">
-      <div class="col">
+      <div class="col-4">
         <span class="text-2xl font-semibold mt-5 text-primary">Монтажное положение</span>
 
         <div
@@ -54,12 +54,12 @@ watch(mountingPosition, () => {
           <label :for="position.id?.toString()">{{ position.code }}</label>
         </div>
       </div>
-      <div class="col">
+      <div class="col-6">
         <img
-          v-bind:src="`${baseUrl.s3Storage}/${gearType.data[0].mount_position_image}`"
-          height="300"
+          v-bind:src="`${baseUrl.s3Storage}/${gearType.data[0].mount_position_image}`" width="500"
         />
       </div>
+      <div class="col-2"></div>
     </div>
   </template>
 </template>

@@ -125,30 +125,49 @@ onBeforeMount(async () => {
     :modal="true"
   >
     <div class="card flex justify-center">
-      <Stepper value="1" class="basis-[50rem]">
+      <Stepper value="1" class="w-full">
         <StepList>
-          <Step value="1">Конфигурация</Step>
-          <Step value="2">Опции</Step>
+          <Step value="1">Монтажное положение</Step>
+          <Step value="2">Способ монтажа</Step>
+          <Step value="3">Выходной вал</Step>
+          <Step value="4">Адаптер</Step>
+          <Step value="5">Опции</Step>
         </StepList>
+
         <StepPanels>
+          <!-- Монтажное положение -->
           <StepPanel v-slot="{ activateCallback }" value="1">
-
             <MountingPositionSelect v-model="mountPosition" :gearTypeId="gearTypeId" />
+            <div class="flex pt-6 justify-end">
+              <Button label="Дальше" icon="pi pi-arrow-right" iconPos="right" @click="{ step = 2; activateCallback('2') } " />
+            </div>
+          </StepPanel>
 
-            <MountType
-              v-model="mountType"
-              v-model:mount-type-name="mountTypeName"
-              :id_gear="props.red.id_gear"
-              :gear_type_id="props.gearTypeId"
-            />
+          <!-- Способ монтажа -->
+          <StepPanel v-slot="{ activateCallback }" value="2">
+            <MountType v-model="mountType" v-model:mount-type-name="mountTypeName" :id_gear="props.red.id_gear" :gear_type_id="props.gearTypeId" />
+            <div class="flex pt-6 justify-between">
+                <Button label="Обратно" severity="secondary" icon="pi pi-arrow-left" @click="{ step = 1; activateCallback('1') }" />
+                <Button label="Дальше" icon="pi pi-arrow-right" iconPos="right" @click="{ step = 3; activateCallback('3') }" />
+            </div>
+          </StepPanel>
 
+          <!-- Выходной вал -->
+          <StepPanel v-slot="{ activateCallback }" value="3">
             <ShaftSelect
               v-model="shaft"
               :id_gear="props.red.id_gear"
               :gear-type-id="red.gear_type_id"
               :gear-size-id="red.gear_box_list_size_id"
             />
+            <div class="flex pt-6 justify-between">
+                <Button label="Обратно" severity="secondary" icon="pi pi-arrow-left" @click="{ step = 2; activateCallback('2') }"/>
+                <Button label="Дальше" icon="pi pi-arrow-right" iconPos="right" @click="{ step = 4; activateCallback('4') }"/>
+            </div>
+          </StepPanel>
 
+          <!-- Адаптер -->
+          <StepPanel v-slot="{ activateCallback }" value="4">
             <AdapterFlange
               v-model="flange"
               :red="props.red"
@@ -157,22 +176,14 @@ onBeforeMount(async () => {
               :shaft-type="shaft.type"
               v-if="shaft && mountType"
             />
-
-            <div class="flex pt-6 justify-end">
-              <Button
-                label="К выбору опций"
-                icon="pi pi-arrow-right"
-                iconPos="right"
-                @click="
-                  {
-                    step = 2;
-                    activateCallback('2')
-                  }
-                "
-              />
+            <div class="flex pt-6 justify-between">
+                <Button label="Обратно" severity="secondary" icon="pi pi-arrow-left" @click="{ step = 3; activateCallback('3') }" />
+                <Button label="Дальше" icon="pi pi-arrow-right" iconPos="right" @click="{ step = 5; activateCallback('5') }" />
             </div>
           </StepPanel>
-          <StepPanel v-slot="{ activateCallback }" value="2">
+
+          <!-- Опции -->
+          <StepPanel v-slot="{ activateCallback }" value="5">
 
             <OptionsSelect
               :red="props.red"
@@ -190,18 +201,8 @@ onBeforeMount(async () => {
               v-model:warrantyPrice="warrantyPrice"
             />
 
-            <div class="flex pt-6 justify-end">
-              <Button
-                label="Обратно"
-                icon="pi pi-arrow-left"
-                iconPos="right"
-                @click="
-                  {
-                    step = 1;
-                    activateCallback('1');
-                  }
-                "
-              />
+            <div class="flex pt-6">
+              <Button label="Обратно" icon="pi pi-arrow-left" iconPos="right" @click=" { step = 4; activateCallback('4'); } "/>
             </div>
           </StepPanel>
         </StepPanels>
