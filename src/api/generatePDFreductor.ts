@@ -99,11 +99,18 @@ const loadData = async (red: any) => {
     `/data/FlangeDimentionAddons?gear_type_id=${gear_type_id}&gearbox_size_id=${gear_size_id}&mount_type_id=${red.mount_type.id}`,
     'reductors',
   )
+
+  console.log('flnageDimentionAddon.value', flnageDimentionAddon.value)
+
   if (flnageDimentionAddon.value.data.length > 0) {
     flnageDimention.value = await useFetch(
       `/data/FlangeDimentionsExtends?name=${flnageDimentionAddon.value.data[0].flange_name}`,
       'reductors',
     )
+    console.log('flnageDimention.value', flnageDimention.value)
+    console.log('flnageDimention.value.data[0].flange_imageB5_id', flnageDimention.value.data[0].flange_imageB5_id)
+    console.log('flnageDimention.value.data[0].flange_imageB14_id', flnageDimention.value.data[0].flange_imageB14_id)
+
     if (red.mount_position_id === 20)
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
@@ -285,8 +292,6 @@ let flangeDimentionImage2 = ''
 let flangeDimentionImageRatio: number = 1;
 let flangeDimentionImage2Ratio: number = 1;
 
-// console.log(flangeDimentionImages.value.data[0])
-
 if (flangeDimentionImages.value && flangeDimentionImages.value.data[0]?.image.length > 2) {
 await axios
 .get(`${baseUrl.s3url}/dms/getBase64/${flangeDimentionImages.value.data[0].image}`)
@@ -315,6 +320,7 @@ await axios
 .then((response) => {
   shaft_type_image2 = response.data
 })
+
 let shaft_type_image2_ratio: number = 1;
 getMeta(shaft_type_image2, (err: any, img: any) => {
   shaft_type_image2_ratio = img.naturalWidth / img.naturalHeight
@@ -333,8 +339,6 @@ getMeta(adapter_gabarit_image, (err: any, img: any) => {
   adapter_gabarit_image_ratio = img.naturalWidth / img.naturalHeight
 })
 
-console.log('adapter_gabarit_image', adapter_gabarit_image);
-
 await axios
 .get(`${baseUrl.s3url}/dms/getBase64/${adapterImage2.value.data[0].image}`)
 .then((response) => {
@@ -345,8 +349,6 @@ if (adapter_gabarit_image2)
   getMeta(adapter_gabarit_image2, (err: any, img: any) => {
     adapter_gabarit_image2_ratio = img.naturalWidth / img.naturalHeight
   })
-
-  console.log('adapter_gabarit_image2', adapter_gabarit_image2);
 
   const reductor_table_header = ['Параметр', 'Значение']
   const reductor_table_body: Array<[string, string]> = []
