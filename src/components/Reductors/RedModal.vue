@@ -212,7 +212,7 @@ onBeforeMount(async () => {
     <template #footer>
       <Button label="Закрыть" severity="secondary" icon="pi pi-times" text @click="hideDialog" />
       <Button
-        v-if="user.isUser() && step == 2"
+        v-if="user.isUser() && step == 5"
         label="Сохранить в мои конфигурации"
         icon="pi pi-save"
         @click="saveUserRedConfig"
