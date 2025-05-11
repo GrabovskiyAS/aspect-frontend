@@ -56,6 +56,10 @@ const mountData = ref<string>('')
 const loading = ref<boolean>(true)
 const nominal_power = ref<number>(0)
 
+function numberWithSpaces(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 const loadData = async (red: any) => {
   discountGroups.value = await useFetch('/data/RedDiscounts', 'reductors')
   shaftDimentionData.value = await useFetch(`/data/ShaftDimentionDatas`, 'reductors')
@@ -100,7 +104,7 @@ const loadData = async (red: any) => {
     'reductors',
   )
 
-  console.log('flnageDimentionAddon.value', flnageDimentionAddon.value)
+//  console.log('flnageDimentionAddon.value', flnageDimentionAddon.value)
 
   if (flnageDimentionAddon.value.data.length > 0) {
     flnageDimention.value = await useFetch(
@@ -197,7 +201,7 @@ export async function generatePDFReductor(red: any, totalPrice: number, print_pr
 
   //=================================================================== Логотип аспект============= ====================================================
   let logo: string = ''
-  await axios.get(`${baseUrl.s3url}/dms/getBase64/aspect_logo.jpg`).then((response) => {
+  await axios.get(`${baseUrl.s3url}/dms/getBase64/profwave_logo.png`).then((response) => {
     logo = response.data
   })
   //=================================================================== Изображение способа монтажа ====================================================
@@ -478,25 +482,27 @@ b1: ` + flangeSize.value!.Sb ])
   pdf.setFont('DejaVuSans', 'normal')
 
 // -------- Предварительное ценовое предложение
-  pdf.addImage(logo, 'JPEG', 50, 20, 130, 30)
+  pdf.addImage(logo, 'PNG', 30, 20, 60, 36)
   pdf.setFontSize(6)
-  pdf.text('ООО "АСПЕКТ". +7 (343) 204‐94‐50, info@ids‐drives.ru, ids‐drives.ru', 50, 62)
+  pdf.text('ООО "АСПЕКТ". +7 (343) 204‐94‐50, info@ids‐drives.ru, ids‐drives.ru, mall.ids-drives.ru', 30, 65)
 
 
-  const docNumber: string = red.full_order_number
+  const docNumber: string = red.full_order_number.substring(0, red.full_order_number.length-1)
   pdf.setFontSize(12)
+
 
   autoTable(pdf, {
     head: [['Технико-коммерческое предложение № ' + moment(red.date).format('DD') + '/' + moment(red.date).format('MM') + moment(red.date).format('YY') + '-' + red.id!.toString() + ' от ' + moment(red.date).format('DD.MM.YYYY HH:mm')]],
-    body: [[docNumber]],
-    startY: 70,
+    body: [[docNumber],[ numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽
+` + numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥`]],
+    startY: 75,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
   })
 
   autoTable(pdf, {
     head: [reductor_table_header],
     body: reductor_table_body,
-    startY: 120,
+    startY: 150,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
     didDrawCell: (data) => {
       // Способ монтажа
@@ -529,10 +535,10 @@ b1: ` + flangeSize.value!.Sb ])
 //================================================================================================================================
 
   pdf.addPage()
-  pdf.text('Габаритные чертежи к техническому листу', 50, 50)
+  pdf.text('Габаритные чертежи редуктора ' + red.full_order_number, 30, 50)
   const gearDataPlainText = await getGearDataPlainText(red.gear.gear_size.gear_type.id, red.gear.gear_size.gear_box_list_size_id, mountData.value)
 
-  reductor_table_gabarit_body.push([`Общий габарит корпуса (направление вала и фланца может не совпадать)
+  reductor_table_gabarit_body.push([`Общий габарит корпуса
 
 
 
@@ -546,11 +552,14 @@ b1: ` + flangeSize.value!.Sb ])
 
 
 
-    `, gearDataPlainText.reduce((acc: string, val: any) => acc + val + `
+
+
+
+Общие габариты корпуса изображены без учета направление и типа вала инаправления фланца`, gearDataPlainText.reduce((acc: string, val: any) => acc + val + `
 `, '') ])
 
     if (flnageDimention.value.data.length > 0)
-      reductor_table_gabarit_body.push([`Габариты фланца
+      reductor_table_gabarit_body.push([`Габариты фланца на выходном валу
 
 
 
@@ -567,7 +576,7 @@ P1: ` + flnageDimention.value.data[0].p + `
 s1: ` + flnageDimention.value.data[0].s + `
 f1: ` + flnageDimention.value.data[0].f])
 
-    else reductor_table_gabarit_body.push([`Габариты фланца`, `Отсутствуют`])
+    else reductor_table_gabarit_body.push([`Габариты фланца на выходном валу`, `Отсутствуют`])
 
 
   let outputShaftSizeData = ''
@@ -585,7 +594,7 @@ W5 = ` + outputShaftSize.value?.JW5; break;
 W6 = ` + outputShaftSize.value?.LW6 + `
 Q/W3/W4/Q4/S6 = ` + outputShaftSize.value?.LQ + `/` + outputShaftSize.value?.LW3 + `/` + outputShaftSize.value?.LW4 + `/` + outputShaftSize.value?.LQ4 + `/` + outputShaftSize.value?.LS6; break;
   }
-  reductor_table_gabarit_body.push([`Габариты вала
+  reductor_table_gabarit_body.push([`Габариты выходного вала
 
 
 
@@ -602,7 +611,7 @@ Q/W3/W4/Q4/S6 = ` + outputShaftSize.value?.LQ + `/` + outputShaftSize.value?.LW3
 
 
 
-  reductor_table_gabarit_body.push([`Габариты адаптера
+  reductor_table_gabarit_body.push([`Габариты соединительного адаптера
 
 
 
@@ -669,8 +678,8 @@ autoTable(pdf, {
   options_table_gabarit_body.push([`Опции покраски`,options.value.color_options.description + `, ` + options.value.color_options.price + ' руб.'])
   options_table_gabarit_body.push([`Гарантия`,options.value.warranty_options.description])
   if (print_price) {
-    options_table_gabarit_body.push([`Итоговая цена редуктора с опциями в Екатеринбурге, CNY.`, (Math.round(Number(totalPrice * (1 + red.discount / 100)))).toString() ])
-    options_table_gabarit_body.push([`Итоговая цена редуктора с опциями в Екатеринбурге, руб.`, (Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)).toString()])
+    options_table_gabarit_body.push([`Итоговая цена редуктора с опциями в Екатеринбурге`, numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽
+` + numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥`])
   }
 
   autoTable(pdf, {
