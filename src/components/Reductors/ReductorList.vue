@@ -50,12 +50,14 @@ const filter = () => {
         Number(item.ex_ratio) <
           (props.commonData.inputSpeed / props.commonData.outputSpeed) *
             (1 + props.commonData.serviceFactorError / 100)) ||
+
+
+
         (props.typeConfig.type === 2 &&
-          Number(item.t2n) > props.typeConfig.value * props.commonData.serviceFactor &&
-          Number(item.ex_ratio) >
-            (props.commonData.inputSpeed / props.commonData.outputSpeed) * 0.7 &&
-          Number(item.ex_ratio) <
-            (props.commonData.inputSpeed / props.commonData.outputSpeed) * 1.5)),
+          Number(item.t2n) > props.typeConfig.value * props.commonData.serviceFactor * (1 - props.commonData.serviceFactorError / 100) &&
+          Number(item.t2n) < props.typeConfig.value * props.commonData.serviceFactor * (1 + props.commonData.serviceFactorError / 100) &&
+          Number(item.ex_ratio) > (props.commonData.inputSpeed / props.commonData.outputSpeed) * (1 - props.commonData.serviceFactorError / 100) &&
+          Number(item.ex_ratio) < (props.commonData.inputSpeed / props.commonData.outputSpeed) * (1 + props.commonData.serviceFactorError / 100))),
   )
 }
 
