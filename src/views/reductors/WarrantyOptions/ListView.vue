@@ -7,6 +7,7 @@ import type { WarrantyOptions } from '@/Interfaces/reductors'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
+import Tag from 'primevue/tag'
 
 const data = ref<IDocument<WarrantyOptions>>({ data: [], error: null, loading: true })
 
@@ -53,6 +54,12 @@ onBeforeMount(async () => {
           style="width: 10%"
         ></Column>
         <Column field="sign" header="sign" sortable style="width: 10%"></Column>
+        <Column field="isActive" header="Активная" sortable style="width: 10%">
+          <template #body="{ data }">
+            <Tag value="Активный" severity="success" v-if="data.isActive"/>
+            <Tag value="Деактивирована" severity="danger" v-else/>
+          </template>
+        </Column>
 
         <Column header="Действия">
           <template #body="slotProps">

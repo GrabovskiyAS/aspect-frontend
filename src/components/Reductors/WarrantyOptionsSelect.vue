@@ -28,6 +28,8 @@ watch(warrantyOptionSelected, () => {
 
 const loadData = async () => {
   warrantyOptions.value = await useFetch('/data/WarrantyOptions', 'reductors')
+  // оставляем только актвные опции гарантии
+  warrantyOptions.value.data = warrantyOptions.value.data.filter((item) => item.isActive == true)
   warrantyOptionSelected.value = warrantyOptions.value.data[0]
   loading.value = false
 }

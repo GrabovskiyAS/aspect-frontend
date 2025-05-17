@@ -6,6 +6,7 @@ import type {
   IShaft,
   IShaftDimentionData,
   IShaftDimention,
+  IFlangeDimentionImage,
 } from '@/Interfaces/reductors'
 import { ref, onBeforeMount, watch } from 'vue'
 import { useFetch } from '@/api/useFetch'
@@ -30,11 +31,17 @@ const shaftDimention = ref<IShaftDimention>()
 const shaftType = ref<IRedShaftTypeView>()
 const shaftDirection = ref<IRedShaftDirectionView>()
 const outputShaftSize = ref<IShaftDimentionData>()
+  const flangeDimentionImages2 = ref<IDocument<IFlangeDimentionImage>>({
+  data: [],
+  error: [],
+  loading: true,
+})
+
 
 const loading = ref<boolean>(true)
 
 const model = defineModel<IShaft>()
-const props = defineProps(['id_gear', 'gearTypeId', 'gearSizeId'])
+const props = defineProps(['id_gear', 'gearTypeId', 'gearSizeId', 'mountType', 'red'])
 
 const loadData = async () => {
   shaftTypes.value = await useFetch(`/data/RedShaftTypesView?id_gear=${props.id_gear}`, 'reductors')
@@ -80,6 +87,37 @@ watch(shaftDirection, () => {
     model.value!.direction = shaftDirection.value.id!
   }
 })
+
+// Изображение Фланца переходного вала
+watch(() => [props.red.gear_type_id, props.red.gear_box_list_size_id, props.mountType],  async() => {
+  const url = `/data/FlangeDimentionAddons?gear_type_id=${props.red.gear_type_id}&gearbox_size_id=${props.red.gear_box_list_size_id}&mount_type_id=${props.mountType}`;
+  const flnageDimentionAddon = ref();
+  const flnageDimention = ref();
+
+  flnageDimentionAddon.value = await useFetch(url, 'reductors')
+
+  if (flnageDimentionAddon.value.data.length > 0) {
+    flnageDimention.value = await useFetch(
+      `/data/FlangeDimentionsExtends?name=${flnageDimentionAddon.value.data[0].flange_name}`,
+      'reductors',
+    )
+
+    if (props.mountType === 20) {
+      flangeDimentionImages2.value = await useFetch(
+        `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
+        'reductors',
+      )
+    }
+
+    if (props.mountType === 30) {
+      flangeDimentionImages2.value = await useFetch(
+        `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB14_id}`,
+        'reductors',
+      )
+    }
+  }
+})
+
 
 onBeforeMount(() => {
   loadData()
@@ -135,5 +173,17 @@ onBeforeMount(() => {
       </div>
       <div class="col-3"></div>
     </div>
+
+    <div class="grid  mt-5">
+      <div class="col-4">
+        <p class="font-semibold mb-2">Фланец выходного вала</p>
+      </div>
+      <div class="col-5">
+        <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image}`" v-if="flangeDimentionImages2?.data?.[0]?.image"/>
+        <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"/>
+      </div>
+      <div class="col-3"></div>
+    </div>
+
   </div>
 </template>

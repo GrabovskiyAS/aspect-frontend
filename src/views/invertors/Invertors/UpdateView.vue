@@ -15,6 +15,7 @@ import { updateData } from '@/api/dataActionsInvertors'
 const data = ref<IDocument<IInvertor>>({ data: [], error: null, loading: true })
 const series = ref<IDocument<IInvSerie>>({ data: [], error: null, loading: true })
 const invInputVoltage = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true })
+const invOutputVoltage = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true })
 const sizes = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true })
 const invBreakModule = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true })
 const invDC = ref<IDocument<ISimpleDictionary>>({ data: [], error: null, loading: true })
@@ -24,6 +25,7 @@ const invDCdata = ref<ISimpleDictionary>({ name: '' })
 const invEMCdata = ref<ISimpleDictionary>({ name: '' })
 const invBreakModuleData = ref<ISimpleDictionary>({ name: '' })
 const invInputVoltageData = ref<ISimpleDictionary>({ name: '' })
+const invOutputVoltageData = ref<ISimpleDictionary>({ name: '' })
 const invSizeData = ref<ISimpleDictionary>({ name: '' })
 const invSerieData = ref<IInvSerie>()
 
@@ -49,6 +51,7 @@ const submission = async () => {
     type_of_dc_drossel_id: invDCdata.value.id!,
     type_of_break_module_id: invBreakModuleData.value.id!,
     input_voltage_id: invInputVoltageData.value.id!,
+    output_voltage_id: invOutputVoltageData.value.id!,
     p_heavy_g: String(p_heavy_g.value ?? ''),
     p_pumps_p: String(p_pumps_p.value ?? ''),
     current_p: String(current_p.value ?? ''),
@@ -69,6 +72,7 @@ async function loadData() {
   data.value = await useFetch(`/data/Invertors/${props.id}`)
   series.value = await useFetch('/data/Inv_series_dict')
   invInputVoltage.value = await useFetch('/data/Inv_input_voltage')
+  invOutputVoltage.value = await useFetch('/data/Inv_output_voltage')
   sizes.value = await useFetch('/data/Inv_sizes')
   invBreakModule.value = await useFetch('/data/Inv_breake_module')
   invDC.value = await useFetch('/data/Inv_DC_drossel')
@@ -89,6 +93,9 @@ async function loadData() {
   )!
   invInputVoltageData.value = invInputVoltage.value.data.find(
     (item) => item.id === data.value.data[0].input_voltage_id,
+  )!
+  invOutputVoltageData.value = invOutputVoltage.value.data.find(
+    (item) => item.id === data.value.data[0].output_voltage_id,
   )!
   invSizeData.value = sizes.value.data.find((item) => item.id === data.value.data[0].size_id)!
 
@@ -160,6 +167,20 @@ loadData()
         <label for="invInputVoltage">Входное напряжение</label>
       </FloatLabel>
     </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <Select
+          v-model="invOutputVoltageData"
+          :options="invOutputVoltage.data"
+          optionLabel="name"
+          placeholder="Выходное напряжение"
+          class="w-full md:w-56"
+        />
+        <label for="invInputVoltage">Выходное напряжение</label>
+      </FloatLabel>
+    </div>
+
 
     <div class="field pt-5">
       <FloatLabel>

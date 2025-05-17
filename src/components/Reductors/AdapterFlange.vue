@@ -60,7 +60,6 @@ const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({
   error: [],
   loading: true,
 })
-
 const flangeAdaptersFiltered = ref<any[]>([])
 const flangeTypeSize = ref<IFlangeType>()
 const outputShaftData = ref<IShaftData | null>()
@@ -111,11 +110,11 @@ const loadData = async () => {
   power.value = Number(
     ((Number(props.red.t2n) * props.inputSpeed) / (9550 * Number(props.red.ex_ratio))).toFixed(2),
   )
-
   filter()
 
   loading.value = false
 }
+
 
 watch([flangeType, flangeAdapter], () => {
   // изменяем знначение модели компонента по значениям внутренней модели
@@ -209,8 +208,11 @@ onBeforeMount(async () => {
     <div class="grid">
       <div class="col-4">
         <p class="font-semibold mb-2">Переходной адаптер</p>
+
         <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
         <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
+
+
         <div
           v-for="adapter in flangeAdaptersFiltered"
           :key="adapter"
@@ -267,7 +269,3 @@ onBeforeMount(async () => {
     </div>
   </div>
 </template>
-
-<!-- <p class="font-semibold">Мощность выбранного редуктора </p>
-        <p>{{ power }} / {{ props.red.p1n }}</p>
-        <p>&nbsp;</p> -->

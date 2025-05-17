@@ -158,7 +158,10 @@ onBeforeMount(async () => {
               v-model="shaft"
               :id_gear="props.red.id_gear"
               :gear-type-id="red.gear_type_id"
+              :mount-type="mountType"
               :gear-size-id="red.gear_box_list_size_id"
+              :red="props.red"
+              v-if="mountType"
             />
             <div class="flex pt-6 justify-between">
                 <Button label="Обратно" severity="secondary" icon="pi pi-arrow-left" @click="{ step = 2; activateCallback('2') }"/>
@@ -172,9 +175,8 @@ onBeforeMount(async () => {
               v-model="flange"
               :red="props.red"
               :inputSpeed="props.commonData.inputSpeed"
-              :mount-type="mountType"
               :shaft-type="shaft.type"
-              v-if="shaft && mountType"
+              v-if="shaft"
             />
             <div class="flex pt-6 justify-between">
                 <Button label="Обратно" severity="secondary" icon="pi pi-arrow-left" @click="{ step = 3; activateCallback('3') }" />

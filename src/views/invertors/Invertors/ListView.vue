@@ -99,6 +99,7 @@ loadData()
           </template>
         </Column>
         <Column field="input_voltage_str" header="Входное напряжение" width=""></Column>
+        <Column field="output_voltage_inv_str" header="Выходное напряжение inv" width=""></Column>
         <Column field="size_str" header="Размер" width=""></Column>
         <Column header="DC дроссель" width="">
           <template #body="{ data }">

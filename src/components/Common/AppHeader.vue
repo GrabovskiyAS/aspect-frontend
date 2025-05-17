@@ -434,20 +434,20 @@ const menuItems = ref<IMenuItem[]>([
   {
     label: 'Скидки',
     icon: 'pi pi-percentage',
-    show: computed((): boolean => user.isSuperadmin()),
+    show: computed((): boolean => user.isStaff()),
     badge: 0,
     level: 1,
     items: [
       {
         label: 'Преобразователи частоты',
         icon: '',
-        show: computed((): boolean => user.isSuperadmin()),
+        show: computed((): boolean => user.isStaff()),
         route: '/invertors/InvDiscountGroups/List',
       },
       {
         label: 'Редукторы с переходным фланцем',
         icon: '',
-        show: computed((): boolean => user.isSuperadmin()),
+        show: computed((): boolean => user.isStaff()),
         route: '/reductors/RedDiscount/List',
       },
     ],

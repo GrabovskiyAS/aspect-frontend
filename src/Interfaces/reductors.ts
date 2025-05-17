@@ -356,6 +356,7 @@ export interface WarrantyOptions {
   description: string
   sign: string
   add_description: string
+  isActive: boolean
 }
 
 export interface OilOptions {
@@ -364,6 +365,7 @@ export interface OilOptions {
   description: string
   sign: string
   add_description: string
+  isActive: boolean
 }
 
 export interface ColorOptions {
@@ -372,6 +374,7 @@ export interface ColorOptions {
   description: string
   sign: string
   add_description: string
+  isActive: boolean
 }
 
 export interface GearOptions {
@@ -380,6 +383,7 @@ export interface GearOptions {
   description: string
   sign: string
   add_description: string
+  isActive: boolean
 }
 
 export interface GearOptionsView {

@@ -6,7 +6,7 @@ import type { GearOptions } from '@/Interfaces/reductors'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
-
+import Checkbox from 'primevue/checkbox'
 import FloatLabel from 'primevue/floatlabel'
 import Toast from 'primevue/toast'
 import { useToast } from 'primevue/usetoast'
@@ -27,6 +27,7 @@ const submission = async () => {
     description: data.value.data[0].description,
     add_description: data.value.data[0].add_description,
     sign: data.value.data[0].sign,
+    isActive: data.value.data[0].isActive,
   }
 
   updateDataReductors(`/data/GearOptions/${props.id}`, payload)
@@ -90,6 +91,14 @@ onBeforeMount(async () => {
         <label for="description">Sign</label>
       </FloatLabel>
     </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <Checkbox id="is_active" v-model="data.data[0].isActive" :binary="true" inputId="is_active" />
+        <label class="ml-3" for="is_active">Активная</label>
+      </FloatLabel>
+    </div>
+
 
     <div class="flex flex-wrap justify-center gap-4 pt-5">
       <RouterLink :to="`/reductors/GearOptions/List`" rel="noopener">

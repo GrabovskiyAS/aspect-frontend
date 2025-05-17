@@ -59,6 +59,7 @@ export interface IInvertor {
   item_name: string
   serie_id: number
   input_voltage_id: number
+  output_voltage_id: number
   size_id: number
   type_of_break_module_id: number
   type_of_dc_drossel_id: number
@@ -78,6 +79,7 @@ export interface IInvertor {
 
   manufactory_str?: string
   output_voltage_str?: string
+  output_voltage_inv_str?: string
   min_power?: string
   max_power?: string
   type_of_control_id?: number

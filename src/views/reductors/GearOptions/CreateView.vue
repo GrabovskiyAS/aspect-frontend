@@ -4,10 +4,11 @@ import type { GearOptions } from '@/Interfaces/reductors'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
+import Checkbox from 'primevue/checkbox'
 import { insertDataReductors } from '@/api/dataActionsReductors'
 import { useRouter } from 'vue-router'
 
-const data = ref<GearOptions>({ name: '', description: '', add_description: '', sign: '' }) // Входы/Выходы
+const data = ref<GearOptions>({ name: '', description: '', add_description: '', sign: '', isActive: true }) // Входы/Выходы
 
 const saving = ref<boolean>(false)
 const router = useRouter()
@@ -20,6 +21,7 @@ const submission = async () => {
     description: data.value.description,
     add_description: data.value.add_description,
     sign: data.value.sign,
+    isActive: data.value.isActive,
   }
 
   insertDataReductors(`/data/GearOptions`, payload)
@@ -62,6 +64,13 @@ const submission = async () => {
       <FloatLabel>
         <InputText id="Sign" v-model="data.sign" class="w-full" />
         <label for="Sign">Sign</label>
+      </FloatLabel>
+    </div>
+
+    <div class="field pt-5">
+      <FloatLabel>
+        <Checkbox id="is_active" v-model="data.isActive" :binary="true" inputId="is_active" />
+        <label class="ml-3" for="is_active">Активная</label>
       </FloatLabel>
     </div>
 

@@ -21,6 +21,7 @@ const selectedInvertor = ref<IInvertor>({
   item_name: '',
   serie_id: 0,
   input_voltage_id: 0,
+  output_voltage_id: 0,
   size_id: 0,
   type_of_break_module_id: 0,
   type_of_dc_drossel_id: 0,

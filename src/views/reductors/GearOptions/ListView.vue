@@ -4,6 +4,7 @@ import { useFetch } from '@/api/useFetch'
 import { RouterLink } from 'vue-router'
 import type { IDocument } from '@/Interfaces/invertors.js'
 import type { GearOptions } from '@/Interfaces/reductors'
+import Tag from 'primevue/tag'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
@@ -53,6 +54,12 @@ onBeforeMount(async () => {
           style="width: 10%"
         ></Column>
         <Column field="sign" header="sign" sortable style="width: 10%"></Column>
+        <Column field="isActive" header="Активная" sortable style="width: 10%">
+          <template #body="{ data }">
+            <Tag value="Активный" severity="success" v-if="data.isActive"/>
+            <Tag value="Деактивирована" severity="danger" v-else/>
+          </template>
+        </Column>
 
         <Column header="Действия">
           <template #body="slotProps">

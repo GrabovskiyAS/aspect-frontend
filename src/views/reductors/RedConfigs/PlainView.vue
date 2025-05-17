@@ -148,18 +148,19 @@ const loadData = async () => {
       'reductors',
     )
 
-    if (red.value.data[0].mount_position_id === 20)
+    if (red.value.data[0].mount_type.id === 20) {
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
         'reductors',
       )
+    }
 
-    if (red.value.data[0].mount_position_id === 30)
+    if (red.value.data[0].mount_type.id === 30) {
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB14_id}`,
         'reductors',
       )
-
+    }
   }
   // Размеры фланца выходного вала }
 
@@ -341,16 +342,6 @@ onBeforeMount(async () => {
         <label class="col-fixed font-semibold" style="width: 200px">Фланец выходного вала</label>
 
         <div class="col">
-          <div class="mt-1" style="width: 100%" v-if="flangeDimentionImages.data.length > 0">
-            <img
-              :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image}`"
-              v-if="flangeDimentionImages.data[0].image.length > 2"
-            />
-            <img
-              :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image2}`"
-              v-if="flangeDimentionImages.data[0].image2.length > 2"
-            />
-          </div>
           <div>
             <div v-if="flnageDimention.data.length > 0">
               <div class="mt-1" style="width: 100%">
@@ -370,6 +361,17 @@ onBeforeMount(async () => {
               </div>
             </div>
           </div>
+          <div class="mt-1" style="width: 100%" v-if="flangeDimentionImages.data.length > 0">
+            <img
+              :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image}`"
+              v-if="flangeDimentionImages.data[0].image.length > 2"
+            />
+            <img
+              :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image2}`"
+              v-if="flangeDimentionImages.data[0].image2.length > 2"
+            />
+          </div>
+
         </div>
         <Divider />
 
