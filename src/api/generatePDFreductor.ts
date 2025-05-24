@@ -453,19 +453,7 @@ f1` + flnageDimention.value.data[0].f]);
 
     `, red.mount_position.code ])
   reductor_table_body.push(['Переходной адаптер', `Тип: ` + red.flange_type.flange_type_description + `
-Код: ` + red.flange_adapter.code_adapter + `
-Фланец P1/N1: ` + red.flange_adapter.flange_name_ref.p + `/` + red.flange_adapter.flange_name_ref.n + `(край/крепеж отв)
-Подключаемый вал d1xL: ` + flangeSize.value!.SD6 + `x` + red.flange_adapter.L + `
-L2: ` + red.flange_adapter.L + `
-m1: ` + red.flange_adapter.flange_name_ref.m + `
-N1: ` + red.flange_adapter.flange_name_ref.n + `
-P1: ` + red.flange_adapter.flange_name_ref.p + `
-s1: ` + red.flange_adapter.flange_name_ref.s + `
-f1: ` + red.flange_adapter.flange_name_ref.f + `
-L: ` + flangeSize.value!.SE7 + `
-D1: ` + flangeSize.value!.SD6 + `
-t1: ` + flangeSize.value!.St9 + `
-b1: ` + flangeSize.value!.Sb ])
+Код: ` + red.flange_adapter.code_adapter ])
 
   reductor_table_body.push(['Масса', `редуктора: ` + mass.value.data[0].mass + ` кг
 адаптера: ` + red.flange_adapter.mass + ` кг`]);
@@ -516,8 +504,8 @@ b1: ` + flangeSize.value!.Sb ])
         pdf.addImage(mounting_position_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / mounting_position_ratio)
 
       // Переходной адаптер
-      if (data.section === 'body' && data.column.index === 0 && data.row.index === 16)
-        pdf.addImage(adapter_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_image_ratio)
+      // if (data.section === 'body' && data.column.index === 0 && data.row.index === 16)
+      //   pdf.addImage(adapter_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_image_ratio)
 
     },
   })
@@ -659,7 +647,11 @@ autoTable(pdf, {
 //================================================================================================================================
 
   pdf.addPage()
-  pdf.text('Цена и опции', 50, 50)
+  pdf.text('Цена и опции', 30, 50)
+
+  pdf.setFontSize(8)
+  pdf.text(`Сохраняем за собой право на внесение технических изменений.
+Габаритные размеры кроме присоединительных могут отличатся от указанных.`, 30, 200)
 
   const red_options: string = gearOptionsSelected.value.reduce((acc: string, val: any) => acc + val.description + `
 `, '')

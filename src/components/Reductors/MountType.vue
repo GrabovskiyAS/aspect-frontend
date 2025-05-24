@@ -3,6 +3,7 @@ import type { IDocument } from '@/Interfaces/invertors'
 import type { IRedMountTypeView } from '@/Interfaces/reductors'
 import { ref, onBeforeMount, watch } from 'vue'
 import { useFetch } from '@/api/useFetch'
+import RadioButton from 'primevue/radiobutton'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { useBaseUrl } from '@/stores/baseUrl'
@@ -35,8 +36,54 @@ watch(selectedMountType, () => {
 <template>
   <template v-if="!mountTypes.loading">
     <div class="mt-5">
-      <span class="text-2xl font-semibold mt-5 text-primary">Способ монтажа редуктора</span>
-      <DataTable
+      <!-- <span class="text-2xl font-semibold mt-5 text-primary">Способ монтажа редуктора</span> -->
+
+      <div class="grid">
+      <div class="col-4">
+        <span class="text-2xl font-semibold mt-5 text-primary">Монтажное положение редуктора</span>
+        <div
+          v-for="position in mountTypes.data"
+          :key="position.id"
+          class="flex items-center gap-2 mt-1"
+        >
+          <RadioButton
+            v-model="selectedMountType"
+            :inputId="position.id?.toString()"
+            name="dynamic"
+            :value="position"
+          />
+          <label :for="position.id?.toString()">{{ position.description }}</label>
+        </div>
+      </div>
+      <div class="col-6 flex justify-content-center flex-wrap">
+        <div>
+            <img
+              :src="`${baseUrl.s3Storage}/${selectedMountType?.K}`"
+              style="height: 300px"
+              v-if="props.gear_type_id == 10"
+            />
+            <img
+              :src="`${baseUrl.s3Storage}/${selectedMountType?.C}`"
+              style="height: 300px"
+              v-if="props.gear_type_id == 20"
+            />
+            <img
+              :src="`${baseUrl.s3Storage}/${selectedMountType?.S}`"
+              style="height: 300px"
+              v-if="props.gear_type_id == 30"
+            />
+            <img
+              :src="`${baseUrl.s3Storage}/${selectedMountType?.F}`"
+              style="height: 300px"
+              v-if="props.gear_type_id == 40"
+            />
+        </div>
+      </div>
+      <div class="col-2"></div>
+    </div>
+
+
+      <!-- <DataTable
         v-model:selection="selectedMountType"
         selectionMode="single"
         :metaKeySelection="metaKey"
@@ -52,27 +99,27 @@ watch(selectedMountType, () => {
           <template #body="{ data }">
             <img
               :src="`${baseUrl.s3Storage}/${data.K}`"
-              style="height: 100px"
+              style="height: 150px"
               v-if="props.gear_type_id == 10"
             />
             <img
               :src="`${baseUrl.s3Storage}/${data.C}`"
-              style="height: 100px"
+              style="height: 150px"
               v-if="props.gear_type_id == 20"
             />
             <img
               :src="`${baseUrl.s3Storage}/${data.S}`"
-              style="height: 100px"
+              style="height: 150px"
               v-if="props.gear_type_id == 30"
             />
             <img
               :src="`${baseUrl.s3Storage}/${data.F}`"
-              style="height: 100px"
+              style="height: 150px"
               v-if="props.gear_type_id == 40"
             />
           </template>
         </Column>
-      </DataTable>
+      </DataTable> -->
     </div>
   </template>
 </template>

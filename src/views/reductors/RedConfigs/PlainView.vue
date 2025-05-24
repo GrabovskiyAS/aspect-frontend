@@ -377,6 +377,7 @@ onBeforeMount(async () => {
 
         <label class="col-fixed font-semibold" style="width: 200px">Выходной вал</label>
         <div class="col">
+
           <div>
             <div class="mt-1 mb-1" style="width: 100%">
               <Tag value="Тип" severity="primary" /> {{ red.data[0].shaft_type.description }}
@@ -402,9 +403,9 @@ onBeforeMount(async () => {
               <Tag value="D5"/> {{ outputShaftSize?.LD5 }}
             </div>
 
-            <div class="mt-1" style="width: 100%">
+            <!-- <div class="mt-1" style="width: 100%">
               <img :src="`${baseUrl.s3Storage}/${red.data[0].shaft_type.image}`" />
-            </div>
+            </div> -->
           </div>
         </div>
         <Divider />
@@ -414,7 +415,7 @@ onBeforeMount(async () => {
         <div class="col">
           <div>
             <div class="mt-1" style="width: 100%">
-              {{ red.data[0].shaft_diirection.description }}
+              <Tag :value="red.data[0].shaft_diirection.description" severity="primary" />
             </div>
             <div class="mt-1" style="width: 100%">
               <img
@@ -540,7 +541,7 @@ onBeforeMount(async () => {
         <div class="col">
           <div>
             <div class="mt-1" style="width: 100%">
-              {{ red.data[0].mount_position.code }}
+              <Tag :value="red.data[0].mount_position.code" severity="primary"/>
             </div>
             <div class="mt-1" style="width: 100%">
               <img
@@ -550,10 +551,6 @@ onBeforeMount(async () => {
           </div>
         </div>
         <Divider />
-
-
-
-
 
         <label class="col-fixed font-semibold" style="width: 200px">Переходной адаптер</label>
         <div class="col">
@@ -565,7 +562,7 @@ onBeforeMount(async () => {
             <div class="mt-1" style="width: 100%">
               <Tag value="Код" severity="primary" /> {{ red.data[0].flange_adapter.code_adapter }}
             </div>
-            <div class="mt-1" style="width: 100%">
+            <!-- <div class="mt-1" style="width: 100%">
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].flange_adapter.adapter_image.image}`"
               />
@@ -603,9 +600,7 @@ onBeforeMount(async () => {
               <Tag value="f1" severity="primary" />
               {{ red.data[0].flange_adapter.flange_name_ref.f }}
             </div>
-
             <div class="mt-1" style="width: 100%">
-              <!-- был Е1 -->
               <Tag value="L" severity="primary" /> {{ flangeSize!.SE7 }}
             </div>
             <div class="mt-1" style="width: 100%">
@@ -616,7 +611,7 @@ onBeforeMount(async () => {
             </div>
             <div class="mt-1" style="width: 100%">
               <Tag value="b1" severity="primary" /> {{ flangeSize!.Sb }}
-            </div>
+            </div> -->
 
 
           </div>
@@ -650,7 +645,7 @@ onBeforeMount(async () => {
         <label class="col-fixed font-semibold" style="width: 200px"
           >Общий габарит корпуса (направление вала и фланца может не совпадать)</label
         >
-        <div class="col">
+        <div class="col flex">
           <div>
             <div class="mt-1" style="width: 100%">
               <Tag :value="red.data[0].mount_type.description"/>
@@ -676,6 +671,8 @@ onBeforeMount(async () => {
                 v-if="red.data[0].gear.gear_size.gear_type.id == 40"
               />
             </div>
+          </div>
+          <div class="ml-5 align-content-center justify-content-center flex-wrap">
             <MainGearData
               :gear-type-id="red.data[0].gear.gear_size.gear_type.id"
               :gear-size-id="red.data[0].gear.gear_size.gear_box_list_size_id"
@@ -781,7 +778,7 @@ onBeforeMount(async () => {
         <Divider />
 
         <label class="col-fixed font-semibold" style="width: 200px">Габариты адаптера</label>
-        <div class="col">
+        <div class="col flex">
           <div>
             <div class="mt-1" style="width: 100%">
               <Tag value="Тип" severity="primary" /> {{ red.data[0].flange_type.designation_type }}
@@ -800,15 +797,14 @@ onBeforeMount(async () => {
                 Подключаемый вал d1xL: {{ flangeSize!.SD6 }} x {{ red.data[0].flange_adapter.L }}
               </p>
             </div>
-
             <div class="mt-1" style="width: 100%">
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].flange_adapter.adapter_image.image}`"
               />
               <img :src="`${baseUrl.s3Storage}/${adapterImage2.data[0].image}`" />
             </div>
-
-
+          </div>
+          <div class="ml-5 align-content-center justify-content-center flex-wrap">
             <div class="mt-1" style="width: 100%">
               <Tag value="L2" severity="primary" /> {{ red.data[0].flange_adapter.L }}
             </div>

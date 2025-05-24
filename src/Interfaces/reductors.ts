@@ -189,7 +189,11 @@ export interface IRedMountTypeView {
   id_gear: number
   r: string
   id: number
-  description: string
+  K: string
+  C: string
+  S: string
+  F: string
+    description: string
   image: string
 }
 
