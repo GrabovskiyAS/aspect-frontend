@@ -113,19 +113,67 @@ onBeforeMount(async () => {
 
 <template>
   <div class="mt-5" v-if="!loading">
-    <span class="text-2xl font-semibold mt-5 text-primary">Опции</span>
+    <!-- <span class="text-2xl font-semibold mt-5 text-primary">Опции</span> -->
 
     <div v-if="L">
-      <p class="font-semibold">Масло</p>
+
+  <p class="text-2xl font-semibold mt-5 text-primary">Опции редуктора</p>
+    <DataTable
+      :value="gearOptionsDisplay"
+      selectionMode="multiple"
+
+      v-model:selection="gearOptionsSelected"
+      stripedRows
+      tableStyle="min-width: 100%"
+    >
+      <!-- <Column selectionMode="multiple" headerStyle="width: 5%"></Column> -->
+      <Column field="description" header="Наменование" headerStyle="width: 90%"></Column>
+      <Column header="Цена" headerStyle="width: 10%">
+        <template #body="{ data }">
+          <DisplayPrice
+            :price="data.price"
+            :discount="0"
+            currency-symbol="&#165;"
+            size="S"
+          />
+        </template>
+      </Column>
+    </DataTable>
+
+
+    <p class="text-2xl font-semibold mt-5 text-primary">Опции покраски</p>
+    <DataTable
+      :value="colorOptions.data"
+      v-model:selection="colorOptionsSelected"
+      stripedRows
+      tableStyle="min-width: 100%"
+    >
+      <Column selectionMode="single" headerStyle="width: 5%"></Column>
+      <Column field="description" header="Наменование" headerStyle="width: 85%"></Column>
+      <Column header="Цена" headerStyle="width: 10%">
+        <template #body="{ data }">
+          <DisplayPrice
+            :price="getPriceY(data.price, data.currency_id)"
+            :discount="0"
+            currency-symbol="&#165;"
+            size="S"
+          />
+        </template>
+      </Column>
+    </DataTable>
+
+
+
+      <p class="text-2xl font-semibold mt-5 text-primary">Опции масла</p>
       <DataTable
         :value="oilOptions.data"
         v-model:selection="oilOptionsSelected"
         stripedRows
-        tableStyle="min-width: 50rem"
+        tableStyle="min-width: 100%"
       >
         <Column selectionMode="single" headerStyle="width: 5%"></Column>
-        <Column field="description" header="Наменование" headerStyle="width: 10%"></Column>
-        <Column header="Цена за 1 л" headerStyle="width: 3%">
+        <Column field="description" header="Наменование" headerStyle="width: 75%"></Column>
+        <Column header="Цена за 1 л" headerStyle="width: 10%">
           <template #body="{ data }">
             <DisplayPrice
               :price="getPriceY(data.price, data.currency_id)"
@@ -135,10 +183,10 @@ onBeforeMount(async () => {
             />
           </template>
         </Column>
-        <Column header="Объём" headerStyle="width: 3%">
+        <Column header="Объём" headerStyle="width: 10%">
           <template #body> {{ L }} л </template>
         </Column>
-        <Column header="Итого" headerStyle="width: 3%">
+        <Column header="Сумма" headerStyle="width: 10%">
           <template #body="{ data }">
             <DisplayPrice
               :price="getPriceY(data.price * L, data.currency_id)"
@@ -151,48 +199,6 @@ onBeforeMount(async () => {
       </DataTable>
     </div>
 
-    <p class="font-semibold mt-5">Редуктор</p>
-    <DataTable
-      :value="gearOptionsDisplay"
-      selectionMode="multiple"
 
-      v-model:selection="gearOptionsSelected"
-      stripedRows
-      tableStyle="min-width: 50rem"
-    >
-      <!-- <Column selectionMode="multiple" headerStyle="width: 5%"></Column> -->
-      <Column field="description" header="Наменование" headerStyle="width: 10%"></Column>
-      <Column header="Цена" headerStyle="width: 3%">
-        <template #body="{ data }">
-          <DisplayPrice
-            :price="data.price"
-            :discount="0"
-            currency-symbol="&#165;"
-            size="S"
-          />
-        </template>
-      </Column>
-    </DataTable>
-
-    <p class="font-semibold mt-5">Покраска</p>
-    <DataTable
-      :value="colorOptions.data"
-      v-model:selection="colorOptionsSelected"
-      stripedRows
-      tableStyle="min-width: 50rem"
-    >
-      <Column selectionMode="single" headerStyle="width: 5%"></Column>
-      <Column field="description" header="Наменование" headerStyle="width: 10%"></Column>
-      <Column header="Цена" headerStyle="width: 3%">
-        <template #body="{ data }">
-          <DisplayPrice
-            :price="getPriceY(data.price, data.currency_id)"
-            :discount="0"
-            currency-symbol="&#165;"
-            size="S"
-          />
-        </template>
-      </Column>
-    </DataTable>
   </div>
 </template>

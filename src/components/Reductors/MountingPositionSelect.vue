@@ -38,7 +38,7 @@ watch(mountingPosition, () => {
   <template v-if="!loading && props.gearTypeId">
     <div class="grid">
       <div class="col-4">
-        <span class="text-2xl font-semibold mt-5 text-primary">Монтажное положение</span>
+        <span class="text-2xl font-semibold mt-5 text-primary">Монтажное положение редуктора</span>
 
         <div
           v-for="position in mountingPositions.data"

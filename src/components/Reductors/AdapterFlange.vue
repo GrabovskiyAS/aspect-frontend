@@ -187,51 +187,41 @@ onBeforeMount(async () => {
 
 <template>
   <div class="mt-5" v-if="!loading">
-    <span class="text-2xl font-semibold mt-5 text-primary">Адаптер</span>
+    <!-- <span class="text-2xl font-semibold mt-5 text-primary">Адаптер</span> -->
 
     <div class="grid">
       <div class="col-4">
-        <p class="font-semibold mb-2">Тип переходного адаптера</p>
+        <span class="text-2xl font-semibold mt-5 text-primary">Тип переходного адаптера</span>
+        <div>
+          <div v-for="flange in flangeTypes" :key="flange.id" class="flex items-center gap-2 mt-1">
+            <RadioButton v-model="flangeType" :inputId="flange.name" name="dynamic" :value="flange" />
+            <label :for="flange.name">{{ flange.name }}</label>
+          </div>
+        </div>
 
-        <div v-for="flange in flangeTypes" :key="flange.id" class="flex items-center gap-2 mt-1">
-          <RadioButton v-model="flangeType" :inputId="flange.name" name="dynamic" :value="flange" />
-          <label :for="flange.name">{{ flange.name }}</label>
+        <div class="mt-5">
+          <span class="mt-5 text-2xl font-semibold text-primary">Габарит переходного адаптера</span>
+          <div
+            v-for="adapter in flangeAdaptersFiltered"
+            :key="adapter"
+            class="flex items-center gap-2 mt-1"
+          >
+            <RadioButton
+              v-model="flangeAdapter"
+              :inputId="adapter.name"
+              name="dynamic"
+              :value="adapter"
+            />
+            <label :for="adapter.name">{{ adapter.name }}</label>
+          </div>
         </div>
       </div>
-
-      <div class="col-5">
-        <img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/>
-      </div>
-      <div class="col-3"></div>
-    </div>
-
-    <div class="grid">
-      <div class="col-4">
-        <p class="font-semibold mb-2">Переходной адаптер</p>
-
-        <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
-        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
-
-
-        <div
-          v-for="adapter in flangeAdaptersFiltered"
-          :key="adapter"
-          class="flex items-center gap-2 mt-1"
-        >
-          <RadioButton
-            v-model="flangeAdapter"
-            :inputId="adapter.name"
-            name="dynamic"
-            :value="adapter"
-          />
-          <label :for="adapter.name">{{ adapter.name }}</label>
-        </div>
+      <div class="col-5 flex justify-content-center flex-wrap">
+        <div><img :src="`${baseUrl.s3Storage}/${flangeAdapterImage}`" height="300"/></div>
       </div>
 
-      <div class="col-5">
-        <img :src="`${baseUrl.s3Storage}/${flangeAdapterImage}`" height="200"/>
-      </div>
-      <div class="col-1">
+
+      <div class="col-1 flex justify-content-center align-content-center flex-wrap">
         <div>
           <div class="mt-1" style="width: 100%">
             <Tag value="L" severity="primary" /> {{ flangeAdapter!.L }}
@@ -250,7 +240,7 @@ onBeforeMount(async () => {
           </div>
         </div>
       </div>
-      <div class="col-2">
+      <div class="col-2 flex justify-content-center align-content-center flex-wrap">
         <div>
           <div class="mt-1" style="width: 100%">
             <Tag value="m1" severity="primary" /> {{ outputFlangeData?.m }}
@@ -266,6 +256,25 @@ onBeforeMount(async () => {
           </div>
         </div>
       </div>
-    </div>
+
+
   </div>
+
+    <!-- <div class="grid">
+      <div class="col-4">
+
+      </div>
+
+      </div>
+    </div> -->
+  </div>
+
+        <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
+        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
+
+      <!-- <div class="col-5">
+        <img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/>
+      </div> -->
+
+
 </template>

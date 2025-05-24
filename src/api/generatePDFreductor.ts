@@ -104,24 +104,19 @@ const loadData = async (red: any) => {
     'reductors',
   )
 
-//  console.log('flnageDimentionAddon.value', flnageDimentionAddon.value)
-
   if (flnageDimentionAddon.value.data.length > 0) {
     flnageDimention.value = await useFetch(
       `/data/FlangeDimentionsExtends?name=${flnageDimentionAddon.value.data[0].flange_name}`,
       'reductors',
     )
-    console.log('flnageDimention.value', flnageDimention.value)
-    console.log('flnageDimention.value.data[0].flange_imageB5_id', flnageDimention.value.data[0].flange_imageB5_id)
-    console.log('flnageDimention.value.data[0].flange_imageB14_id', flnageDimention.value.data[0].flange_imageB14_id)
 
-    if (red.mount_position_id === 20)
+    if (red.shaft_type.id === 20)
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
         'reductors',
       )
 
-    if (red.mount_position_id === 30)
+    if (red.shaft_type.id === 30)
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB14_id}`,
         'reductors',
@@ -396,7 +391,6 @@ if (adapter_gabarit_image2)
 
 
 
-
       `, `m1` + flnageDimention.value.data[0].m + `
 N1` + flnageDimention.value.data[0].n + `
 P1` + flnageDimention.value.data[0].p + `
@@ -568,8 +562,6 @@ b1: ` + flangeSize.value!.Sb ])
 
 
 
-
-
 `, `m1: ` + flnageDimention.value.data[0].m + `
 N1: ` + flnageDimention.value.data[0].n + `
 P1: ` + flnageDimention.value.data[0].p + `
@@ -595,9 +587,6 @@ W6 = ` + outputShaftSize.value?.LW6 + `
 Q/W3/W4/Q4/S6 = ` + outputShaftSize.value?.LQ + `/` + outputShaftSize.value?.LW3 + `/` + outputShaftSize.value?.LW4 + `/` + outputShaftSize.value?.LQ4 + `/` + outputShaftSize.value?.LS6; break;
   }
   reductor_table_gabarit_body.push([`Габариты выходного вала
-
-
-
 
 
 
@@ -655,11 +644,12 @@ autoTable(pdf, {
     }
     //======== Габариты вала
     if (data.section === 'body' && data.column.index === 0 && data.row.index === 2)
-      pdf.addImage(shaft_type_image2, 'JPEG', data.cell.x + 2, data.cell.y + 40, 100, 100 / shaft_type_image2_ratio)
+      pdf.addImage(shaft_type_image2, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / shaft_type_image2_ratio)
+
     //======== Габариты адаптера
     if (data.section === 'body' && data.column.index === 0 && data.row.index === 3) {
       pdf.addImage(adapter_gabarit_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_gabarit_image_ratio)
-      pdf.addImage(adapter_gabarit_image2, 'JPEG', data.cell.x + 2, data.cell.y + 110, 100, 100 /adapter_gabarit_image2_ratio)
+      pdf.addImage(adapter_gabarit_image2, 'JPEG', data.cell.x + 2, data.cell.y + 100, 80, 80 /adapter_gabarit_image2_ratio)
     }
   },
 })

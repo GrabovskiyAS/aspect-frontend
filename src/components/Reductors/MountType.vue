@@ -35,7 +35,7 @@ watch(selectedMountType, () => {
 <template>
   <template v-if="!mountTypes.loading">
     <div class="mt-5">
-      <span class="text-2xl font-semibold mt-5 text-primary">Способ монтажа</span>
+      <span class="text-2xl font-semibold mt-5 text-primary">Способ монтажа редуктора</span>
       <DataTable
         v-model:selection="selectedMountType"
         selectionMode="single"

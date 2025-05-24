@@ -126,21 +126,21 @@ onBeforeMount(() => {
 
 <template>
   <div class="mt-5" v-if="!loading">
-    <span class="text-2xl font-semibold mt-5 text-primary">Вал</span>
+
+    <!-- <span class="text-2xl font-semibold mt-5 text-primary">Вал</span> -->
+    <span class="text-2xl font-semibold mt-5 text-primary">Тип выходного вала редуктора</span>
     <div class="grid">
       <div class="col-4">
-        <p class="font-semibold mb-2">Тип</p>
         <div v-for="shaft in shaftTypes.data" :key="shaft.id" class="flex items-center gap-2 mt-1">
           <RadioButton v-model="shaftType" :inputId="shaft.d" name="dynamic" :value="shaft" />
           <label :for="shaft.d">{{ shaft.d }}</label>
         </div>
       </div>
-
-      <div class="col-5">
-        <img v-bind:src="`${baseUrl.s3Storage}/${shaftType!.image}`" height="200" />
-        <!-- {{ outputShaftSize }} -->
+      <div class="col-5 flex justify-content-center flex-wrap">
+        <div>
+          <img v-bind:src="`${baseUrl.s3Storage}/${shaftType!.image}`" height="200" />
+        </div>
       </div>
-
       <div class="col-3 align-items-start">
         <ShaftData
           :outputShaftSize="outputShaftSize"
@@ -150,10 +150,11 @@ onBeforeMount(() => {
       </div>
 
     </div>
-    <div class="grid  mt-5">
-      <div class="col-4">
-        <p class="font-semibold mb-2">Направление</p>
 
+    <!-- <span class="text-2xl font-semibold mt-5 text-primary">Вал</span> -->
+    <span class="text-2xl font-semibold mt-5 text-primary">Направление выходного вала редуктора</span>
+    <div class="grid">
+      <div class="col-4">
         <div
           v-for="direction in shaftDirections.data"
           :key="direction.id"
@@ -168,19 +169,28 @@ onBeforeMount(() => {
           <label :for="direction.d">{{ direction.d }}</label>
         </div>
       </div>
-      <div class="col-5">
-        <img :src="`${baseUrl.s3Storage}/${shaftDirection!.shaft_direction_image}`" height="200"/>
+      <div class="col-5 flex justify-content-center flex-wrap">
+        <div>
+          <img :src="`${baseUrl.s3Storage}/${shaftDirection!.shaft_direction_image}`" height="200"/>
+        </div>
       </div>
       <div class="col-3"></div>
     </div>
 
-    <div class="grid  mt-5">
+    <span class="text-2xl font-semibold mt-5 text-primary">Фланец выходного вала редуктора</span>
+    <div class="grid" v-if="flangeDimentionImages2?.data?.[0]?.image">
       <div class="col-4">
-        <p class="font-semibold mb-2">Фланец выходного вала</p>
       </div>
+      <div class="col-5 flex justify-content-center flex-wrap">
+        <div>
+          <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image}`" v-if="flangeDimentionImages2?.data?.[0]?.image"/>
+        </div>
+        <div>
+          <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"/>
+        </div>
+      </div>
+
       <div class="col-5">
-        <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image}`" v-if="flangeDimentionImages2?.data?.[0]?.image"/>
-        <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"/>
       </div>
       <div class="col-3"></div>
     </div>

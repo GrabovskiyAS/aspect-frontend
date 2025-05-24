@@ -41,7 +41,7 @@ onBeforeMount(async () => {
 
 <template>
   <div class="mt-5" v-if="!loading">
-    <span class="text-2xl font-semibold mt-5 text-primary">Гарантия</span>
+    <span class="text-2xl font-semibold mt-5 text-primary">Опции гарантии</span>
     <DataTable
       :value="warrantyOptions.data"
       v-model:selection="warrantyOptionSelected"
@@ -49,8 +49,8 @@ onBeforeMount(async () => {
       tableStyle="min-width: 50rem"
     >
       <Column selectionMode="single" headerStyle="width: 5%"></Column>
-      <Column field="description" header="Наменование" headerStyle="width: 10%"></Column>
-      <Column header="Цена" headerStyle="width: 3%">
+      <Column field="description" header="Наменование" headerStyle="width: 85%"></Column>
+      <Column header="Цена" headerStyle="width: 10%">
         <template #body="{ data }">
           <span
             class="font-bold text-xl border-round m-2 flex align-items-center justify-content-center"
