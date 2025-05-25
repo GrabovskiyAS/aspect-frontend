@@ -31,7 +31,7 @@ import moment from 'moment'
 // import { getShaftDimentionValues } from '@/api/getShaftDimentionValues';
 import MainGearData from '@/components/Reductors/MainGearData.vue'
 import { useUserStore } from '@/stores/user'
-import { generateHash } from '@/api/Reductors/generateHash.ts'
+import { generateHash } from '@/api/Reductors/generateHash'
 
 const baseUrl = useBaseUrl()
 const toast = useToast()
@@ -221,18 +221,18 @@ watch(discontGroupSelected, () => {
     red.value.data[0].discount = discontGroupSelected.value.discount
 })
 
-const docNumber = computed(() => {
-    const suffix = red.value.data[0].user_id.toString() +
-    '/' +
-    generateHash(red.value.data[0].id!) +
-    ' от ' +
-    moment(red.value.data[0].date).format('DD.MM.YYYY')
+// const docNumber = computed(() => {
+//     const suffix = red.value.data[0].user_id.toString() +
+//     '/' +
+//     generateHash(red.value.data[0].id!) +
+//     ' от ' +
+//     moment(red.value.data[0].date).format('DD.MM.YYYY')
 
-    if (user.isStaff())
-      return red.value.data[0].full_order_number + suffix
-    else
-      return red.value.data[0].short_order_number + suffix
-    })
+//     if (user.isStaff())
+//       return red.value.data[0].full_order_number + suffix
+//     else
+//       return red.value.data[0].short_order_number + suffix
+//     })
 
 const docNumber2 = computed(() => {
   return generateHash(red.value.data[0].id) + ' от ' + moment(red.value.data[0].date).format('DD.MM.YYYY HH:mm');

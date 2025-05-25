@@ -20,7 +20,7 @@ import { useFetch } from '@/api/useFetch'
 import axios from 'axios'
 import moment from 'moment'
 import { getGearDataPlainText } from './Reductors/gearDataPlainText'
-import { generateHash } from '@/api/Reductors/generateHash.ts'
+import { generateHash } from '@/api/Reductors/generateHash'
 
 const baseUrl = useBaseUrl()
 const user = useUserStore()
