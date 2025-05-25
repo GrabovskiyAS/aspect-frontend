@@ -31,6 +31,7 @@ import moment from 'moment'
 // import { getShaftDimentionValues } from '@/api/getShaftDimentionValues';
 import MainGearData from '@/components/Reductors/MainGearData.vue'
 import { useUserStore } from '@/stores/user'
+import { generateHash } from '@/api/Reductors/generateHash.ts'
 
 const baseUrl = useBaseUrl()
 const toast = useToast()
@@ -223,7 +224,7 @@ watch(discontGroupSelected, () => {
 const docNumber = computed(() => {
     const suffix = red.value.data[0].user_id.toString() +
     '/' +
-    red.value.data[0].id!.toString() +
+    generateHash(red.value.data[0].id!) +
     ' от ' +
     moment(red.value.data[0].date).format('DD.MM.YYYY')
 
@@ -232,6 +233,10 @@ const docNumber = computed(() => {
     else
       return red.value.data[0].short_order_number + suffix
     })
+
+const docNumber2 = computed(() => {
+  return generateHash(red.value.data[0].id) + ' от ' + moment(red.value.data[0].date).format('DD.MM.YYYY HH:mm');
+})
 
 
 onBeforeMount(async () => {
@@ -244,7 +249,8 @@ onBeforeMount(async () => {
   <template v-if="loading"> loading </template>
   <template v-else>
     <template v-if="red.data[0].user_id == userId || user.isStaff()">
-      <h1 class="pt-5">Технико-коммерческое предложение № {{ docNumber }}</h1>
+      <h1 class="pt-5">Технико-коммерческое предложение № {{ docNumber2 }}</h1>
+      <h2>{{ red.data[0].full_order_number }}</h2>
       <div class="field pt-5">
         <FloatLabel>
           <Textarea id="info" v-model="red.data[0].info" class="w-full" />

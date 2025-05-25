@@ -20,6 +20,7 @@ import { useFetch } from '@/api/useFetch'
 import axios from 'axios'
 import moment from 'moment'
 import { getGearDataPlainText } from './Reductors/gearDataPlainText'
+import { generateHash } from '@/api/Reductors/generateHash.ts'
 
 const baseUrl = useBaseUrl()
 const user = useUserStore()
@@ -469,12 +470,14 @@ f1` + flnageDimention.value.data[0].f]);
   pdf.text('ООО "АСПЕКТ". +7 (343) 204‐94‐50, info@ids‐drives.ru, ids‐drives.ru, mall.ids-drives.ru', 30, 65)
 
 
-  const docNumber: string = red.full_order_number.substring(0, red.full_order_number.length-1)
+  const docNumber: string = red.full_order_number;//.substring(0, red.full_order_number.length-1)
   pdf.setFontSize(12)
 
+  // const docNumber = moment(red.date).format('DD') + '/' + moment(red.date).format('MM') + moment(red.date).format('YY') + '-' + red.id!.toString();
+  const docNumber2 = generateHash(red.id) + ' от ' + moment(red.date).format('DD.MM.YYYY HH:mm');
 
   autoTable(pdf, {
-    head: [['Технико-коммерческое предложение № ' + moment(red.date).format('DD') + '/' + moment(red.date).format('MM') + moment(red.date).format('YY') + '-' + red.id!.toString() + ' от ' + moment(red.date).format('DD.MM.YYYY HH:mm')]],
+    head: [['Технико-коммерческое предложение № ' + docNumber2 ]],
     body: [[docNumber],[ numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽
 ` + numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥`]],
     startY: 75,

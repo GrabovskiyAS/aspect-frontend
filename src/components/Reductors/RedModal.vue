@@ -16,6 +16,7 @@ import StepList from 'primevue/steplist'
 import StepPanels from 'primevue/steppanels'
 import Step from 'primevue/step'
 import StepPanel from 'primevue/steppanel'
+import Divider from 'primevue/divider'
 
 import { useUserStore } from '@/stores/user'
 import { useLoginStore } from '@/stores/login'
@@ -50,6 +51,7 @@ const warrantyPrice = ref<number>(0)
 const flange = ref<IFlange>({ type: 0, adapter: 0, name: '' })
 const step = ref<number>(1)
 const discount = ref<number>(0)
+const activeStep = ref(1);
 
 const saveUserRedConfig = async () => {
   const selectedOptionsStr = ref<string[]>([])
@@ -124,6 +126,7 @@ onBeforeMount(async () => {
     :header="props.red.code_aspect"
     :modal="true"
   >
+
     <div class="card flex justify-center">
       <Stepper value="1" class="w-full">
         <StepList>
