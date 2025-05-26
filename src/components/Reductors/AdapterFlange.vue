@@ -262,15 +262,15 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="col-5 flex justify-content-center flex-wrap">
-        <div><img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/></div>
+        <!-- <div><img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/></div> -->
+        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
+        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/>
       </div>
 
 
       </div>
     </div>
 
-        <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
-        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
 
 
 
