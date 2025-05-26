@@ -72,7 +72,7 @@ const flangeAdapter = ref<OutputAdapter>()
 const loading = ref<boolean>(true)
 const power = ref<number>(0)
 const flangeAdapterImage = ref<string>('')
-const flangeAdapterImage2 = ref<string>('')
+const flangeAdapterImage2 = ref<any>('')
 
 const filter = async () => {
   flangeAdaptersFiltered.value = flangeAdapters.value.data.filter(
@@ -160,9 +160,9 @@ watch([flangeType, flangeAdapter], async () => {
   // }
   // Формируем данные для переходного адаптера =============================================================
 
-    const imageId = flangeDimentions.value.data.find((item) => item.name == flangeAdapter.value.flange_name);
+    const imageId = flangeDimentions.value.data.find((item) => item.name == flangeAdapter?.value?.flange_name);
     // console.log(imageId.flange_image_id)
-    flangeAdapterImage2.value = flangeDimentionImages.value.data.find((item) => item.id == imageId.flange_image_id)
+    flangeAdapterImage2.value = flangeDimentionImages.value.data.find((item) => item.id == imageId?.flange_image_id)
     console.log(flangeAdapterImage2.value.image)
 })
 
@@ -268,7 +268,7 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="col-5 flex justify-content-center flex-wrap">
-        <div><img :src="`${baseUrl.s3Storage}/${flangeAdapterImage2.image}`" height="200"/></div>
+        <div v-if="flangeAdapterImage2?.image"><img :src="`${baseUrl.s3Storage}/${flangeAdapterImage2?.image}`" height="200"/></div>
 
       </div>
 

@@ -61,13 +61,6 @@ const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({
   loading: true,
 })
 const adapterImage2 = ref<IDocument<IFlangeDimentionImage>>({ data: [], error: [], loading: true })
-
-// Опции реуктора для итоговой таблицы
-const red_options: string = computed(() => {
-  return options.value.gear_options.reduce((acc: string, val: any) => acc + val.description + `
-`, '')
-});
-
 let gear_type_id = 0
 let gear_size_id = 0
 let userId = 0
