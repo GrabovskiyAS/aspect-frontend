@@ -23,7 +23,7 @@ import type {
 } from '@/Interfaces/reductors'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import DisplayPrice from '@/components/Common/DisplayPrice.vue'
+import { priceFormat  } from '@/api/priceFormat'
 import DeliveryReport from '@/components/Reductors/DeliveryReport.vue'
 import { patchDataReductors } from '@/api/dataActionsReductors'
 import { generatePDFReductor } from '@/api/generatePDFreductor'
@@ -61,6 +61,12 @@ const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({
   loading: true,
 })
 const adapterImage2 = ref<IDocument<IFlangeDimentionImage>>({ data: [], error: [], loading: true })
+
+// Опции реуктора для итоговой таблицы
+const red_options: string = computed(() => {
+  return options.value.gear_options.reduce((acc: string, val: any) => acc + val.description + `
+`, '')
+});
 
 let gear_type_id = 0
 let gear_size_id = 0
@@ -857,7 +863,7 @@ onBeforeMount(async () => {
         <div class="col">
           <div>
             <div class="mt-1" style="width: 100%">
-              <Tag value="Редуктор" severity="primary" />
+              <Tag value="Опции редуктора" severity="primary" />
               <DataTable :value="gearOptionsSelected" stripedRows tableStyle="min-width: 40rem">
                 <Column header="Наименование" headerStyle="width: 25%">
                   <template #body="{ data }">
@@ -879,7 +885,7 @@ onBeforeMount(async () => {
             </div>
 
             <div class="mt-5" style="width: 100%">
-              <Tag value="Масло" severity="primary" />
+              <Tag value="Опции масла" severity="primary" />
               {{ options.oil_options.description }},
               <!--DisplayPrice
                 :price="options.oil_options.price"
@@ -890,7 +896,7 @@ onBeforeMount(async () => {
             </div>
 
             <div class="mt-5" style="width: 100%">
-              <Tag value="Покарска" severity="info" />
+              <Tag value="Опции покраски" severity="info" />
               {{ options.color_options.description }},
               <!--DisplayPrice
                 :price="options.color_options.price"
@@ -901,15 +907,29 @@ onBeforeMount(async () => {
             </div>
 
             <div class="mt-5" style="width: 100%">
-              <Tag value="Гарантия" severity="secondary" />
+              <Tag value="Опции гарантии" severity="secondary" />
               {{ options.warranty_options.description }},
               {{ options.warranty_options.add_description }},
             </div>
           </div>
         </div>
-        <Divider />
 
+        <Divider />
+      <label class="col-fixed font-semibold" style="width: 200px">Итоговая цена редуктора с опциями в Екатеринбурге</label>
+      <div class="col">
+        <div>
+          <div class="mt-1" style="width: 100%">
+            <Tag :value="priceFormat(totalPrice * (1 + red.data[0].discount/100)) + ' &#165;'" severity="primary" />
+          </div>
+
+          <div class="mt-1" style="width: 100%">
+          <Tag :value="priceFormat(totalPrice * (1 + red.data[0].discount/100) * red.data[0].rate_rub_cny) + ' &#8381;'" severity="info" />
+          </div>
+        </div>
       </div>
+    </div>
+
+
 
       <DeliveryReport :red="red.data[0]" v-model="totalPrice"/>
 
@@ -924,22 +944,12 @@ onBeforeMount(async () => {
       </div>
 
 
-      <div class="mt-5" style="width: 100%">
-        <Tag value="Итоговая цена редуктора с опциями в Екатеринбурге" severity="info" />
-        <DisplayPrice
-          :price="totalPrice * (1 + red.data[0].discount/100)"
-          :discount="0"
-          currency-symbol="&#165;"
-          size="S"
-        />
-        <DisplayPrice
-          :price="totalPrice * (1 + red.data[0].discount/100) * red.data[0].rate_rub_cny"
-          :discount="0"
-          currency-symbol="&#8381;"
-          size="S"
-        />
-      </div>
+
+
+
     </template>
     <template v-else> Недостаточно прав </template>
+
+
   </template>
 </template>

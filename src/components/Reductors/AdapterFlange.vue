@@ -72,6 +72,7 @@ const flangeAdapter = ref<OutputAdapter>()
 const loading = ref<boolean>(true)
 const power = ref<number>(0)
 const flangeAdapterImage = ref<string>('')
+const flangeAdapterImage2 = ref<string>('')
 
 const filter = async () => {
   flangeAdaptersFiltered.value = flangeAdapters.value.data.filter(
@@ -116,7 +117,7 @@ const loadData = async () => {
 }
 
 
-watch([flangeType, flangeAdapter], () => {
+watch([flangeType, flangeAdapter], async () => {
   // изменяем знначение модели компонента по значениям внутренней модели
   if (flangeType.value) model.value!.type = flangeType.value.id
   if (flangeAdapter.value) {
@@ -158,6 +159,11 @@ watch([flangeType, flangeAdapter], () => {
 
   // }
   // Формируем данные для переходного адаптера =============================================================
+
+    const imageId = flangeDimentions.value.data.find((item) => item.name == flangeAdapter.value.flange_name);
+    // console.log(imageId.flange_image_id)
+    flangeAdapterImage2.value = flangeDimentionImages.value.data.find((item) => item.id == imageId.flange_image_id)
+    console.log(flangeAdapterImage2.value.image)
 })
 
 watch(flangeTypeSize, () => {
@@ -262,9 +268,8 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="col-5 flex justify-content-center flex-wrap">
-        <!-- <div><img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/></div> -->
-        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
-        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/>
+        <div><img :src="`${baseUrl.s3Storage}/${flangeAdapterImage2.image}`" height="200"/></div>
+
       </div>
 
 
@@ -272,6 +277,9 @@ onBeforeMount(async () => {
     </div>
 
 
+        <!-- <div><img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/></div> -->
+        <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
+        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
 
 
 </template>
