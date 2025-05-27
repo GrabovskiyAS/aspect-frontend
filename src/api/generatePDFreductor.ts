@@ -663,9 +663,14 @@ autoTable(pdf, {
   options_table_gabarit_body.push([`Опции покраски`,options.value.color_options.description + `, ` + options.value.color_options.price + ' руб.'])
   options_table_gabarit_body.push([`Гарантия`,options.value.warranty_options.description])
   if (print_price) {
-    options_table_gabarit_body.push([`Итоговая цена редуктора с опциями в Екатеринбурге`, numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽
-` + numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥`])
+    options_table_gabarit_body.push([`Итоговая цена редуктора с опциями в Екатеринбурге`, numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥
+` + numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽
+(по курсу ` + red.rate_rub_cny + ` ₽ за 1 ¥ на ` + moment(red.date).format('DD.MM.YYYY') + `)`])
   }
+
+
+
+
 
   autoTable(pdf, {
     head: [reductor_table_header],

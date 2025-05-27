@@ -12,7 +12,7 @@ document.title = 'Аспект'
     </div>
     <div class="footer mt-5">
       <Divider />
-      © 2024. ООО Аспект
+      © 2024-2025. ООО Аспект
     </div>
   </div>
 </template>

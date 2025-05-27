@@ -917,6 +917,7 @@ onBeforeMount(async () => {
 
           <div class="mt-1" style="width: 100%">
           <Tag :value="priceFormat(totalPrice * (1 + red.data[0].discount/100) * red.data[0].rate_rub_cny) + ' &#8381;'" severity="info" />
+          (по курсу {{ red.data[0].rate_rub_cny }} &#8381; за 1 &#165; на {{ moment(red.data[0].date).format('DD.MM.YYYY') }})
           </div>
         </div>
       </div>
