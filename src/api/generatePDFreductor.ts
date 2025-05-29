@@ -418,6 +418,8 @@ f1` + flnageDimention.value.data[0].f]);
 
 
 
+
+
     `])
   reductor_table_body.push(['Скорость', `Входная: ` + red.user_input_speed + `
 Выходная: ` + (red.user_input_speed / red.gear.ex_ratio).toFixed(2)]);
@@ -478,11 +480,13 @@ f1` + flnageDimention.value.data[0].f]);
 
   autoTable(pdf, {
     head: [['Технико-коммерческое предложение № ' + docNumber2 ]],
-    body: [[docNumber],[ numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽
-` + numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥`]],
+    body: [[docNumber],[ numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥
+` + numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽ (по курсу ` + red.rate_rub_cny + ` ₽ за 1 ¥ на ` + moment(red.date).format('DD.MM.YYYY') + `)`]],
     startY: 75,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
   })
+
+
 
   autoTable(pdf, {
     head: [reductor_table_header],
@@ -500,7 +504,7 @@ f1` + flnageDimention.value.data[0].f]);
 
       // Напревление выходного вала
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 7)
-        pdf.addImage(shaft_direction_image, 'JPEG', data.cell.x + 2, data.cell.y + 30, 100, 100 / shaft_direction_image_ratio)
+        pdf.addImage(shaft_direction_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / shaft_direction_image_ratio)
 
       // Положение редуктора в пространстве
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 15)

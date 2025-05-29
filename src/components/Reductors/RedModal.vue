@@ -12,12 +12,12 @@ import type {
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import Stepper from 'primevue/stepper'
+import StepItem from 'primevue/stepitem'
 import StepList from 'primevue/steplist'
 import StepPanels from 'primevue/steppanels'
 import Step from 'primevue/step'
 import StepPanel from 'primevue/steppanel'
 import Divider from 'primevue/divider'
-
 import { useUserStore } from '@/stores/user'
 import { useLoginStore } from '@/stores/login'
 import MountingPositionSelect from '@/components/Reductors/MountingPositionSelect.vue'
@@ -127,7 +127,98 @@ onBeforeMount(async () => {
     :modal="true"
   >
 
-    <div class="card flex justify-center">
+  <div class="card flex justify-center">
+
+  <!-- <Stepper value="1" class="w-full">
+    <StepItem value="1">
+        <Step>Монтажное положение</Step>
+        <StepPanel v-slot="{ activateCallback }">
+            <div class="flex flex-col h-48">
+              <MountingPositionSelect v-model="mountPosition" :gearTypeId="gearTypeId" />
+            </div>
+             <div class="py-6">
+                <Button label="Next" @click="activateCallback('2')" />
+            </div>
+        </StepPanel>
+    </StepItem>
+    <StepItem value="2">
+        <Step>Способ монтажа</Step>
+        <StepPanel v-slot="{ activateCallback }">
+            <div class="flex flex-col h-48">
+              <MountType v-model="mountType" v-model:mount-type-name="mountTypeName" :id_gear="props.red.id_gear" :gear_type_id="props.gearTypeId" />
+            </div>
+            <div class="flex py-6 gap-2">
+                <Button label="Back" severity="secondary" @click="activateCallback('1')" />
+                <Button label="Next" @click="activateCallback('3')" />
+            </div>
+        </StepPanel>
+    </StepItem>
+    <StepItem value="3">
+        <Step>Выходной вал</Step>
+        <StepPanel v-slot="{ activateCallback }">
+            <div class="flex flex-col h-48">
+              <ShaftSelect
+              v-model="shaft"
+              :id_gear="props.red.id_gear"
+              :gear-type-id="red.gear_type_id"
+              :mount-type="mountType"
+              :gear-size-id="red.gear_box_list_size_id"
+              :red="props.red"
+              v-if="mountType"
+            />
+            </div>
+             <div class="py-6">
+                <Button label="Back" severity="secondary" @click="activateCallback('2')" />
+                <Button label="Next" @click="activateCallback('4')" />
+            </div>
+        </StepPanel>
+    </StepItem>
+    <StepItem value="4">
+        <Step>Адаптер</Step>
+        <StepPanel v-slot="{ activateCallback }">
+            <div class="flex flex-col h-48">
+              <AdapterFlange
+              v-model="flange"
+              :red="props.red"
+              :inputSpeed="props.commonData.inputSpeed"
+              :shaft-type="shaft.type"
+              v-if="shaft"
+            />
+            </div>
+             <div class="py-6">
+                <Button label="Back" severity="secondary" @click="activateCallback('3')" />
+                <Button label="Next" @click="activateCallback('5')" />
+            </div>
+        </StepPanel>
+    </StepItem>
+    <StepItem value="5">
+        <Step>Опции</Step>
+        <StepPanel v-slot="{ activateCallback }">
+            <div class="flex flex-col h-48">
+              <OptionsSelect
+              :red="props.red"
+              :gear-type-id="gearTypeId"
+              :mounting-position-id="mountPosition"
+              :discount="props.discount"
+              :shaft="shaft"
+              v-model:oilOptionsSelected="oilOptionsSelected"
+              v-model:colorOptionsSelected="colorOptionsSelected"
+              v-model:gearOptionsSelected="gearOptionsSelected"
+            />
+
+            <WarrantyOptionsSelect
+              v-model:warrantyOptionSelected="warrantyOptionSelected"
+              v-model:warrantyPrice="warrantyPrice"
+            />
+            </div>
+             <div class="py-6">
+                <Button label="Back" severity="secondary" @click="activateCallback('4')" />
+
+            </div>
+        </StepPanel>
+    </StepItem>
+  </Stepper> -->
+
       <Stepper value="1" class="w-full">
         <StepList>
           <Step value="1">Монтажное положение</Step>
@@ -138,7 +229,6 @@ onBeforeMount(async () => {
         </StepList>
 
         <StepPanels>
-          <!-- Монтажное положение -->
           <StepPanel v-slot="{ activateCallback }" value="1">
             <MountingPositionSelect v-model="mountPosition" :gearTypeId="gearTypeId" />
             <div class="flex pt-6 justify-end">
@@ -146,7 +236,6 @@ onBeforeMount(async () => {
             </div>
           </StepPanel>
 
-          <!-- Способ монтажа -->
           <StepPanel v-slot="{ activateCallback }" value="2">
             <MountType v-model="mountType" v-model:mount-type-name="mountTypeName" :id_gear="props.red.id_gear" :gear_type_id="props.gearTypeId" />
             <div class="flex pt-6 justify-between">
@@ -155,7 +244,6 @@ onBeforeMount(async () => {
             </div>
           </StepPanel>
 
-          <!-- Выходной вал -->
           <StepPanel v-slot="{ activateCallback }" value="3">
             <ShaftSelect
               v-model="shaft"
@@ -172,7 +260,6 @@ onBeforeMount(async () => {
             </div>
           </StepPanel>
 
-          <!-- Адаптер -->
           <StepPanel v-slot="{ activateCallback }" value="4">
             <AdapterFlange
               v-model="flange"
@@ -187,7 +274,6 @@ onBeforeMount(async () => {
             </div>
           </StepPanel>
 
-          <!-- Опции -->
           <StepPanel v-slot="{ activateCallback }" value="5">
 
             <OptionsSelect
@@ -212,12 +298,12 @@ onBeforeMount(async () => {
           </StepPanel>
         </StepPanels>
       </Stepper>
-    </div>
+   </div>
 
     <template #footer>
       <Button label="Закрыть" severity="secondary" icon="pi pi-times" text @click="hideDialog" />
       <Button
-        v-if="user.isUser() && step == 5"
+        v-if="user.isUser()"
         label="Сохранить в мои конфигурации"
         icon="pi pi-save"
         @click="saveUserRedConfig"

@@ -115,7 +115,7 @@ onBeforeMount(async () => {
   <div class="mt-5" v-if="!loading">
     <!-- <span class="text-2xl font-semibold mt-5 text-primary">Опции</span> -->
 
-    <div v-if="L">
+    <div v-if="L" class="card w-full">
 
       <div class="grid">
         <div class="col-4">

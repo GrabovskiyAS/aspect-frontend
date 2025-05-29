@@ -137,7 +137,6 @@ const loadData = async () => {
   )
 
   // Размеры фланца выходного вала {
-
   flnageDimentionAddon.value = await useFetch(
     `/data/FlangeDimentionAddons?gear_type_id=${gear_type_id}&gearbox_size_id=${gear_size_id}&mount_type_id=${red.value.data[0].mount_type.id}`,
     'reductors',
@@ -321,22 +320,29 @@ onBeforeMount(async () => {
             <div class="mt-1" style="width: 100%">
               <Tag :value="red.data[0].mount_type.description"/>
             </div>
-            <div class="mt-1" style="width: 100%">
+            <div class="mt-1" style="width: 100%" v-if="!loading">
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.K}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 10"
+                width="300"
               />
+
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.C}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 20"
+                width="300"
               />
+
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.S}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 30"
+                width="300"
               />
+
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.F}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 40"
+                width="300"
               />
             </div>
           </div>
@@ -370,11 +376,13 @@ onBeforeMount(async () => {
             <img
               :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image}`"
               v-if="flangeDimentionImages.data[0].image.length > 2"
-            />
+              width="300"
+              />
             <img
               :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image2}`"
               v-if="flangeDimentionImages.data[0].image2.length > 2"
-            />
+              width="300"
+              />
           </div>
 
         </div>
@@ -425,6 +433,7 @@ onBeforeMount(async () => {
             <div class="mt-1" style="width: 100%">
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].gear.gear_size.gear_type.shaft_direction_image}`"
+                width="300"
               />
             </div>
           </div>
@@ -551,6 +560,7 @@ onBeforeMount(async () => {
             <div class="mt-1" style="width: 100%">
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].gear.gear_size.gear_type.mount_position_image}`"
+                width="300"
               />
             </div>
           </div>
@@ -627,7 +637,7 @@ onBeforeMount(async () => {
         <div class="col">
           <div>
             <div class="mt-1" style="width: 100%">
-              <Tag value="Масса редуктора" severity="primary" /> {{ mass.data[0].mass }} кг
+              <Tag value="Масса редуктора" severity="primary" /> {{ mass.data[0]?.mass ? mass.data[0]?.mass : 'Нет в справочнике' }} кг
             </div>
             <div class="mt-1" style="width: 100%">
               <Tag value="Масса адаптера" severity="primary" />
@@ -662,18 +672,22 @@ onBeforeMount(async () => {
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.K_figure}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 10"
+                width="600"
               />
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.C_figure}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 20"
+                width="600"
               />
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.S_figure}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 30"
+                width="600"
               />
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].mount_type.F_figure}`"
                 v-if="red.data[0].gear.gear_size.gear_type.id == 40"
+                width="600"
               />
             </div>
           </div>
@@ -694,10 +708,12 @@ onBeforeMount(async () => {
               <img
                 :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image}`"
                 v-if="flangeDimentionImages.data[0].image.length > 2"
+                width="300"
               />
               <img
                 :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image2}`"
                 v-if="flangeDimentionImages.data[0].image2.length > 2"
+                width="300"
               />
             </div>
           </div>
@@ -776,7 +792,7 @@ onBeforeMount(async () => {
                           <Tag :value="element.name" severity="primary" /> {{ element.value }}
                         </div> -->
             <div class="mt-1" style="width: 100%">
-              <img :src="`${baseUrl.s3Storage}/${red.data[0].shaft_type.image}`" />
+              <img :src="`${baseUrl.s3Storage}/${red.data[0].shaft_type.image}`" width="300"/>
             </div>
           </div>
         </div>
@@ -804,9 +820,9 @@ onBeforeMount(async () => {
             </div>
             <div class="mt-1" style="width: 100%">
               <img
-                :src="`${baseUrl.s3Storage}/${red.data[0].flange_adapter.adapter_image.image}`"
+                :src="`${baseUrl.s3Storage}/${red.data[0].flange_adapter.adapter_image.image}`" width="300"
               />
-              <img :src="`${baseUrl.s3Storage}/${adapterImage2.data[0].image}`" />
+              <img :src="`${baseUrl.s3Storage}/${adapterImage2.data[0].image}`" width="300"/>
             </div>
           </div>
           <div class="ml-5 align-content-center justify-content-center flex-wrap">
@@ -890,7 +906,7 @@ onBeforeMount(async () => {
 
             <div class="mt-5" style="width: 100%">
               <Tag value="Опции покраски" severity="info" />
-              {{ options.color_options.description }},
+              {{ options?.color_options?.description }},
               <!--DisplayPrice
                 :price="options.color_options.price"
                 :discount="0"

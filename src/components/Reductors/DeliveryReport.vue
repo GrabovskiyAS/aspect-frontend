@@ -79,7 +79,7 @@ const loadData = async () => {
 
 
   total1.value = (Number(props.red.gear_price) + Number(adapterPrice.value.data[0].price) + Number(gearOptionsPrice.value) + Number(options.value.oil_options.price));
-  totalMass.value = (Number(mass.value.data[0].mass) + Number(props.red.flange_adapter.mass));
+  totalMass.value = (Number(mass?.value?.data[0]?.mass || 0 ) + Number(props.red.flange_adapter.mass));
   deliveryToChinaLogistic.value = findDeliveryValue(deliveryToChinaLogistics.value.data, totalMass.value); // стоимость доставки до логистимческого центра в Китае
   deliveryToChinaBorder.value = findDeliveryValue(deliveryToChinaBorders.value.data, totalMass.value);// стоимость доставки до границы КИтая
   tax1.value = findDeliveryValue(taxes1.value.data, total1.value * redDiscount );
@@ -96,7 +96,7 @@ const loadData = async () => {
               + Number(tax2value.value)
               + Number(NDS.value)
               + Number(deliveryRussia.value.value) * Number(totalMass.value)
-              + Number(options.value.color_options.price / exchangeRate)
+              + Number((options?.value?.color_options?.price || 0) / exchangeRate)
               + Number(options.value.oil_options.price / exchangeRate);
 
   warrantyPrice.value = getWarrantyPrice(options.value);
@@ -237,7 +237,7 @@ onBeforeMount(async () => {
       <tbody>
         <tr>
           <td>Редуктор</td>
-          <td>{{ mass.data[0].mass }}</td>
+          <td>{{ mass?.data?.[0]?.mass ? mass?.data?.[0]?.mass : 'Не определено' }}</td>
         </tr>
 
         <tr>
@@ -433,9 +433,9 @@ onBeforeMount(async () => {
     <h1>10. Доп опции (производимые на складе)</h1>
     <div class="mt-5" style="width: 100%">
       <Tag value="Покарска" severity="info" />
-      {{ options.color_options.description }},
+      {{ options?.color_options?.description }},
       <DisplayPrice
-        :price="options.color_options.price / exchangeRate"
+        :price="(options?.color_options?.price || 0)/ exchangeRate"
         :discount="0"
         currency-symbol="&#165;"
         size="S"

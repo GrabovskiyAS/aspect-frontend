@@ -181,17 +181,15 @@ onBeforeMount(() => {
     <div class="grid" v-if="flangeDimentionImages2?.data?.[0]?.image">
       <div class="col-4">
       </div>
-      <div class="col-5 flex justify-content-center flex-wrap">
+      <div class="col-8 flex justify-content-center flex-wrap justify-content-center align-content-center">
         <div>
-          <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image}`" v-if="flangeDimentionImages2?.data?.[0]?.image"/>
+          <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image}`" v-if="flangeDimentionImages2?.data?.[0]?.image" height="200"/>
         </div>
         <div>
-          <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"/>
+          <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"  height="200"/>
         </div>
       </div>
 
-      <div class="col-5">
-      </div>
       <div class="col-3"></div>
     </div>
 
