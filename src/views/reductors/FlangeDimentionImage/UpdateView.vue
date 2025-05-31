@@ -90,7 +90,7 @@ onBeforeMount(async () => {
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].image}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].image}`" width="300"/>
       <FileUpload
         mode="basic"
         @select="onPhotoSelect"
@@ -103,7 +103,7 @@ onBeforeMount(async () => {
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение2</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].image2}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].image2}`" width="300"/>
       <FileUpload
         mode="basic"
         @select="onImage2Select"

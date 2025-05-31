@@ -136,8 +136,8 @@ onBeforeMount(() => {
           <label :for="shaft.d">{{ shaft.d }}</label>
         </div>
       </div>
-      <div class="col-5 flex justify-content-center flex-wrap">
-        <div>
+      <div class="col-5 flex">
+        <div class="ml-5 pl-5">
           <img v-bind:src="`${baseUrl.s3Storage}/${shaftType!.image}`" height="200" />
         </div>
       </div>
@@ -148,7 +148,6 @@ onBeforeMount(() => {
           v-if="outputShaftSize"
         />
       </div>
-
     </div>
 
     <!-- <span class="text-2xl font-semibold mt-5 text-primary">Вал</span> -->
@@ -169,29 +168,27 @@ onBeforeMount(() => {
           <label :for="direction.d">{{ direction.d }}</label>
         </div>
       </div>
-      <div class="col-5 flex justify-content-center flex-wrap">
-        <div>
+      <div class="col-8 flex">
+        <div class="ml-5 pl-5">
           <img :src="`${baseUrl.s3Storage}/${shaftDirection!.shaft_direction_image}`" height="200"/>
         </div>
       </div>
-      <div class="col-3"></div>
     </div>
 
     <span class="text-2xl font-semibold mt-5 text-primary">Фланец выходного вала редуктора</span>
     <div class="grid" v-if="flangeDimentionImages2?.data?.[0]?.image">
       <div class="col-4">
       </div>
-      <div class="col-8 flex justify-content-center flex-wrap justify-content-center align-content-center">
-        <div>
+      <div class="col-8 flex">
+        <div class="ml-5 pl-5">
           <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image}`" v-if="flangeDimentionImages2?.data?.[0]?.image" height="200"/>
         </div>
         <div>
           <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"  height="200"/>
         </div>
       </div>
-
-      <div class="col-3"></div>
     </div>
 
   </div>
+        <!-- justify-content-center flex-wrap align-content-center -->
 </template>

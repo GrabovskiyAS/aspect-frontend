@@ -68,26 +68,26 @@ onBeforeMount(async () => {
         </Column> -->
         <Column header="Изображение K" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.K}`" v-if="mode == 'Картинки'"/>
-            <img :src="`${baseUrl.s3Storage}/${data.K_figure}`" v-if="mode == 'Схемы'" width="300"/>
+            <img :src="`${baseUrl.s3Storage}/${data.K}`" v-if="mode == 'Картинки'" width="250"/>
+            <img :src="`${baseUrl.s3Storage}/${data.K_figure}`" v-if="mode == 'Схемы'" width="250"/>
           </template>
         </Column>
         <Column header="Изображение C" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.C}`" v-if="mode == 'Картинки'"/>
-            <img :src="`${baseUrl.s3Storage}/${data.C_figure}`" v-if="mode == 'Схемы'" width="300"/>
+            <img :src="`${baseUrl.s3Storage}/${data.C}`" v-if="mode == 'Картинки'" width="250"/>
+            <img :src="`${baseUrl.s3Storage}/${data.C_figure}`" v-if="mode == 'Схемы'" width="250"/>
           </template>
         </Column>
         <Column header="Изображение F" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.F}`" v-if="mode == 'Картинки'"/>
-            <img :src="`${baseUrl.s3Storage}/${data.F_figure}`" v-if="mode == 'Схемы'" width="300"/>
+            <img :src="`${baseUrl.s3Storage}/${data.F}`" v-if="mode == 'Картинки'" width="250"/>
+            <img :src="`${baseUrl.s3Storage}/${data.F_figure}`" v-if="mode == 'Схемы'" width="250"/>
           </template>
         </Column>
         <Column header="Изображение S" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.S}`" v-if="mode == 'Картинки'"/>
-            <img :src="`${baseUrl.s3Storage}/${data.S_figure}`" v-if="mode == 'Схемы'" width="300"/>
+            <img :src="`${baseUrl.s3Storage}/${data.S}`" v-if="mode == 'Картинки'" width="250"/>
+            <img :src="`${baseUrl.s3Storage}/${data.S_figure}`" v-if="mode == 'Схемы'" width="250"/>
           </template>
         </Column>
 

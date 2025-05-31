@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { dejavuFont } from './dejavuFont'
+import { dejavuFontBold } from './dejavuFontBold'
 import { useBaseUrl } from '@/stores/baseUrl'
 import { useUserStore } from '@/stores/user'
 import type { IDocument } from '@/Interfaces/invertors'
@@ -463,7 +464,9 @@ f1` + flnageDimention.value.data[0].f]);
 
 
   pdf.addFileToVFS('DejaVuSans-normal.ttf', dejavuFont)
+  pdf.addFileToVFS('DejaVuSans-bold.ttf', dejavuFontBold)
   pdf.addFont('DejaVuSans-normal.ttf', 'DejaVuSans', 'normal')
+  pdf.addFont('DejaVuSans-bold.ttf', 'DejaVuSans', 'bold')
   pdf.setFont('DejaVuSans', 'normal')
 
 // -------- Предварительное ценовое предложение
@@ -475,23 +478,32 @@ f1` + flnageDimention.value.data[0].f]);
   const docNumber: string = red.full_order_number;//.substring(0, red.full_order_number.length-1)
   pdf.setFontSize(12)
 
-  // const docNumber = moment(red.date).format('DD') + '/' + moment(red.date).format('MM') + moment(red.date).format('YY') + '-' + red.id!.toString();
   const docNumber2 = generateHash(red.id) + ' от ' + moment(red.date).format('DD.MM.YYYY HH:mm');
 
   autoTable(pdf, {
     head: [['Технико-коммерческое предложение № ' + docNumber2 ]],
-    body: [[docNumber],[ numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥
-` + numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽ (по курсу ` + red.rate_rub_cny + ` ₽ за 1 ¥ на ` + moment(red.date).format('DD.MM.YYYY') + `)`]],
+    body: [[docNumber]],
     startY: 75,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
   })
 
+  pdf.setFontSize(12)
+  pdf.setFont('DejaVuSans', 'bold')
+
+  pdf.text(numberWithSpaces(Math.round(Number(totalPrice * (1 + red.discount / 100)))) +  ` ¥
+` + numberWithSpaces(Math.round(totalPrice * (1 + red.discount / 100) * red.rate_rub_cny)) + ` ₽`, 35, 120)
+
+  pdf.setFontSize(8)
+  pdf.setFont('DejaVuSans', 'normal')
+  pdf.text(`по курсу ` + red.rate_rub_cny + ` ₽ за 1 ¥ на ` + moment(red.date).format('DD.MM.YYYY'), 35, 140)
+
+  pdf.setFontSize(12)
 
 
   autoTable(pdf, {
     head: [reductor_table_header],
     body: reductor_table_body,
-    startY: 150,
+    startY: 160,
     styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
     didDrawCell: (data) => {
       // Способ монтажа
@@ -524,7 +536,8 @@ f1` + flnageDimention.value.data[0].f]);
 //================================================================================================================================
 
   pdf.addPage()
-  pdf.text('Габаритные чертежи редуктора ' + red.full_order_number, 30, 50)
+  pdf.text(`Габаритные чертежи редуктора
+` + red.full_order_number, 30, 50)
   const gearDataPlainText = await getGearDataPlainText(red.gear.gear_size.gear_type.id, red.gear.gear_size.gear_box_list_size_id, mountData.value)
 
   reductor_table_gabarit_body.push([`Общий габарит корпуса
@@ -627,7 +640,7 @@ b1: ` + flangeSize.value!.Sb])
 autoTable(pdf, {
   head: [reductor_table_header],
   body: reductor_table_gabarit_body,
-  startY: 60,
+  startY: 70,
   styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
   didDrawCell: (data) => {
     if (data.section === 'body' && data.column.index === 0 && data.row.index === 0)

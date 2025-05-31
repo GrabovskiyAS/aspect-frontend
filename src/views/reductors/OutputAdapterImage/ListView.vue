@@ -45,7 +45,7 @@ onBeforeMount(async () => {
         <Column field="id" header="id" sortable style="width: 10%"></Column>
         <Column header="Изображение" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.image}`" />
+            <img :src="`${baseUrl.s3Storage}/${data.image}`"  width="300"/>
           </template>
         </Column>
 

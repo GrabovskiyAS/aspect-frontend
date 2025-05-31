@@ -45,13 +45,13 @@ onBeforeMount(async () => {
         <Column field="id" header="id" sortable style="width: 10%"></Column>
         <Column header="Изображение" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.image}`" v-if="data.image !== '-'" />
+            <img :src="`${baseUrl.s3Storage}/${data.image}`" v-if="data.image !== '-'"  width="300"/>
           </template>
         </Column>
 
         <Column header="Изображение" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.image2}`" v-if="data.image2 !== '-'" />
+            <img :src="`${baseUrl.s3Storage}/${data.image2}`" v-if="data.image2 !== '-'"  width="300"/>
           </template>
         </Column>
 
