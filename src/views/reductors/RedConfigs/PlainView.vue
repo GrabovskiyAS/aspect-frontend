@@ -381,7 +381,7 @@ onBeforeMount(async () => {
             <img
               :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image2}`"
               v-if="flangeDimentionImages.data[0].image2.length > 2"
-              width="300"
+              width="200"
               />
           </div>
 
@@ -822,7 +822,7 @@ onBeforeMount(async () => {
               <img
                 :src="`${baseUrl.s3Storage}/${red.data[0].flange_adapter.adapter_image.image}`" width="300"
               />
-              <img :src="`${baseUrl.s3Storage}/${adapterImage2.data[0].image}`" width="300"/>
+              <img :src="`${baseUrl.s3Storage}/${adapterImage2.data[0].image}`" width="300" v-if="adapterImage2.data[0].image.length > 1"/>
             </div>
           </div>
           <div class="ml-5 align-content-center justify-content-center flex-wrap">

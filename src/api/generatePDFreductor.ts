@@ -88,6 +88,7 @@ const loadData = async (red: any) => {
     `/data/flangeDimentionImages/${red.flange_adapter.flange_name_ref.flange_image_id}`,
     'reductors',
   )
+
   // Картинки }
 
   gear_type_id = red.gear.gear_size.gear_type.id
@@ -340,16 +341,19 @@ getMeta(adapter_gabarit_image, (err: any, img: any) => {
   adapter_gabarit_image_ratio = img.naturalWidth / img.naturalHeight
 })
 
+let adapter_gabarit_image2_ratio: number = 1;
+if (adapterImage2.value.data[0].image.length > 1) {
 await axios
 .get(`${baseUrl.s3url}/dms/getBase64/${adapterImage2.value.data[0].image}`)
 .then((response) => {
   adapter_gabarit_image2 = response.data
 })
-let adapter_gabarit_image2_ratio: number = 1;
+
 if (adapter_gabarit_image2)
   getMeta(adapter_gabarit_image2, (err: any, img: any) => {
     adapter_gabarit_image2_ratio = img.naturalWidth / img.naturalHeight
   })
+}
 
   const reductor_table_header = ['Параметр', 'Значение']
   const reductor_table_body: Array<[string, string]> = []
@@ -390,14 +394,7 @@ if (adapter_gabarit_image2)
 
 
 
-
-
-
-      `, `m1` + flnageDimention.value.data[0].m + `
-N1` + flnageDimention.value.data[0].n + `
-P1` + flnageDimention.value.data[0].p + `
-s1` + flnageDimention.value.data[0].s + `
-f1` + flnageDimention.value.data[0].f]);
+      `, ``]);
   else reductor_table_body.push([`Фланец выходного вала`, `Отсутствует`]);
 
   let info1: string = '';
@@ -510,9 +507,9 @@ f1` + flnageDimention.value.data[0].f]);
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 4)
         pdf.addImage(mounting_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / mountTypeImageRaio)
 
-      // Выходной вал
+      // Фланец выходного вала
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 5)
-        pdf.addImage(shaft_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 50, 100, 100 / shaft_type_image_ratio)
+        pdf.addImage(shaft_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 5, 100, 100 / shaft_type_image_ratio)
 
       // Напревление выходного вала
       if (data.section === 'body' && data.column.index === 1 && data.row.index === 7)
