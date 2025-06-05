@@ -50,17 +50,17 @@ onBeforeMount(async () => {
         <Column field="description" header="Описание" sortable style="width: 10%"></Column>
         <Column header="Изображение" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.image}`" />
+            <img :src="`${baseUrl.s3Storage}/${data.image}`"  width="300"/>
           </template>
         </Column>
         <Column header="Изображение способа монтажа" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.mount_position_image}`" />
+            <img :src="`${baseUrl.s3Storage}/${data.mount_position_image}`" width="300" />
           </template>
         </Column>
         <Column header="Направление вала" sortable style="width: 10%">
           <template #body="{ data }">
-            <img :src="`${baseUrl.s3Storage}/${data.shaft_direction_image}`" />
+            <img :src="`${baseUrl.s3Storage}/${data.shaft_direction_image}`"  width="300"/>
           </template>
         </Column>
 
