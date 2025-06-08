@@ -218,7 +218,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].image}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].image}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onPhotoSelect"
@@ -231,7 +231,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение K</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].K}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].K}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onKSelect"
@@ -244,7 +244,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение C</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].C}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].C}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onCSelect"
@@ -257,7 +257,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение F</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].F}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].F}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onFSelect"
@@ -270,7 +270,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение S</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].S}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].S}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onSSelect"
@@ -283,7 +283,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение K для чертежей</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].K_figure}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].K_figure}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onK_figureSelect"
@@ -296,7 +296,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение C для чертежей</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].C_figure}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].C_figure}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onC_figureSelect"
@@ -309,7 +309,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение F для чертежей</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].F_figure}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].F_figure}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onF_figureSelect"
@@ -322,7 +322,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение S для чертежей</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].S_figure}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].S_figure}`"  width="300"/>
       <FileUpload
         mode="basic"
         @select="onS_figureSelect"

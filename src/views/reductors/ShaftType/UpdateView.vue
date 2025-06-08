@@ -92,7 +92,7 @@ loadData()
 
     <div class="field pt-5">
       <div class="width:100%"><h3 class="font-semibold">Изображение</h3></div>
-      <img :src="`${baseUrl.s3Storage}/${data.data[0].image}`" />
+      <img :src="`${baseUrl.s3Storage}/${data.data[0].image}`" width="300"/>
       <FileUpload
         mode="basic"
         @select="onPhotoSelect"
