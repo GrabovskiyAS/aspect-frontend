@@ -350,7 +350,7 @@ onBeforeMount(async () => {
         <Divider />
 
 
-        <label class="col-fixed font-semibold" style="width: 200px">Фланец выходного вала</label>
+        <!-- <label class="col-fixed font-semibold" style="width: 200px">Фланец выходного вала</label>
 
         <div class="col">
           <div>
@@ -386,7 +386,7 @@ onBeforeMount(async () => {
           </div>
 
         </div>
-        <Divider />
+        <Divider /> -->
 
         <label class="col-fixed font-semibold" style="width: 200px">Выходной вал</label>
         <div class="col">
@@ -702,22 +702,22 @@ onBeforeMount(async () => {
         <Divider />
 
         <label class="col-fixed font-semibold" style="width: 200px">Габариты фланца</label>
-        <div class="col">
+        <div class="col flex">
           <div>
             <div class="mt-1" style="width: 100%" v-if="flangeDimentionImages.data.length > 0">
               <img
                 :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image}`"
                 v-if="flangeDimentionImages.data[0].image.length > 2"
-                width="300"
+                height="200"
               />
               <img
                 :src="`${baseUrl.s3Storage}/${flangeDimentionImages.data[0].image2}`"
                 v-if="flangeDimentionImages.data[0].image2.length > 2"
-                width="300"
+                height="200"
               />
             </div>
           </div>
-          <div>
+          <div class="ml-5">
             <div v-if="flnageDimention.data.length > 0">
               <div class="mt-1" style="width: 100%">
                 <Tag value="m1" severity="primary" /> {{ flnageDimention.data[0].m }}

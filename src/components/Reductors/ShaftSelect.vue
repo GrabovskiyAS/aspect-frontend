@@ -13,6 +13,7 @@ import { useFetch } from '@/api/useFetch'
 import RadioButton from 'primevue/radiobutton'
 import { useBaseUrl } from '@/stores/baseUrl'
 import ShaftData from './ShaftData.vue'
+import Tag from 'primevue/tag'
 
 const baseUrl = useBaseUrl()
 const shaftTypes = ref<IDocument<IRedShaftTypeView>>({ data: [], error: null, loading: true })
@@ -36,6 +37,10 @@ const outputShaftSize = ref<IShaftDimentionData>()
   error: [],
   loading: true,
 })
+
+const flnageDimentionAddon = ref();
+const flnageDimention = ref();
+
 
 
 const loading = ref<boolean>(true)
@@ -91,8 +96,6 @@ watch(shaftDirection, () => {
 // Изображение Фланца переходного вала
 watch(() => [props.red.gear_type_id, props.red.gear_box_list_size_id, props.mountType],  async() => {
   const url = `/data/FlangeDimentionAddons?gear_type_id=${props.red.gear_type_id}&gearbox_size_id=${props.red.gear_box_list_size_id}&mount_type_id=${props.mountType}`;
-  const flnageDimentionAddon = ref();
-  const flnageDimention = ref();
 
   flnageDimentionAddon.value = await useFetch(url, 'reductors')
 
@@ -186,6 +189,23 @@ onBeforeMount(() => {
         <div>
           <img :src="`${baseUrl.s3Storage}/${flangeDimentionImages2.data[0].image2}`" v-if="flangeDimentionImages2?.data?.[0]?.image2"  height="200"/>
         </div>
+        <div v-if="flnageDimention.data.length > 0" class="ml-5">
+              <div class="mt-1" style="width: 100%">
+                <Tag value="m1" severity="primary" /> {{ flnageDimention.data[0].m }}
+              </div>
+              <div class="mt-1" style="width: 100%">
+                <Tag value="N1" severity="primary" /> {{ flnageDimention.data[0].n }}
+              </div>
+              <div class="mt-1" style="width: 100%">
+                <Tag value="P1" severity="primary" /> {{ flnageDimention.data[0].p }}
+              </div>
+              <div class="mt-1" style="width: 100%">
+                <Tag value="s1" severity="primary" /> {{ flnageDimention.data[0].s }}
+              </div>
+              <div class="mt-1" style="width: 100%">
+                <Tag value="f1" severity="primary" /> {{ flnageDimention.data[0].f }}
+              </div>
+            </div>
       </div>
     </div>
 

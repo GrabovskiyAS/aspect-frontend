@@ -385,8 +385,8 @@ if (adapter_gabarit_image2)
 
     `, red.mount_type.description])
 
-  if (flangeDimentionImages.value.data.length > 0)
-    reductor_table_body.push([`Фланец выходного вала
+  // if (flangeDimentionImages.value.data.length > 0)
+  //   reductor_table_body.push([`Фланец выходного вала
 
 
 
@@ -394,8 +394,8 @@ if (adapter_gabarit_image2)
 
 
 
-      `, ``]);
-  else reductor_table_body.push([`Фланец выходного вала`, `Отсутствует`]);
+  //     `, ``]);
+  // else reductor_table_body.push([`Фланец выходного вала`, `Отсутствует`]);
 
   let info1: string = '';
   switch (red.shaft_type.id) {
@@ -508,15 +508,15 @@ if (adapter_gabarit_image2)
         pdf.addImage(mounting_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / mountTypeImageRaio)
 
       // Фланец выходного вала
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 5)
-        pdf.addImage(shaft_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 5, 100, 100 / shaft_type_image_ratio)
+      // if (data.section === 'body' && data.column.index === 1 && data.row.index === 5)
+      //   pdf.addImage(shaft_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 5, 100, 100 / shaft_type_image_ratio)
 
       // Напревление выходного вала
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 7)
+      if (data.section === 'body' && data.column.index === 1 && data.row.index === 6)
         pdf.addImage(shaft_direction_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / shaft_direction_image_ratio)
 
       // Положение редуктора в пространстве
-      if (data.section === 'body' && data.column.index === 1 && data.row.index === 15)
+      if (data.section === 'body' && data.column.index === 1 && data.row.index === 14)
         pdf.addImage(mounting_position_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / mounting_position_ratio)
 
       // Переходной адаптер
