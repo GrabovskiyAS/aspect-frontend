@@ -22,7 +22,6 @@ import SelectButton from 'primevue/selectbutton'
 import { filterInvertors } from '@/api/filtterInvertors'
 import { getValueFromDictionary } from '@/api/getValueFromDictionary'
 
-
 const user = useUserStore()
 const props = defineProps([
   'invInputVolage',

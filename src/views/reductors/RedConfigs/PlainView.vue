@@ -193,18 +193,18 @@ const loadData = async () => {
   userId = user.getUser().userId.value
 
   // готовим данные для главного чертежа
-  switch (red.value.data[0].mount_type.id) {
+  switch (red.value.data[0].gear.gear_size.gear_type.id) {
     case 10:
       mountData.value = red.value.data[0].mount_type.K_data;
       break;
     case 20:
-      mountData.value = red.value.data[0].mount_type.K_data;
+      mountData.value = red.value.data[0].mount_type.C_data;
       break;
     case 30:
-      mountData.value = red.value.data[0].mount_type.K_data;
+      mountData.value = red.value.data[0].mount_type.S_data;
       break;
     case 40:
-      mountData.value = red.value.data[0].mount_type.K_data;
+      mountData.value = red.value.data[0].mount_type.F_data;
       break;
   }
   // Группа накруток

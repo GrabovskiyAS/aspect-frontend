@@ -113,19 +113,17 @@ const loadData = async (red: any) => {
       'reductors',
     )
 
-    if (red.shaft_type.id === 20)
+    if (red.mount_type.id === 20)
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB5_id}`,
         'reductors',
       )
 
-    if (red.shaft_type.id === 30)
+    if (red.mount_type.id === 30)
       flangeDimentionImages.value = await useFetch(
         `/data/flangeDimentionImages/${flnageDimention.value.data[0].flange_imageB14_id}`,
         'reductors',
       )
-
-
   }
   // Размеры фланца выходного вала }
 
@@ -159,22 +157,20 @@ const loadData = async (red: any) => {
   userId = user.getUser().userId.value
 
   // готовим данные для главного чертежа
-  switch (red.mount_type.id) {
+  switch (red.gear.gear_size.gear_type.id) {
     case 10:
       mountData.value = red.mount_type.K_data;
       break;
     case 20:
-      mountData.value = red.mount_type.K_data;
+      mountData.value = red.mount_type.C_data;
       break;
     case 30:
-      mountData.value = red.mount_type.K_data;
+      mountData.value = red.mount_type.S_data;
       break;
     case 40:
-      mountData.value = red.mount_type.K_data;
+      mountData.value = red.mount_type.F_data;
       break;
   }
-  // console.log('mountData.value', mountData.value)
-
   // Группа накруток
   discontGroupSelected.value = discountGroups.value.data.find((item: RedDiscount) => item.discount == red.discount)
 
@@ -631,8 +627,6 @@ L: ` + flangeSize.value!.SE7 + `
 D1: ` + flangeSize.value!.SD6 + `
 t1: ` + flangeSize.value!.St9 + `
 b1: ` + flangeSize.value!.Sb])
-
-
 
 autoTable(pdf, {
   head: [reductor_table_header],

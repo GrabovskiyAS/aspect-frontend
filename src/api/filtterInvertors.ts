@@ -56,6 +56,11 @@ export function filterInvertors(
   // формируем строку из доступных серий
   const avalSeriesStr = aval.map((a) => a.serie_id.toString())
 
+
+    console.log(avalSeriesStr)
+
+  // console.log(invInputVolageStr.value, invTypeOfControlStr.value);
+
   dataDisplay.value = data.filter(
     (item) =>
       ((Number(item.p_heavy_g.toString().replace(',', '.')) >= minPower &&
