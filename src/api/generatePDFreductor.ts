@@ -635,20 +635,20 @@ autoTable(pdf, {
   styles: { font: 'DejaVuSans', fontSize: 10, fontStyle: 'normal' },
   didDrawCell: (data) => {
     if (data.section === 'body' && data.column.index === 0 && data.row.index === 0)
-      pdf.addImage(gear_type_image, 'JPEG', data.cell.x + 2, data.cell.y + 30, 180, 180 / gear_type_image_ratio)
+      pdf.addImage(gear_type_image, 'PNG', data.cell.x + 2, data.cell.y + 30, 180, 180 / gear_type_image_ratio)
     // ==== Габариты фланца
-    if (data.section === 'body' && data.column.index === 0 && data.row.index === 1) {
-      pdf.addImage(flangeDimentionImage, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / flangeDimentionImageRatio)
-      // pdf.addImage(flangeDimentionImage2, 'JPEG', data.cell.x + 2, data.cell.y + 70, 100, 100 / flangeDimentionImage2Ratio)
+    if (data.section === 'body' && data.column.index === 0 && data.row.index === 1 && flangeDimentionImage) {
+      pdf.addImage(flangeDimentionImage, 'PNG', data.cell.x + 2, data.cell.y + 20, 100, 100 / flangeDimentionImageRatio)
+      // pdf.addImage(flangeDimentionImage2, 'JPEG', data.cell.x + 2, data.cell.y + 70, 100, 100 / flangeDimentionImage2Ratio)  // было удалено
     }
     //======== Габариты вала
     if (data.section === 'body' && data.column.index === 0 && data.row.index === 2)
-      pdf.addImage(shaft_type_image2, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / shaft_type_image2_ratio)
+      pdf.addImage(shaft_type_image2, 'PNG', data.cell.x + 2, data.cell.y + 20, 100, 100 / shaft_type_image2_ratio)
 
     //======== Габариты адаптера
     if (data.section === 'body' && data.column.index === 0 && data.row.index === 3) {
-      pdf.addImage(adapter_gabarit_image, 'JPEG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_gabarit_image_ratio)
-      pdf.addImage(adapter_gabarit_image2, 'JPEG', data.cell.x + 2, data.cell.y + 100, 80, 80 /adapter_gabarit_image2_ratio)
+      pdf.addImage(adapter_gabarit_image, 'PNG', data.cell.x + 2, data.cell.y + 20, 100, 100 / adapter_gabarit_image_ratio)
+      pdf.addImage(adapter_gabarit_image2, 'PNG', data.cell.x + 2, data.cell.y + 100, 80, 80 / adapter_gabarit_image2_ratio)
     }
   },
 })
