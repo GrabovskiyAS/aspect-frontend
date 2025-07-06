@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, watch } from 'vue'
 import DisplayPrice from '@/components/Common/DisplayPrice.vue'
-import type { OutputAdapter, IGearMass, ILogistic } from '@/Interfaces/reductors'
+import type { OutputAdapter, IGearMass, ILogistic, IRedOilI } from '@/Interfaces/reductors'
 import type { IDocument } from '@/Interfaces/invertors'
 import { useFetch } from '@/api/useFetch'
 import Tag from 'primevue/tag'
@@ -14,7 +14,7 @@ const model = defineModel()
 const user = useUserStore()
 
 const findDeliveryValue = (data: ILogistic[], mass: number) => {
-  if (data && mass)
+  if (data && data.length > 0 && mass)
     return data.reduce((prev, curr) => {
       return (Math.abs(Number(curr.name) - mass) < Math.abs(Number(prev.name) - mass) ? curr : prev);
     });
@@ -22,10 +22,10 @@ const findDeliveryValue = (data: ILogistic[], mass: number) => {
     return {id: 0, name: '', value: 0}
 }
 
-const props = defineProps(['red'])
+const props = defineProps(['red','display'])
 const loading = ref<boolean>(true)
 const redDiscount = 0.5
-const exchangeRate = props.red.rate_rub_cny;
+const exchangeRate = props.red?.rate_rub_cny || 1;
 const adapter = ref<IDocument<OutputAdapter>>({ data: [], error: [], loading: true })
 const adapterPrice = ref<IDocument<any>>({ data: [], error: [], loading: true })
 const mass = ref<IDocument<IGearMass>>({ data: [], error: [], loading: true })
@@ -34,6 +34,7 @@ const deliveryToChinaBorders = ref<IDocument<ILogistic>>({ data: [], error: [], 
 const deliveryRussias = ref<IDocument<ILogistic>>({ data: [], error: [], loading: true })
 const taxes1 = ref<IDocument<ILogistic>>({ data: [], error: [], loading: true })
 const taxes2 = ref<IDocument<ILogistic>>({ data: [], error: [], loading: true })
+const oilL = ref<IDocument<IRedOilI>>({ data: [], error: [], loading: true })
 const options = ref()
 const gearOptionsPrice = ref<number>(0)
 
@@ -55,7 +56,7 @@ const totalAndWarranty = ref<number>(0)
 
 const getWarrantyPrice = (options: any) => {
     if (options) {
-      switch (options.warranty_options.name) {
+      switch (options?.warranty_options?.name) {
         case 'WR24': return total.value * 0.05;
         case 'WR36': return total.value * 0.07;
         default: return 0;
@@ -63,22 +64,33 @@ const getWarrantyPrice = (options: any) => {
     } else return 0;
   }
 
-const loadData = async () => {
-  const gear_type_id = props.red.gear.gear_size.gear_type.id
-  const gear_size_id = props.red.gear.gear_size.gear_box_list_size_id
-
+const loadFlangeData = async () => {
   adapter.value = await useFetch(`/data/OutputAdapters/${props.red.flange_adapter.id}`, 'reductors')
   adapterPrice.value = await useFetch(`/data/PriceByName/${adapter.value.data[0].item_name}`, 'reductors')
+}
+
+const displayDiscount = (discount: number) => { return discount * 100; }
+
+const compute = async () => {
+  const gear_type_id = props?.red?.gear.gear_size?.gear_type?.id
+  const gear_size_id = props?.red?.gear.gear_size?.gear_box_list_size_id
+
+  options.value = JSON.parse(props?.red?.options)
+
+  if (options.value?.gear_options)
+    gearOptionsPrice.value = options.value.gear_options.reduce((sum: number, item: any) => sum + Number(item.price), 0);
+
+  await loadFlangeData();
   mass.value = await useFetch(`/data/RedGearMass?gear_type_id=${gear_type_id}&gearbox_size_id=${gear_size_id}&mount_type_id=${props.red.mount_type.id}`, 'reductors')
-  deliveryToChinaLogistics.value = await useFetch(`/data/DeliveryToChinaLogistics`, 'reductors')
-  deliveryToChinaBorders.value = await useFetch(`/data/DeliveryToChinaBorders`, 'reductors')
-  deliveryRussias.value = await useFetch(`/data/DeliveryRussias`, 'reductors')
-  taxes1.value = await useFetch(`/data/Taxes1s`, 'reductors')
-  taxes2.value = await useFetch(`/data/Taxes2s`, 'reductors')
-  options.value = JSON.parse(props.red.options)
+  oilL.value = await useFetch(
+    `data/RedOilIs?mounting_position_id=${props?.red?.mount_position_id}&size_id=${props.red.gear.gear_size_id}`,
+    'reductors',
+  )
 
-
-  total1.value = (Number(props.red.gear_price) + Number(adapterPrice.value.data[0].price) + Number(gearOptionsPrice.value) + Number(options.value.oil_options.price));
+  total1.value = (Number(props.red?.gear_price || 0) + // Цена редуктора
+                  Number(adapterPrice.value?.data?.[0]?.price || 0) + // Цена адаптера
+                  Number(gearOptionsPrice.value || 0) + // Цена опций
+                  Number(options.value?.oil_options?.price * Number(oilL?.value?.data?.[0]?.description || 0) || 0)); // Цена масла
   totalMass.value = (Number(mass?.value?.data[0]?.mass || 0 ) + Number(props.red.flange_adapter.mass));
   deliveryToChinaLogistic.value = findDeliveryValue(deliveryToChinaLogistics.value.data, totalMass.value); // стоимость доставки до логистимческого центра в Китае
   deliveryToChinaBorder.value = findDeliveryValue(deliveryToChinaBorders.value.data, totalMass.value);// стоимость доставки до границы КИтая
@@ -87,7 +99,7 @@ const loadData = async () => {
   tax2.value  = taxes2.value.data.find((item) => item.name == props.red.gear.gear_size.gear_type.name )! // Не работает для К
   priceOnChinaBorderCNY.value = (Number(deliveryToChinaLogistic.value.value) + Number(deliveryToChinaBorder.value.value)) * Number(totalMass.value) + Number(total1.value) * redDiscount * 1.01;
 
-  tax2value.value = priceOnChinaBorderCNY.value * Number(tax2.value.value) * 0.01;
+  tax2value.value = priceOnChinaBorderCNY.value * Number(tax2.value?.value || 0 ) * 0.01;
   priceOnChinaBorderR.value = priceOnChinaBorderCNY.value * exchangeRate;
   NDS.value = (priceOnChinaBorderCNY.value + tax2value.value)*0.2;
   deliveryRussia.value = findDeliveryValue(deliveryRussias.value.data, totalMass.value);
@@ -96,32 +108,33 @@ const loadData = async () => {
               + Number(tax2value.value)
               + Number(NDS.value)
               + Number(deliveryRussia.value.value) * Number(totalMass.value)
-              + Number((options?.value?.color_options?.price || 0) / exchangeRate)
-              + Number(options.value.oil_options.price / exchangeRate);
+              + Number((options.value?.color_options?.price || 0))
+              + Number(options.value?.oil_options?.price * Number(oilL?.value?.data?.[0]?.description || 0)|| 0 / exchangeRate);
 
   warrantyPrice.value = getWarrantyPrice(options.value);
   totalAndWarranty.value = total.value + warrantyPrice.value;
-
-  loading.value = false;
 }
 
-const displayDiscount = (discount: number) => {
-  return discount * 100;
-}
+watch(totalAndWarranty, () => { model.value = totalAndWarranty.value })
 
-watch(totalAndWarranty, () => {
-  model.value = totalAndWarranty.value
-})
+watch(()=>[props.red, loading], async ()=> { await compute(); })
 
 onBeforeMount(async () => {
-  await loadData()
-  gearOptionsPrice.value = options.value.gear_options.reduce((sum: number, item: any) => sum + Number(item.price), 0);
+  deliveryToChinaLogistics.value = await useFetch(`/data/DeliveryToChinaLogistics`, 'reductors')
+  deliveryToChinaBorders.value = await useFetch(`/data/DeliveryToChinaBorders`, 'reductors')
+  deliveryRussias.value = await useFetch(`/data/DeliveryRussias`, 'reductors')
+  taxes1.value = await useFetch(`/data/Taxes1s`, 'reductors')
+  taxes2.value = await useFetch(`/data/Taxes2s`, 'reductors')
+
+  await compute()
+
+  loading.value = false;
 })
 </script>
 
 <template>
   <!-- Показываем расчёт только если это сотрудник -->
-  <template v-if="!loading && user.isStaff()">
+  <template v-if="!loading && user.isStaff() && props.display">
     <h1>0. Обменный курс</h1>
     <Tag value="Рублей за юань" severity="info"/> {{ props.red.rate_rub_cny }}
     <h1>1. Расчет входящей стоимости</h1>
@@ -156,14 +169,14 @@ onBeforeMount(async () => {
         <tr>
           <td>Переходный фланец</td>
           <td><DisplayPrice
-                      :price="adapterPrice.data[0].price"
+                      :price="adapterPrice?.data?.[0]?.price"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
                     /></td>
           <td>{{ displayDiscount(redDiscount) }} %</td>
           <td><DisplayPrice
-                      :price="adapterPrice.data[0].price * redDiscount"
+                      :price="adapterPrice?.data?.[0]?.price * redDiscount"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
@@ -190,14 +203,14 @@ onBeforeMount(async () => {
         <tr>
           <td>Опции масла</td>
           <td><DisplayPrice
-                      :price="options.oil_options.price"
+                      :price="options?.oil_options?.price * Number(oilL?.data?.[0]?.description || 0)|| 0"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
                     /></td>
           <td>{{ displayDiscount(redDiscount) }} %</td>
           <td><DisplayPrice
-                      :price="options.oil_options.price * redDiscount"
+                      :price="(options?.oil_options?.price * Number(oilL?.data?.[0]?.description || 0) || 0) * redDiscount"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
@@ -258,13 +271,15 @@ onBeforeMount(async () => {
     <div class="grid">
       <div class="col">
         <h1>3. Расчет доставки (склад поставщика - консолидационный склад)</h1>
-        <div class="bg-primary"><DisplayPrice
-                      :price="deliveryToChinaLogistic.value * totalMass"
+        <div class="bg-primary">
+          <DisplayPrice
+                      :price="deliveryToChinaLogistic?.value * totalMass"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
+                      v-if="deliveryToChinaLogistic?.value"
                     /></div>
-        <DataTable :value="deliveryToChinaLogistics.data" tableStyle="width: 20rem">
+        <DataTable :value="deliveryToChinaLogistics?.data" tableStyle="width: 20rem" v-if="!deliveryToChinaLogistics?.loading && deliveryToChinaLogistics?.data?.length > 0">
           <Column field="name" header="Масса">
             <template #body="{ data }">
               <div v-if="data.name == deliveryToChinaLogistic!.name!" class="font-bold text-primary">
@@ -291,16 +306,16 @@ onBeforeMount(async () => {
       <div class="col">
         <h1>4. Расчет доставки ( консолидационный склад - граница)</h1>
         <div class="bg-primary"><DisplayPrice
-                      :price="deliveryToChinaBorder.value * totalMass"
+                      :price="(deliveryToChinaBorder?.value || 0) * totalMass"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
                     /></div>
 
-        <DataTable :value="deliveryToChinaBorders.data" tableStyle="width: 20rem">
+        <DataTable :value="deliveryToChinaBorders?.data" tableStyle="width: 20rem" v-if="!deliveryToChinaBorders.loading">
           <Column field="name" header="Масса">
             <template #body="{ data }">
-              <div v-if="data.name == deliveryToChinaBorder!.name" class="font-bold text-primary">
+              <div v-if="data.name == deliveryToChinaBorder?.name" class="font-bold text-primary">
                 {{ data.name }}
               </div>
               <div v-else>
@@ -310,7 +325,7 @@ onBeforeMount(async () => {
           </Column>
           <Column field="value" header="Цена">
             <template #body="{ data }">
-              <div v-if="data.name == deliveryToChinaBorder!.name" class="font-bold text-primary">
+              <div v-if="data.name == deliveryToChinaBorder?.name" class="font-bold text-primary">
                 {{ data.value }}
               </div>
               <div v-else>
@@ -334,15 +349,15 @@ onBeforeMount(async () => {
       <div class="col">
         <h1>6. Таможенный сбор</h1>
         <div class="bg-primary">
-          <DisplayPrice :price="tax1!.value" :discount="0" currency-symbol="&#8381;" size="S" />
+          <DisplayPrice :price="tax1?.value" :discount="0" currency-symbol="&#8381;" size="S" />
         </div>
         <div class="bg-primary">
           <DisplayPrice :price="tax1CNY" :discount="0" currency-symbol="&#165;" size="S" />
         </div>
-        <DataTable :value="taxes1.data" tableStyle="width: 20rem">
+        <DataTable :value="taxes1?.data" tableStyle="width: 20rem" v-if="!taxes1.loading">
           <Column field="name" header="Цена">
             <template #body="{ data }">
-              <div v-if="data.name == tax1!.name" class="font-bold text-primary">
+              <div v-if="data.name == tax1?.name" class="font-bold text-primary">
                 {{ data.name }} &#8381;
               </div>
               <div v-else>
@@ -352,7 +367,7 @@ onBeforeMount(async () => {
           </Column>
           <Column field="value" header="Таможенный сбор">
             <template #body="{ data }">
-              <div v-if="data.name == tax1!.name" class="font-bold text-primary">
+              <div v-if="data.name == tax1?.name" class="font-bold text-primary">
                 {{ data.value }} &#8381;
               </div>
               <div v-else>
@@ -369,10 +384,7 @@ onBeforeMount(async () => {
           <DisplayPrice :price="tax2value" :discount="0" currency-symbol="&#165;" size="S" />
         </div>
 
-        <!-- <p>tax2: {{ tax2 }}</p>
-        <p>taxes2: {{ taxes2.data }}</p>>
-        <p>{{ props.red.gear.gear_size.gear_type.name }}</p> -->
-        <DataTable :value="taxes2.data" tableStyle="width: 20rem">
+        <DataTable :value="taxes2?.data" tableStyle="width: 20rem" v-if="!taxes2.loading">
           <Column field="name" header="Тип редуктора">
             <template #body="{ data }">
               <div v-if="data.name == tax2!.name" class="font-bold text-primary">
@@ -404,28 +416,28 @@ onBeforeMount(async () => {
 
     <h1>9. Расчет доставки по России</h1>
     <div class="bg-primary">
-      <DisplayPrice :price="deliveryRussia.value * totalMass" :discount="0" currency-symbol="&#165;" size="S" />
+      <DisplayPrice :price="(deliveryRussia?.value || 0) * totalMass" :discount="0" currency-symbol="&#165;" size="S" />
     </div>
 
     <DataTable :value="deliveryRussias.data" tableStyle="width: 20rem">
       <Column field="name" header="Масса">
         <template #body="{ data }">
-          <div v-if="data.name == deliveryRussia!.name" class="font-bold text-primary">
+          <!-- <div v-if="data.name == deliveryRussia?.name" class="font-bold text-primary">
             {{ data.name }}
-          </div>
-          <div v-else>
+          </div> -->
+          <!-- <div v-else> -->
             {{ data.name }}
-          </div>
+          <!-- </div> -->
         </template>
       </Column>
       <Column field="value" header="Цена">
         <template #body="{ data }">
-          <div v-if="data.name == deliveryRussia!.name" class="font-bold text-primary">
+          <!-- <div v-if="data.name == deliveryRussia?.name" class="font-bold text-primary">
             {{ data.value }}
-          </div>
-          <div v-else>
+          </div> -->
+          <!-- <div v-else> -->
             {{ data.value }}
-          </div>
+          <!-- </div> -->
         </template>
       </Column>
     </DataTable>
@@ -435,7 +447,7 @@ onBeforeMount(async () => {
       <Tag value="Покарска" severity="info" />
       {{ options?.color_options?.description }},
       <DisplayPrice
-        :price="(options?.color_options?.price || 0)/ exchangeRate"
+        :price="(options?.color_options?.price || 0)"
         :discount="0"
         currency-symbol="&#165;"
         size="S"
@@ -444,9 +456,9 @@ onBeforeMount(async () => {
 
     <div class="mt-5" style="width: 100%">
       <Tag value="Масло" severity="info" />
-      {{ options.oil_options.description }},
+      {{ options?.oil_options?.description }},
       <DisplayPrice
-        :price="options.oil_options.price / exchangeRate"
+        :price="options?.oil_options?.price * Number(oilL?.data?.[0]?.description || 0) / exchangeRate"
         :discount="0"
         currency-symbol="&#165;"
         size="S"
@@ -463,7 +475,7 @@ onBeforeMount(async () => {
 
     <div class="mt-5" style="width: 100%">
       <Tag value="Гарантия" severity="secondary" />
-      {{ options.warranty_options.description }},
+      {{ options?.warranty_options?.description }},
       <DisplayPrice
         :price="warrantyPrice"
         :discount="0"

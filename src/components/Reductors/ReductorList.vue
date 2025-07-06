@@ -7,8 +7,11 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
+import { useUserStore } from '@/stores/user'
+
 const props = defineProps(['gearType', 'typeConfig', 'commonData'])
 const discount = defineModel('discount')
+const user = useUserStore()
 const emit = defineEmits(['redSelected'])
 
 const selectRed = (red: IRedGearView) => {
@@ -18,12 +21,33 @@ const selectRed = (red: IRedGearView) => {
 const gears = ref<IDocument<IRedGearView>>({ data: [], error: null, loading: true })
 const discountGroups = ref<IDocument<RedDiscount>>({ data: [], error: null, loading: true })
 const discontGroupSelected = ref<RedDiscount>()
+const userDiscount = ref<any>()
 const gaersDisplay = ref<IRedGearView[]>([])
 const loading = ref<boolean>(true)
 
+async function getDiscount() {
+  if (user.isUser()) {
+    discountGroups.value = await useFetch('/data/RedDiscounts', 'reductors')
+    userDiscount.value = await useFetch(`/data/RedUserDiscounts?user_id=${user.getUser().userId.value}`, 'reductors')
+    const d = discountGroups.value.data.find((item) => item.id == userDiscount.value?.data?.[0]?.discount_id)?.discount
+    discount.value = d
+  } else {
+    discount.value = 40;
+  }
+}
+
+watch(
+  () => [user.userId],
+  async () => {
+    await getDiscount()
+  },
+)
+
 const loadData = async () => {
   gears.value = await useFetch('/data/RedGearsView', 'reductors')
-  discountGroups.value = await useFetch('/data/RedDiscounts', 'reductors')
+  await getDiscount();
+
+
   loading.value = false
 }
 

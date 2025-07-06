@@ -5,9 +5,10 @@ import { ref, onBeforeMount, watch } from 'vue'
 import { useFetch } from '@/api/useFetch'
 import RadioButton from 'primevue/radiobutton'
 import { useBaseUrl } from '@/stores/baseUrl'
+import { ProgressSpinner } from 'primevue'
 
 const model = defineModel<number>()
-const props = defineProps(['gearTypeId'])
+const props = defineProps(['gearTypeId', 'showTitle'])
 const baseUrl = useBaseUrl()
 const mountingPositions = ref<IDocument<IRedMountingPosition>>({
   data: [],
@@ -20,7 +21,7 @@ const loading = ref<boolean>(true)
 
 const loadData = async () => {
   mountingPositions.value = await useFetch('/data/RedMountingPositions', 'reductors')
-  mountingPosition.value = mountingPositions.value.data[0]
+  mountingPosition.value = model.value ? mountingPositions.value.data.find((item) => item.id == model.value) : mountingPositions.value.data[0]
   gearType.value = await useFetch(`/data/RedGearTypes/${props.gearTypeId}`, 'reductors')
   loading.value = false
 }
@@ -36,9 +37,9 @@ watch(mountingPosition, () => {
 
 <template>
   <template v-if="!loading && props.gearTypeId">
-    <div class="grid">
+    <div class="grid mt-5">
       <div class="col-4">
-        <span class="text-2xl font-semibold mt-5 text-primary">Монтажное положение редуктора</span>
+        <span class="text-2xl font-semibold mt-5 text-primary" v-if="props.showTitle">Монтажное положение редуктора</span>
 
         <div
           v-for="position in mountingPositions.data"
@@ -56,10 +57,22 @@ watch(mountingPosition, () => {
       </div>
       <div class="col-6">
         <img
-          v-bind:src="`${baseUrl.s3Storage}/${gearType.data[0].mount_position_image}`" width="500"
+          v-bind:src="`${baseUrl.s3Storage}/${gearType.data[0].mount_position_image}`" width="400"
         />
       </div>
       <div class="col-2"></div>
     </div>
   </template>
+   <template v-else>
+    <div class="w-full flex flex-wrap justify-content-center align-content-center" style="height: 500px">
+      <ProgressSpinner
+        style="width: 200px; height: 200px"
+        strokeWidth="8"
+        fill="transparent"
+        animationDuration="2s"
+        aria-label="Custom ProgressSpinner"
+      />
+    </div>
+  </template>
+
 </template>

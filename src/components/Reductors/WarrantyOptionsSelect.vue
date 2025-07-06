@@ -30,7 +30,7 @@ const loadData = async () => {
   warrantyOptions.value = await useFetch('/data/WarrantyOptions', 'reductors')
   // оставляем только актвные опции гарантии
   warrantyOptions.value.data = warrantyOptions.value.data.filter((item) => item.isActive == true)
-  warrantyOptionSelected.value = warrantyOptions.value.data[0]
+  warrantyOptionSelected.value = warrantyOptionSelected?.value ? warrantyOptionSelected.value : warrantyOptions.value.data[0]
   loading.value = false
 }
 
@@ -49,6 +49,7 @@ onBeforeMount(async () => {
       tableStyle="min-width: 50rem"
     >
       <Column selectionMode="single" headerStyle="width: 5%"></Column>
+      <Column field="sign" header="Префикс"></Column>
       <Column field="description" header="Наменование" headerStyle="width: 85%"></Column>
       <Column header="Цена" headerStyle="width: 10%">
         <template #body="{ data }">

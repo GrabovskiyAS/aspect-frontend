@@ -44,26 +44,26 @@ export function getFullOrderName(red: IRedGearView,
                                 ) {
 
   const a1 = red.code_aspect;
-  const a2 = adapter_name;
-  const a3 = mountTypeName.substring(0,1);
-  const a4 = getA4(shaft_type);
-  const a5 = getA5(direction_shaft);
-  const a6 = getA6(mountPosition);
+  const a2 = '-' + adapter_name;
+  const a3 = '-' + mountTypeName.substring(0,1);
+  const a4 = getA4(shaft_type) ? '-' + getA4(shaft_type) : '';
+  const a5 = getA5(direction_shaft) ? '-' + getA5(direction_shaft) : '';
+  const a6 = getA6(mountPosition) ? '-' + getA6(mountPosition) : '';
 
   let a7 = '';
   let a8 = '';
 
   // Опции редуктора
-  const a9 = gear_options ? '-' + gear_options.map((item) => item.sign).join("-") : '';
+  const a9 = gear_options.length > 0 ? '-' + gear_options.map((item) => item.sign).join("-") : '';
 
   if (oil_options)
-    a7 = oil_options.sign;
+    a7 = '-' + oil_options.sign;
 
   if (color_options)
-    a8 = color_options.sign;
+    a8 = '-' + color_options.sign;
 
   if (mode == 'full')
-    return a1 + '-' + a3 + '-' + a4 + '-' + a5 + '-' + a6 + '-' + a2 + '-Z-' + a7 + '-' + a8 + a9;
+    return a1 + a3 +  a4  + a5 + a6 + a2 + '-Z' + a7 + a8 + a9;
   else
-    return a1 + '-' + a2 + '-Z-';
+    return a1 +  a2 + '-Z-';
 }

@@ -18,6 +18,7 @@ import type {
 } from '@/Interfaces/reductors'
 import { useBaseUrl } from '@/stores/baseUrl'
 import { getAdapterShaftData, getAdapterFlangeData } from '@/api/Reductors/flange'
+import { isTemplateExpression } from 'typescript'
 
 interface IFlangeType {
   name: string
@@ -26,7 +27,10 @@ interface IFlangeType {
 }
 
 const baseUrl = useBaseUrl()
-const props = defineProps(['red', 'inputSpeed', 'shaftType'])
+const props = defineProps(['inputSpeed',
+                           'shaftType',
+                           't2n',
+                           'ex_ratio'])
 const model = defineModel<IFlange>()
 // const modelFlangeTypeSize = defineModel<IFlange>('flange_type')
 
@@ -90,10 +94,13 @@ const filter = async () => {
       flange_name: item.flange_name,
       L: item.L,
       height_id: item.height_id,
+      mass: item.mass,
     }
   })
 
-  flangeAdapter.value = flangeAdaptersFiltered.value[0]
+  // flangeAdapter.value = flangeAdaptersFiltered.value[0]
+
+  flangeAdapter.value = model.value?.adapter ? flangeAdaptersFiltered.value.find((item) => item.id == model.value?.adapter) : flangeAdaptersFiltered.value[0]
 }
 
 const loadData = async () => {
@@ -106,14 +113,17 @@ const loadData = async () => {
   flangeDimentions.value = await useFetch(`/data/FlangeDimentions`, 'reductors')
   flangeDimentionImages.value = await useFetch(`/data/FlangeDimentionImages`, 'reductors')
 
-  flangeTypeSize.value = flangeTypeSizes.value.data[0] // устанавливаем начальное знечение типа фланца
+  flangeTypeSize.value = flangeTypeSizes.value.data[0] // устанавливаем начальное знечение типа фланца B5
 
   power.value = Number(
-    ((Number(props.red.t2n) * props.inputSpeed) / (9550 * Number(props.red.ex_ratio))).toFixed(2),
+    ((Number(props.t2n) * props.inputSpeed) / (9550 * Number(props.ex_ratio))).toFixed(2),
   )
-  filter()
-
   loading.value = false
+
+  flangeType.value = model.value?.type ? flangeTypes.find((item) => item.id == model.value?.type)! : flangeType.value!;
+  // flangeAdapter.value = model.value?.adapter ? flangeAdapters.value.data.find((item) => item.id == model.value?.type) : flangeAdapter.value;
+
+  filter()
 }
 
 
@@ -122,12 +132,14 @@ watch([flangeType, flangeAdapter], async () => {
   if (flangeType.value) model.value!.type = flangeType.value.id
   if (flangeAdapter.value) {
     model.value!.adapter = flangeAdapter.value!.id!
-    model.value!.name = flangeAdaptersFiltered.value.find((item) => item.id == flangeAdapter.value!.id!).code_adapter
+    const adapter = flangeAdaptersFiltered.value.find((item) => item.id == flangeAdapter.value!.id!);
+    model.value!.name = adapter?.code_adapter;
+    model.value!.mass = adapter?.mass;
   }
 
   // Формируем изображение для переходного адаптера
   const flangeAdapterImageId = flangeAdapters.value.data.find(
-    (item) => item.code_adapter === flangeAdapter.value!.code_adapter,
+    (item) => item.code_adapter === flangeAdapter.value?.code_adapter,
   )?.adapter_image_id
   if (flangeAdapterImageId) {
     flangeAdapterImage.value = outpuAdapterImages.value.data.find(
@@ -161,9 +173,7 @@ watch([flangeType, flangeAdapter], async () => {
   // Формируем данные для переходного адаптера =============================================================
 
     const imageId = flangeDimentions.value.data.find((item) => item.name == flangeAdapter?.value?.flange_name);
-    // console.log(imageId.flange_image_id)
     flangeAdapterImage2.value = flangeDimentionImages.value.data.find((item) => item.id == imageId?.flange_image_id)
-    console.log(flangeAdapterImage2.value.image)
 })
 
 watch(flangeTypeSize, () => {
@@ -214,7 +224,7 @@ onBeforeMount(async () => {
       <div class="col-1 flex justify-content-center align-content-center flex-wrap">
         <div>
           <div class="mt-1" style="width: 100%">
-            <Tag value="L" severity="primary" /> {{ flangeAdapter!.L }}
+            <Tag value="L" severity="primary" /> {{ flangeAdapter?.L }}
           </div>
           <div class="mt-1" style="width: 100%">
             <Tag value="E1" severity="primary" /> {{ outputShaftData?.SE7 }}

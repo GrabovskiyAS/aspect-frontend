@@ -75,6 +75,7 @@ export interface IFlange {
   type: number
   adapter: number
   name: string
+  mass: number
 }
 
 export interface IFlangeType {
@@ -186,14 +187,14 @@ export interface IRedMountType {
 }
 
 export interface IRedMountTypeView {
+  id: number
   id_gear: number
   r: string
-  id: number
   K: string
   C: string
   S: string
   F: string
-    description: string
+  description: string
   image: string
 }
 
@@ -340,6 +341,7 @@ export interface OutputAdapter {
   item_name: string
   adapter_image_id: string
   L: number
+  mass: number
 }
 
 // ==================================================================================== опции
@@ -370,6 +372,15 @@ export interface OilOptions {
   sign: string
   add_description: string
   isActive: boolean
+}
+
+export interface OilOptionsView {
+  description: string
+  sign: string
+  add_description: string
+  item_name: string
+  price: number
+  currency_id: number
 }
 
 export interface ColorOptions {

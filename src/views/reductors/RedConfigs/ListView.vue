@@ -26,6 +26,7 @@ const users = ref<IDocument<IUser>>({ data: [], error: null, loading: true })
 const companies = ref<IDocument<ICompany>>({ data: [], error: null, loading: true })
 const userNames = ref<string[]>([])
 const loading = ref<boolean>(true)
+const redConfigSelected = ref<any[]>([])
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -35,8 +36,6 @@ async function loadData() {
   const userId = user.getUser().userId.value
   if (!user.isStaff()) url += `?user_id=${userId}` // если пользователь не сотрудник, то загружаем только конфигурации пользователя
   data.value = await useFetch(url, 'reductors')
-
-  console.log(url)
 
   users.value = await useFetch('/data/Users')
   companies.value = await useFetch('/data/Companies')
@@ -49,6 +48,20 @@ async function loadData() {
 }
 
 loadData()
+
+async function deleteSelectedConfigs() {
+  const promises = redConfigSelected.value.map((item) => deleteDataReductors(`/data/UserRedConfigs/${item.id}`))
+  await Promise.all(promises)
+  .then(() => {
+    toast.add({ severity: 'info', summary: 'Успешно', detail: 'Выделенные конфишурации удалены', life: 3000 })
+
+  })
+  .catch(() => {
+    toast.add({ severity: 'error', summary: 'Тревога! Тревога!', detail: 'Волк унёс козлят!', life: 3000 })
+
+  })
+  await loadData()
+}
 
 function confirm_delete(id: number) {
   confirm.require({
@@ -99,11 +112,21 @@ const filters = ref({
     <div class="grid">
       <div class="col-10">
         <h1 class="pt-5">Конфигурации редукторов с переходным фланцем ({{ data.data.length }})</h1>
+        <Button
+          label="Удалить выбранные конфикурации"
+          severity="danger"
+          icon="pi pi-cross"
+          @click="deleteSelectedConfigs"
+          v-if="redConfigSelected?.length > 0"
+          class="ml-2"
+        />
       </div>
     </div>
     <div v-if="data.data.length > 0">
       <DataTable
         :value="data.data"
+        selectionMode="multiple"
+        v-model:selection="redConfigSelected"
         sortField="date"
         :sortOrder="-1"
         stripedRows
@@ -116,6 +139,7 @@ const filters = ref({
         v-model:filters="filters"
         filterDisplay="row"
       >
+        <Column selectionMode="multiple" headerStyle="width: 3rem" v-if="user.isStaff()"></Column>
         <Column header="" field="staff_opened" v-if="user.isStaff()" style="width: 5%">
           <template #body="{ data }">
             <i

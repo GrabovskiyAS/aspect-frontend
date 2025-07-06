@@ -4,21 +4,19 @@ import type { IRedMountTypeView } from '@/Interfaces/reductors'
 import { ref, onBeforeMount, watch } from 'vue'
 import { useFetch } from '@/api/useFetch'
 import RadioButton from 'primevue/radiobutton'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
 import { useBaseUrl } from '@/stores/baseUrl'
+import { ProgressSpinner } from 'primevue'
 
 const mountTypes = ref<IDocument<IRedMountTypeView>>({ data: [], error: null, loading: true })
 const model = defineModel<number>()
 const mountTypeName =  defineModel<string>('mountTypeName')
-const props = defineProps(['id_gear', 'gear_type_id'])
+const props = defineProps(['id_gear', 'gear_type_id', "showTitle"])
 const selectedMountType = ref<IRedMountTypeView>()
-const metaKey = ref(true)
 const baseUrl = useBaseUrl()
 
 const loadData = async () => {
   mountTypes.value = await useFetch(`/data/RedMountTypesView?id_gear=${props.id_gear}`, 'reductors')
-  selectedMountType.value = mountTypes.value.data[0]
+  selectedMountType.value = model.value ? mountTypes.value.data.find((item) => item.id == model.value) :mountTypes.value.data[0]
 }
 
 onBeforeMount(() => {
@@ -40,7 +38,7 @@ watch(selectedMountType, () => {
 
       <div class="grid">
       <div class="col-4">
-        <span class="text-2xl font-semibold mt-5 text-primary">Монтажное положение редуктора</span>
+        <span class="text-2xl font-semibold mt-5 text-primary" v-if="props.showTitle">Монтажное положение редуктора</span>
         <div
           v-for="position in mountTypes.data"
           :key="position.id"
@@ -81,45 +79,18 @@ watch(selectedMountType, () => {
       </div>
       <div class="col-2"></div>
     </div>
-
-
-      <!-- <DataTable
-        v-model:selection="selectedMountType"
-        selectionMode="single"
-        :metaKeySelection="metaKey"
-        dataKey="id"
-        :value="mountTypes.data"
-        stripedRows
-        tableStyle="min-width: 50rem"
-        :loading="mountTypes.loading"
-      >
-        <Column selectionMode="single" style="width: 5%"></Column>
-        <Column field="description" header="Описание" style="width: 30%"></Column>
-        <Column header="Изображение" style="width: 70%">
-          <template #body="{ data }">
-            <img
-              :src="`${baseUrl.s3Storage}/${data.K}`"
-              style="height: 150px"
-              v-if="props.gear_type_id == 10"
-            />
-            <img
-              :src="`${baseUrl.s3Storage}/${data.C}`"
-              style="height: 150px"
-              v-if="props.gear_type_id == 20"
-            />
-            <img
-              :src="`${baseUrl.s3Storage}/${data.S}`"
-              style="height: 150px"
-              v-if="props.gear_type_id == 30"
-            />
-            <img
-              :src="`${baseUrl.s3Storage}/${data.F}`"
-              style="height: 150px"
-              v-if="props.gear_type_id == 40"
-            />
-          </template>
-        </Column>
-      </DataTable> -->
     </div>
   </template>
+  <template v-else>
+    <div class="w-full flex flex-wrap justify-content-center align-content-center" style="height: 500px">
+      <ProgressSpinner
+        style="width: 200px; height: 200px"
+        strokeWidth="8"
+        fill="transparent"
+        animationDuration="2s"
+        aria-label="Custom ProgressSpinner"
+      />
+    </div>
+  </template>
+
 </template>
