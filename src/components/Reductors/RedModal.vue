@@ -167,7 +167,7 @@ const saveUserRedConfig = async () => {
     user_service_factor: props.commonData.serviceFactor,
     gear_id: props.red.id_gear,
     gear_price: props.red.price,
-    discount: 1 + props.discount/100,
+    discount: +props.discount,
     mount_position_id: mountPosition.value,
     mount_type_id: mountType.value,
     shaft_type_id: shaft.value.type,
