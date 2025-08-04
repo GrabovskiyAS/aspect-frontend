@@ -98,6 +98,7 @@ const reductorPrice = computed(() => {
     }),
     gear_price: props.red.price,
     rate_rub_cny: rate_rub_cny.value,
+    totalPrice: totalPrice.value,
   }
 } )
 
@@ -183,6 +184,7 @@ const saveUserRedConfig = async () => {
     user_id: user.getUser().userId.value,
     staff_opened: false,
     info: '',
+    totalPrice: totalPrice.value,
   }
 
   await insertDataReductors(`/data/UserRedConfigs`, payload)

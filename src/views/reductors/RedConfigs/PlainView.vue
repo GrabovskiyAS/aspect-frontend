@@ -5,6 +5,8 @@ import type { ColorOptionsView, IFlange, IRedGearView, IRedMountType, IRedShaftT
 import { useFetch } from '@/api/useFetch'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
+import ButtonGroup from 'primevue/buttongroup'
+import SplitButton from 'primevue/splitbutton';
 import Divider from 'primevue/divider'
 import SelectButton from 'primevue/selectbutton'
 import FloatLabel from 'primevue/floatlabel'
@@ -40,6 +42,9 @@ import AdapterFlange from '@/components/Reductors/AdapterFlange.vue'
 import OptionsSelect from '@/components/Reductors/OptionsSelect.vue'
 import WarrantyOptionsSelect from '@/components/Reductors/WarrantyOptionsSelect.vue'
 import { getFullOrderName } from '@/api/Reductors/getFullOrderName'
+import CopyButton from '@/components/Common/CopyButton.vue'
+import { downloadFile } from '@/api/downloadFile'
+import CopySplitButton from '@/components/Common/CopySplitButton.vue'
 
 const baseUrl = useBaseUrl()
 const toast = useToast()
@@ -124,6 +129,7 @@ const submission = async () => {
     user_id: user.getUser().userId.value,
     staff_opened: false,
     info: red.value.data[0].info,
+    totalPrice: totalPrice.value,
   }
 
   patchDataReductors(`/data/UserRedConfigs/${props.id}`, updatePayload).then(
@@ -398,21 +404,24 @@ onBeforeMount(async () => {
       </div>
 
       <div class="field grid mt-5">
-        <Button
-          label="PDF"
-          severity="help"
-          icon="pi pi-download"
-          @click="savePDF(1)"
-          v-if="totalPrice"
-          class="ml-2"
-        />
-        <Button
-          label="PDF без цен"
-          severity="secondary"
-          icon="pi pi-download"
-          @click="savePDF(0)"
-          v-if="totalPrice"
-          class="ml-2"
+
+        <div class="card flex justify-center" v-if="red?.data[0]?.pdf1">
+        <ButtonGroup>
+            <Button icon="pi pi-download" label="PDF" severity="help"/>
+            <Button label="с ценами"
+            severity="help"
+            @click="downloadFile(`${baseUrl.s3url}/dms/download/${red?.data[0]?.pdf1}`, `aspect ${red?.data[0]?.full_order_number}.pdf`)"/>
+            <Button label="без цен"
+            severity="secondary"
+            @click="downloadFile(`${baseUrl.s3url}/dms/download/${red?.data[0]?.pdf2}`, `aspect ${red?.data[0]?.full_order_number} без цен.pdf`)"/>
+        </ButtonGroup>
+        </div>
+
+        <CopySplitButton
+        :url1="`${baseUrl.s3Storage}/${red?.data[0]?.pdf1}`"
+        :url2="`${baseUrl.s3Storage}/${red?.data[0]?.pdf2}`"
+        class="ml-2"
+        v-if="red?.data[0]?.pdf1"
         />
         <Button
           label="Измнеить конфигурацию"

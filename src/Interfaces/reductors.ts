@@ -475,6 +475,7 @@ export interface IUserRedConfig {
   user_id: number
   staff_opened: boolean
   info: string
+  totalPrice?: number
 }
 
 export interface RedDiscount {
