@@ -21,9 +21,11 @@ const socket = io(import.meta.env.VITE_BACKEND_REDUCTORS, {
 });
 
 onMounted(() => {
+  console.log('websocket onMounted');
+
   socket.on('connect', () => {
     socketId.value = socket.id;
-    // console.log('connected', socket.id);
+    console.log('connected', socket.id);
   });
 
   socket.on('message', (payload) => {
@@ -67,5 +69,6 @@ onBeforeUnmount(() => {
 
 function joinRoom() {
   socket.emit('joinRoom', { room: props.roomId });
+  console.log('joinRoom', props.roomId);
 }
 </script>
