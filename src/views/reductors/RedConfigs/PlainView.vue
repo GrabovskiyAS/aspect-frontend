@@ -6,7 +6,6 @@ import { useFetch } from '@/api/useFetch'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
 import ButtonGroup from 'primevue/buttongroup'
-import SplitButton from 'primevue/splitbutton';
 import Divider from 'primevue/divider'
 import SelectButton from 'primevue/selectbutton'
 import FloatLabel from 'primevue/floatlabel'
@@ -42,9 +41,9 @@ import AdapterFlange from '@/components/Reductors/AdapterFlange.vue'
 import OptionsSelect from '@/components/Reductors/OptionsSelect.vue'
 import WarrantyOptionsSelect from '@/components/Reductors/WarrantyOptionsSelect.vue'
 import { getFullOrderName } from '@/api/Reductors/getFullOrderName'
-import CopyButton from '@/components/Common/CopyButton.vue'
-import { downloadFile } from '@/api/downloadFile'
 import CopySplitButton from '@/components/Common/CopySplitButton.vue'
+import WebSocket from '@/components/Reductors/WebSocket.vue'
+import { downloadFile } from '@/api/downloadFile'
 
 const baseUrl = useBaseUrl()
 const toast = useToast()
@@ -84,6 +83,8 @@ const totalPrice = ref<number>(0)
 const loading = ref<boolean>(true)
 const props = defineProps(['id'])
 const nominal_power = ref<number>(0)
+const pdf1 = ref<string>('')
+const pdf2 = ref<string>('')
 
 // ====================================================== Переменные для режима редактирования ================================================
 const editMode = ref<boolean>(false)
@@ -217,6 +218,16 @@ const updateShaftType = async () => {
   red.value.data[0].shaft_type.description = shaftTypeDate.data[0].description;
   red.value.data[0].shaft_type.image = shaftTypeDate.data[0].image;
 }
+
+watch(pdf1, () => {
+  red.value.data[0].pdf1 = pdf1.value;
+  toast.add({ severity: 'info', summary: 'PDF с ценами', detail: 'Данные обновлены', life: 3000 })
+})
+
+watch(pdf2, () => {
+  red.value.data[0].pdf2 = pdf2.value;
+  toast.add({ severity: 'info', summary: 'PDF без цен', detail: 'Данные обновлены', life: 3000 })
+})
 
 watch(() => shaft.value.type, async () => {
   await loadShaftDimentionData(gear_type_id, gear_size_id, shaft.value.type);
@@ -381,6 +392,7 @@ onBeforeMount(async () => {
 
 <template>
   <Toast />
+  <WebSocket :roomId="props.id" v-model:pdf1="pdf1" v-model:pdf2="pdf2"/>
   <template v-if="loading">
     <div class="w-full flex flex-wrap justify-content-center align-content-center" style="height: 500px">
       <ProgressSpinner

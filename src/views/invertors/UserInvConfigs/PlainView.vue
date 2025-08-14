@@ -179,11 +179,11 @@ async function loadData() {
 
   if (invConfig.value.data[0].staff_opened === false && user.isStaff()) {
     await setRead()
-    ws.sendMessage({
-      username: invConfig.value.data[0].user_id.toString(),
-      message: String(id.value),
-      timestamp: 1,
-    }) // отправляем сообщение об изменении непрочитанных конфигураций
+    // ws.sendMessage({
+    //   username: invConfig.value.data[0].user_id.toString(),
+    //   message: String(id.value),
+    //   timestamp: 1,
+    // }) // отправляем сообщение об изменении непрочитанных конфигураций
   }
 
   docNumber.value =

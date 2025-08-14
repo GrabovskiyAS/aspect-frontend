@@ -1,10 +1,15 @@
 <template>
-  <SplitButton icon="pi pi-link" @click="copyLink(props.url1)" :model="items">
-  </SplitButton>
+  <div>
+    <SplitButton icon="pi pi-link" @click="copyLink(props.url1)" :model="items">
+    </SplitButton>
+    <Toast></Toast>
+  </div>
 </template>
 
 <script setup lang="ts">
 import SplitButton from 'primevue/splitbutton'
+import { Toast, useToast } from 'primevue'
+const toast = useToast();
 
 const items = [
     {
@@ -26,6 +31,7 @@ async function copyLink(url: string) {
 
   try {
     await navigator.clipboard.writeText(url)
+    toast.add({ severity: 'info', summary: 'Успешно', detail: 'Ссылка скопирована', life: 3000 })
   } catch (e) {
     const textarea = document.createElement('textarea')
     textarea.value = url

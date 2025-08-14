@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+import { io } from 'socket.io-client';
 
 export interface ChatMessage {
   username: string
@@ -8,44 +9,51 @@ export interface ChatMessage {
 }
 
 export const useWebSocketStore = defineStore('websocket', () => {
-  const port: number = 4000
-  const ws = ref()
-  const message = ref<ChatMessage>({ username: '', message: '', timestamp: 0 })
+  // const port: number = 4000
+  // const ws = ref()
+  // const message = ref<ChatMessage>({ username: '', message: '', timestamp: 0 })
 
-  // Установка соединения
-  try {
-    ws.value = new WebSocket(`ws://localhost:${port}`)
-    ws.value.onopen = () => {
-      // console.log('Соединение Websocket установлено');
-    }
-  } catch (error) {
-    console.error('Не удалось установить соединение Websocket :', error)
-  }
+  // // Установка соединения
+  // try {
+  //   // ws.value = new WebSocket(`ws://localhost:${port}`)
+  //   ws.value = io('http://localhost:3004');
+  // //   ws.value.onopen = () => {
+  // //     console.log('Соединение Websocket установлено');
+  // //   }
+  // } catch (error) {
+  //   console.error('Не удалось установить соединение Websocket :', error)
+  // }
 
-  // ожидание сообщений
-  ws.value.onmessage = (event: MessageEvent) => {
-    try {
-      message.value = JSON.parse(event.data)
-    } catch (parseError) {
-      console.error('Ошибка парсинга сообщения для Websocket:', parseError)
-    }
-  }
+  //   ws.value.on('message', (message: any) => {
+  //     console.log(message);
+  //     // this.messages.push(message);
+  //     // this.scrollToBottom();
+  //   });
 
-  const closeConnection = () => {
-    if (ws.value) {
-      ws.value.close()
-      console.log('Соеднинение Websocket закрыто')
-    }
-  }
+  // // ожидание сообщений
+  // // ws.value.on = (event: any) => {
+  // //   try {
+  // //     message.value = JSON.parse(event.data)
+  // //   } catch (parseError) {
+  // //     console.error('Ошибка парсинга сообщения для Websocket:', parseError)
+  // //   }
+  // // }
 
-  const sendMessage = (message: ChatMessage) => {
-    if (ws.value && ws.value.readyState === WebSocket.OPEN) {
-      const messageAsString = JSON.stringify(message)
-      ws.value.send(messageAsString) // переводим JSON в строку
-    } else {
-      console.error('Соединение WebSocket не открыто.')
-    }
-  }
+  // const closeConnection = () => {
+  //   if (ws.value) {
+  //     ws.value.close()
+  //     console.log('Соеднинение Websocket закрыто')
+  //   }
+  // }
 
-  return { message, sendMessage, closeConnection }
+  // const sendMessage = (message: ChatMessage) => {
+  //   if (ws.value && ws.value.readyState === WebSocket.OPEN) {
+  //     const messageAsString = JSON.stringify(message)
+  //     ws.value.send(messageAsString) // переводим JSON в строку
+  //   } else {
+  //     console.error('Соединение WebSocket не открыто.')
+  //   }
+  // }
+
+  // return { message, sendMessage, closeConnection }
 })

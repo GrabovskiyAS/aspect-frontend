@@ -7,22 +7,22 @@ import Button from 'primevue/button'
 import type { IMenuItem } from '@/Interfaces/invertors'
 import { useLoginStore } from '@/stores/login'
 import { useUnreadInvConfigs } from '@/stores/unreadInvConfig'
-import { useWebSocketStore } from '@/stores/ws'
+// import { useWebSocketStore } from '@/stores/ws'
 import AuthModal from './AuthModal.vue'
 import { useRouter } from 'vue-router'
 
 const user = useUserStore()
 const invUnread = useUnreadInvConfigs()
 const loginModal = useLoginStore()
-const ws = useWebSocketStore()
+// const ws = useWebSocketStore()
 const router = useRouter()
 
 onMounted(() => invUnread.count()) // при загрузке определеяем количесвто неоткрытых конфигураций
-onUnmounted(() => ws.closeConnection())
-watch(
-  () => [ws.message],
-  () => invUnread.count(),
-) // при получении сообщения определеяем количесвто неоткрытых конфигураций
+// onUnmounted(() => ws.closeConnection())
+// watch(
+//   () => [ws.message],
+//   () => invUnread.count(),
+// ) // при получении сообщения определеяем количесвто неоткрытых конфигураций
 
 const menuItems = ref<IMenuItem[]>([
   {

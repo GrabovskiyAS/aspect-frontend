@@ -49,11 +49,11 @@ export async function addUserInvConfig(
       .then((response) => {
         console.log(response.data)
         saveLog(4, String(response.data.id))
-        ws.sendMessage({
-          username: user.getUser().userId.value.toString(),
-          message: response.data.id.toString(),
-          timestamp: 1,
-        }) // отправка сообщения о новой конфигурации
+        // ws.sendMessage({
+        //   username: user.getUser().userId.value.toString(),
+        //   message: response.data.id.toString(),
+        //   timestamp: 1,
+        // }) // отправка сообщения о новой конфигурации
         resolve(response.data.id)
       })
       .catch((error) => {
