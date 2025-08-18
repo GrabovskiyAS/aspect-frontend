@@ -221,12 +221,12 @@ const updateShaftType = async () => {
 
 watch(pdf1, () => {
   red.value.data[0].pdf1 = pdf1.value;
-  toast.add({ severity: 'info', summary: 'PDF с ценами', detail: 'Данные обновлены', life: 3000 })
+  // toast.add({ severity: 'info', summary: 'PDF с ценами', detail: 'Данные обновлены', life: 3000 })
 })
 
 watch(pdf2, () => {
   red.value.data[0].pdf2 = pdf2.value;
-  toast.add({ severity: 'info', summary: 'PDF без цен', detail: 'Данные обновлены', life: 3000 })
+  // toast.add({ severity: 'info', summary: 'PDF без цен', detail: 'Данные обновлены', life: 3000 })
 })
 
 watch(() => shaft.value.type, async () => {

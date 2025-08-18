@@ -1,12 +1,15 @@
 <template>
-  <div>
-  </div>
+  <Toast>
+  </Toast>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { io } from 'socket.io-client';
+import { useToast } from 'primevue';
+import Toast from 'primevue/toast'
 
+const toast = useToast()
 const messages = ref<any>([]);
 // const message = ref('');
 const socketId = ref<any>(null);
@@ -48,8 +51,16 @@ onMounted(() => {
   // пример приватного уведомления в комнату
   socket.on('roomMessage', (p) => {
     // console.log('это roomMessage', p);
-    if (p?.pdf1) pdf1.value = p.pdf1;
-    if (p?.pdf2) pdf2.value = p.pdf2;
+    let title = '';
+    if (p?.pdf1) {
+      pdf1.value = p.pdf1;
+      title = 'pdf c ценами';
+    }
+    if (p?.pdf2) {
+      pdf2.value = p.pdf2;
+      title = 'pdf без цен';
+    }
+    toast.add({ severity: 'info', summary: title, detail: p.message, life: 3000 })
     messages.value.push({ from: 'server', text: p?.pdf1 || p?.pdf2 });
   });
 
