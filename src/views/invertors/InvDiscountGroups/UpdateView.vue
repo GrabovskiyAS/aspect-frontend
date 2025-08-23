@@ -133,7 +133,7 @@ loadData()
 
             <Column field="discount" header="Скидка, %">
               <template #body="{ data, field }">
-                {{ Number(data[field]).toFixed() }}
+                <!-- {{ Number(data[field]).toFixed() }} -->
               </template>
               <template #editor="{ data, field }">
                 <InputNumber
@@ -188,7 +188,7 @@ loadData()
             </Column>
             <Column field="discount" header="Скидка, %">
               <template #body="{ data, field }">
-                {{ Number(data[field]).toFixed() }}
+                <!-- {{ Number(data[field]).toFixed() }} -->
               </template>
               <template #editor="{ data, field }">
                 <InputNumber

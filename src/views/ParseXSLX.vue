@@ -188,7 +188,7 @@ loadData()
             :rows="10"
             :rowsPerPageOptions="[5, 10, 20, 50]"
           >
-            <template v-for="(column, index, key) in data.data" :key="key">
+            <template v-for="(column, index) in data.data" :key="index">
               <Column :header="data.data[0][index]">
                 <template #body="{ data }">
                   {{ data[index] }}
