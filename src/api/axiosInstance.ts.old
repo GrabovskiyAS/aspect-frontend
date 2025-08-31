@@ -78,24 +78,25 @@ function _debounce(inner: any, ms = 0) {
  */
 AxiosInstanceAuth.interceptors.request.use(
   (request) => {
-    // Если пользователь неавторизован, то возвращаем запрос как есть
-    if (!user.isUser()) return request;
-
+    if (user.isUser()) {
       request.headers.authorization = getAuthHeader()
 
-    // if access token expired and refreshToken is exist >> go to API and get new access token
-    if (user.isAccessTokenExpired() && user.hasRefreshToken()) {
-      return debounceRefreshTokens()
-        .then(() => {
-          request.headers.authorization = getAuthHeader()
-          return request
-        })
-        .catch((error) => Promise.reject(error))
+      // if access token expired and refreshToken is exist >> go to API and get new access token
+      if (user.isAccessTokenExpired() && user.hasRefreshToken()) {
+        return debounceRefreshTokens()
+          .then(() => {
+            request.headers.authorization = getAuthHeader()
+            return request
+          })
+          .catch((error) => Promise.reject(error))
+      } else {
+        // console.log('Пользователь авторизован', request)
+        return request // Если токен не истёк
+      }
     } else {
-      // console.log('Пользователь авторизован', request)
-      return request // Если токен не истёк
+      // console.log('Пользователь не авторизован', request)
+      return request // Если пользователь не авторизован
     }
-
   },
   (error: any) => {
     return Promise.reject(error)

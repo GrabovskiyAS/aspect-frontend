@@ -9,6 +9,15 @@ import { io } from 'socket.io-client';
 import { useToast } from 'primevue';
 import Toast from 'primevue/toast'
 
+interface IMessage {
+  success: boolean;
+  result: {
+    pdf1?: string;
+    pdf2: string;
+    message: string
+  };
+}
+
 const toast = useToast()
 const messages = ref<any>([]);
 // const message = ref('');
@@ -49,19 +58,24 @@ onMounted(() => {
   });
 
   // пример приватного уведомления в комнату
-  socket.on('roomMessage', (p) => {
+  socket.on('roomMessage', (p: IMessage) => {
     // console.log('это roomMessage', p);
     let title = '';
-    if (p?.pdf1) {
-      pdf1.value = p.pdf1;
+    if (p?.result.pdf1) {
+      pdf1.value = p.result.pdf1;
       title = 'pdf c ценами';
     }
-    if (p?.pdf2) {
-      pdf2.value = p.pdf2;
+    if (p?.result.pdf2) {
+      pdf2.value = p.result.pdf2;
       title = 'pdf без цен';
     }
-    toast.add({ severity: 'info', summary: title, detail: p.message, life: 3000 })
-    messages.value.push({ from: 'server', text: p?.pdf1 || p?.pdf2 });
+    toast.add({
+      severity: p.success ? 'info' : 'danger',
+      summary: title,
+      detail: p.result.message,
+      life: 3000
+    })
+    messages.value.push({ from: 'server', text: p?.result.pdf1 || p?.result.pdf2 });
   });
 
   joinRoom()
