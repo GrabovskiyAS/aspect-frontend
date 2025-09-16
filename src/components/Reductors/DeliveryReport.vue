@@ -97,19 +97,29 @@ const compute = async () => {
   tax1.value = findDeliveryValue(taxes1.value.data, total1.value * redDiscount );
   tax1CNY.value = tax1.value.value / exchangeRate;
   tax2.value  = taxes2.value.data.find((item) => item.name == props.red.gear.gear_size.gear_type.name )! // Не работает для К
-  priceOnChinaBorderCNY.value = (Number(deliveryToChinaLogistic.value.value) + Number(deliveryToChinaBorder.value.value)) * Number(totalMass.value) + Number(total1.value) * redDiscount * 1.01;
 
-  tax2value.value = priceOnChinaBorderCNY.value * Number(tax2.value?.value || 0 ) * 0.01;
+  // Цена на границе Китая
+  priceOnChinaBorderCNY.value =
+  ((Number(deliveryToChinaLogistic.value.value) + Number(deliveryToChinaBorder.value.value)) * Number(totalMass.value) +
+   Number(total1.value) * redDiscount) * 1.01;
+
+  // Пошлина
+  tax2value.value = (priceOnChinaBorderCNY.value + // Цена на границе Китая 16669
+                     Number(tax1.value.value) / exchangeRate // Таможенный сбор 90
+                    ) *
+                     Number(tax2.value?.value || 0 ) * 0.01; // Размер пошлины, 3%
+
   priceOnChinaBorderR.value = priceOnChinaBorderCNY.value * exchangeRate;
   NDS.value = (priceOnChinaBorderCNY.value + tax2value.value)*0.2;
   deliveryRussia.value = findDeliveryValue(deliveryRussias.value.data, totalMass.value);
-  total.value = Number(priceOnChinaBorderCNY.value)
-              + Number(tax1.value.value)
-              + Number(tax2value.value)
+  total.value = (Number(priceOnChinaBorderCNY.value) // Стоимость до границы 16669
+              + Number(tax1.value.value) / exchangeRate // Таможенный сбор 90
+              + Number(tax2value.value) // Пошлина
               + Number(NDS.value)
               + Number(deliveryRussia.value.value) * Number(totalMass.value)
-              + Number((options.value?.color_options?.price || 0))
-              + Number(options.value?.oil_options?.price * Number(oilL?.value?.data?.[0]?.description || 0)|| 0 / exchangeRate);
+              + Number((options.value?.color_options?.price || 0)) // стоимость опций покраски
+              + Number(options.value?.oil_options?.price * Number(oilL?.value?.data?.[0]?.description || 0)|| 0 / exchangeRate) // стоимость опций масла
+            ) * 1.01;
 
   warrantyPrice.value = getWarrantyPrice(options.value);
   totalAndWarranty.value = total.value + warrantyPrice.value;
@@ -422,22 +432,22 @@ onBeforeMount(async () => {
     <DataTable :value="deliveryRussias.data" tableStyle="width: 20rem">
       <Column field="name" header="Масса">
         <template #body="{ data }">
-          <!-- <div v-if="data.name == deliveryRussia?.name" class="font-bold text-primary">
+          <div v-if="data.name == deliveryRussia?.name" class="font-bold text-primary">
             {{ data.name }}
-          </div> -->
-          <!-- <div v-else> -->
+          </div>
+          <div v-else>
             {{ data.name }}
-          <!-- </div> -->
+          </div>
         </template>
       </Column>
       <Column field="value" header="Цена">
         <template #body="{ data }">
-          <!-- <div v-if="data.name == deliveryRussia?.name" class="font-bold text-primary">
+          <div v-if="data.name == deliveryRussia?.name" class="font-bold text-primary">
             {{ data.value }}
-          </div> -->
-          <!-- <div v-else> -->
+          </div>
+          <div v-else>
             {{ data.value }}
-          <!-- </div> -->
+          </div>
         </template>
       </Column>
     </DataTable>

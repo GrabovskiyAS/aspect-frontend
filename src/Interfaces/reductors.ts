@@ -307,27 +307,27 @@ export interface IRedOilI {
 }
 
 export interface IRedGearView {
-  id_gear: number
-  id_size_gear: number
-  code_manuf: string
-  code_aspect: string
-  p1n_1450: string
-  gear_type_id: number
-  steps_quantity: number
-  kpd: string
-  gear_steps_id: string
-  list_of_aval_mount_id: number
-  red_item_type_id: number
-  gear_box_list_size_id: number
-  shaft_aval_list_id: number
-  shaft_aval_direction_id: number
-  ratio_code_id: number
-  t2n: string
-  ex_ratio: string
-  p1n: string
-  price: string
-  currency_id: number
-  item_name: string
+  id_gear?: number
+  id_size_gear?: number
+  code_manuf?: string
+  code_aspect?: string
+  p1n_1450?: string
+  gear_type_id?: number
+  steps_quantity?: number
+  kpd?: string
+  gear_steps_id?: string
+  list_of_aval_mount_id?: number
+  red_item_type_id?: number
+  gear_box_list_size_id?: number
+  shaft_aval_list_id?: number
+  shaft_aval_direction_id?: number
+  ratio_code_id?: number
+  t2n?: string
+  ex_ratio?: string
+  p1n?: string
+  price?: string
+  currency_id?: number
+  item_name?: string
 }
 
 export interface OutputAdapter {

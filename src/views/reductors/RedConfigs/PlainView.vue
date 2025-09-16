@@ -107,6 +107,31 @@ async function savePDF(print_price: number) {
   )
 }
 
+
+const orderName = computed(() => {
+  if (flange.value &&
+  mountTypeName.value &&
+  shaft.value.type &&
+  shaft.value.direction &&
+  mountPosition.value)
+
+  return getFullOrderName(
+    {
+      code_aspect: red.value.data[0].full_order_number.split('-', 2).join('-')
+    },
+    flange.value.name,
+    mountTypeName.value,
+    shaft.value.type,
+    shaft.value.direction,
+    mountPosition.value,
+    oilOptionsSelected.value,
+    colorOptionsSelected.value,
+    gearOptionsSelected.value,
+    'full'
+  )
+else return '---';
+})
+
 const submission = async () => {
   const selectedRed = ref<IDocument<IRedGearView>>(({ data: [], error: [], loading: true }))
   selectedRed.value = await useFetch(`/data/RedGearsView/${red.value.data[0].gear.id}`, 'reductors')
@@ -308,7 +333,8 @@ const loadData = async () => {
   )
   // Картинки }
 
-  mountTypeName.value = red.value.data[0].description;
+  mountTypeName.value = red.value.data[0].mount_type.description;
+
   mountType.value = red.value.data[0].mount_type.id;
   mountPosition.value = red.value.data[0].mount_position_id;
   shaft.value = {
@@ -407,7 +433,8 @@ onBeforeMount(async () => {
   <template v-else>
     <template v-if="red.data[0].user_id == userId || user.isStaff()">
       <h1 class="pt-5">Технико-коммерческое предложение № {{ docNumber2 }}</h1>
-      <h2>{{ red.data[0].full_order_number }}</h2>
+      <!-- <h2>{{ red.data[0].full_order_number  }}</h2> -->
+      <h2>{{ orderName }}</h2>
       <div class="field pt-5" v-if = "editMode">
         <FloatLabel>
           <Textarea id="info" v-model="red.data[0].info" class="w-full" />
