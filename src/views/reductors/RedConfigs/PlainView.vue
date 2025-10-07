@@ -73,6 +73,7 @@ const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({
   loading: true,
 })
 const adapterImage2 = ref<IDocument<IFlangeDimentionImage>>({ data: [], error: [], loading: true })
+const rate = ref<IDocument<any>>({data: [], error: [], loading: true});
 let gear_type_id = 0;
 let gear_size_id = 0;
 let userId = 0
@@ -107,6 +108,10 @@ async function savePDF(print_price: number) {
   )
 }
 
+const rate_rub_cny = computed(() => {
+  return rate.value?.data?.[0] || 0 // Актуальный курс из таблицы
+  // return red.value.data[0].rate_rub_cny || 0 // Курс из конфигурации
+})
 
 const orderName = computed(() => {
   if (flange.value &&
@@ -156,6 +161,7 @@ const submission = async () => {
     staff_opened: false,
     info: red.value.data[0].info,
     totalPrice: totalPrice.value,
+    rate_rub_cny: rate_rub_cny.value
   }
 
   patchDataReductors(`/data/UserRedConfigs/${props.id}`, updatePayload).then(
@@ -309,6 +315,7 @@ const loadData = async () => {
   red.value = await useFetch(`/data/UserRedConfigsExtends/${props.id}`, 'reductors')
   discountGroups.value = await useFetch('/data/RedDiscounts', 'reductors')
   shaftDimentionData.value = await useFetch(`/data/ShaftDimentionDatas`, 'reductors')
+  rate.value = await useFetch('/data/getRate/1/2', 'reductors');
 
   gear_type_id = red.value.data[0].gear.gear_size.gear_type.id
   gear_size_id = red.value.data[0].gear.gear_size.gear_box_list_size_id
@@ -377,6 +384,8 @@ const docNumber2 = computed(() => {
 })
 
 const reductorPrice = computed(() => {
+
+
   let payload = null;
   if (!loading.value && red.value?.data?.[0])
   payload = {
@@ -405,7 +414,7 @@ const reductorPrice = computed(() => {
        warranty_options: warrantyOptionSelected.value
     }),
     gear_price: Number(red.value.data[0].gear_price),
-    rate_rub_cny: red.value.data[0].rate_rub_cny,
+    rate_rub_cny: rate_rub_cny.value,
   }
 
   return payload;
@@ -1104,8 +1113,8 @@ onBeforeMount(async () => {
           </div>
 
           <div class="mt-1" style="width: 100%">
-          <Tag :value="priceFormat(totalPrice * (1 + red.data[0].discount/100) * red.data[0].rate_rub_cny) + ' &#8381;'" severity="info" />
-          (по курсу {{ red.data[0].rate_rub_cny }} &#8381; за 1 &#165; на {{ moment(red.data[0].date).format('DD.MM.YYYY') }})
+          <Tag :value="priceFormat(totalPrice * (1 + red.data[0].discount/100) * rate_rub_cny) + ' &#8381;'" severity="info" />
+          (по курсу {{ rate_rub_cny }} &#8381; за 1 &#165; на {{ moment(red.data[0].date).format('DD.MM.YYYY') }})
           </div>
         </div>
       </div>
