@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue'
+import { onBeforeMount, ref, watch, computed } from 'vue'
 import RadioButton from 'primevue/radiobutton'
 import Tag from 'primevue/tag'
 import { useFetch } from '@/api/useFetch'
@@ -17,8 +17,9 @@ import type {
   IShaftData,
 } from '@/Interfaces/reductors'
 import { useBaseUrl } from '@/stores/baseUrl'
+// --- Импортируем функции ---
 import { getAdapterShaftData, getAdapterFlangeData } from '@/api/Reductors/flange'
-import { isTemplateExpression } from 'typescript'
+// --------------------------
 
 interface IFlangeType {
   name: string
@@ -27,187 +28,213 @@ interface IFlangeType {
 }
 
 const baseUrl = useBaseUrl()
-const props = defineProps(['inputSpeed',
-                           'shaftType',
-                           't2n',
-                           'ex_ratio'])
+const props = defineProps(['inputSpeed', 'shaftType', 't2n', 'ex_ratio'])
 const model = defineModel<IFlange>()
-// const modelFlangeTypeSize = defineModel<IFlange>('flange_type')
 
 const flangeTypes: IFlangeType[] = [
   { name: 'AP фланец с перех муфтой под вал ЭД', id: 10, image: 'AE.png' },
   { name: 'AE свободный вых вал', id: 20, image: 'AP.png' },
 ]
-const flangeType = ref<IFlangeType>({
-  name: 'AP фланец с перех муфтой под вал ЭД',
-  id: 10,
-  image: 'AE.png',
-})
 
+// --- Реактивные Refs для загрузки данных ---
 const flangeAdapters = ref<IDocument<OutputAdapter>>({ data: [], error: [], loading: true })
+// Исправлено: добавлено 'data:' перед первым массивом
 const flangeTypeSizes = ref<IDocument<IFlangeType>>({ data: [], error: [], loading: true })
-const outpuAdapterImages = ref<IDocument<IOutputAdapterImage>>({
-  data: [],
-  error: [],
-  loading: true,
-})
+const outpuAdapterImages = ref<IDocument<IOutputAdapterImage>>({ data: [], error: [], loading: true })
 const shaftDimentions = ref<IDocument<IShaftDimention>>({ data: [], error: [], loading: true })
-const shaftDimentionData = ref<IDocument<IShaftDimentionData>>({
-  data: [],
-  error: [],
-  loading: true,
-})
+const shaftDimentionData = ref<IDocument<IShaftDimentionData>>({ data: [], error: [], loading: true })
 const gearSizes = ref<IDocument<IRedGearSize>>({ data: [], error: [], loading: true })
 const flangeDimentions = ref<IDocument<IFlangeDimention>>({ data: [], error: [], loading: true })
-const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({
-  data: [],
-  error: [],
-  loading: true,
-})
-const flangeAdaptersFiltered = ref<any[]>([])
-const flangeTypeSize = ref<IFlangeType>()
-const outputShaftData = ref<IShaftData | null>()
-const outputFlangeData = ref<IFlangeData | null>()
+const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({ data: [], error: [], loading: true })
 
-const flangeTypeSizeImage = ref<string>('')
-const flangeTypeSizeImage2 = ref<string>('')
+// --- Реактивные Refs для выбранных значений ---
+const flangeType = ref<IFlangeType>(flangeTypes[0]) // Установим начальное значение сразу
+const flangeAdapter = ref<OutputAdapter | null>(null) // Будет управляться watch
+const flangeTypeSize = ref<IFlangeType | null>(null) // Устанавливается после загрузки
 
-const flangeAdapter = ref<OutputAdapter>()
+// --- Refs для данных вала/фланца ---
+const outputShaftData = ref<IShaftData | null>(null)
+const outputFlangeData = ref<IFlangeData | null>(null)
+
+// --- Refs для изображений (теперь вычисляются) ---
+// const flangeTypeSizeImage = ref<string>('') // Не используется в шаблоне
+// const flangeTypeSizeImage2 = ref<string>('') // Не используется в шаблоне
+// const flangeAdapterImage = ref<string>('') // Заменено computed
+// const flangeAdapterImage2 = ref<any>('') // Заменено computed
+
+// --- Ref для состояния загрузки ---
 const loading = ref<boolean>(true)
-const power = ref<number>(0)
-const flangeAdapterImage = ref<string>('')
-const flangeAdapterImage2 = ref<any>('')
 
-const filter = async () => {
-  flangeAdaptersFiltered.value = flangeAdapters.value.data.filter(
-    (item: OutputAdapter) =>
-      item.power > 0.5 * power.value &&
-      item.power < 4 * power.value &&
-      item.adapter_type_id == flangeType.value.id,
+// --- Вычисляемые свойства ---
+
+// Вычисляем мощность
+const power = computed(() => {
+  return Number(
+    ((Number(props.t2n) * props.inputSpeed) / (9550 * Number(props.ex_ratio))).toFixed(2)
   )
+})
 
-  flangeAdaptersFiltered.value = flangeAdaptersFiltered.value.map((item: OutputAdapter) => {
-    return {
+// Вычисляем отфильтрованный список адаптеров
+const flangeAdaptersFiltered = computed(() => {
+  if (!flangeAdapters.value.data || !flangeType.value) return []
+  return flangeAdapters.value.data
+    .filter(
+      (item: OutputAdapter) =>
+        item.power > 0.5 * power.value &&
+        item.power < 4 * power.value &&
+        item.adapter_type_id == flangeType.value.id
+    )
+    .map((item: OutputAdapter) => ({
       id: item.id,
-      name: item.code_adapter + ' - высота: ' + item.height_id.toString(),
+      name: `${item.code_adapter} - высота: ${item.height_id.toString()}`,
       code_adapter: item.code_adapter,
       flange_name: item.flange_name,
       L: item.L,
       height_id: item.height_id,
       mass: item.mass,
-    }
-  })
+    }))
+})
 
-  // flangeAdapter.value = flangeAdaptersFiltered.value[0]
-
-  flangeAdapter.value = model.value?.adapter ? flangeAdaptersFiltered.value.find((item) => item.id == model.value?.adapter) : flangeAdaptersFiltered.value[0]
-}
-
-const loadData = async () => {
-  flangeAdapters.value = await useFetch('/data/OutputAdapters', 'reductors')
-  flangeTypeSizes.value = await useFetch('/data/FlangeTypes?not_null=1', 'reductors')
-  outpuAdapterImages.value = await useFetch(`/data/OutputAdapterImages`, 'reductors')
-  shaftDimentions.value = await useFetch(`/data/ShaftDimentions`, 'reductors')
-  gearSizes.value = await useFetch(`/data/RedGearSizes`, 'reductors')
-  shaftDimentionData.value = await useFetch(`/data/ShaftDimentionDatas`, 'reductors')
-  flangeDimentions.value = await useFetch(`/data/FlangeDimentions`, 'reductors')
-  flangeDimentionImages.value = await useFetch(`/data/FlangeDimentionImages`, 'reductors')
-
-  flangeTypeSize.value = flangeTypeSizes.value.data[0] // устанавливаем начальное знечение типа фланца B5
-
-  power.value = Number(
-    ((Number(props.t2n) * props.inputSpeed) / (9550 * Number(props.ex_ratio))).toFixed(2),
+// Вычисляем изображение для выбранного адаптера
+const selectedAdapterImage = computed(() => {
+  if (!flangeAdapter.value?.code_adapter) return ''
+  const item = flangeAdapters.value.data.find(
+    (a) => a.code_adapter === flangeAdapter.value?.code_adapter
   )
-  loading.value = false
+  const imageId = item?.adapter_image_id
+  return imageId ? outpuAdapterImages.value.data.find(img => img.id === Number(imageId))?.image || '' : ''
+})
 
-  flangeType.value = model.value?.type ? flangeTypes.find((item) => item.id == model.value?.type)! : flangeType.value!;
-  // flangeAdapter.value = model.value?.adapter ? flangeAdapters.value.data.find((item) => item.id == model.value?.type) : flangeAdapter.value;
+// Вычисляем второе изображение для выбранного адаптера
+const selectedAdapterImage2 = computed(() => {
+  if (!flangeAdapter.value?.flange_name) return null
+  const dim = flangeDimentions.value.data.find(
+    (f) => f.name === flangeAdapter.value?.flange_name
+  )
+  const imageId = dim?.flange_image_id
+  return imageId ? flangeDimentionImages.value.data.find(img => img.id === imageId) : null
+})
 
-  filter()
-}
+// --- Watch'и ---
 
-
-watch([flangeType, flangeAdapter], async () => {
-  // изменяем знначение модели компонента по значениям внутренней модели
-  if (flangeType.value) model.value!.type = flangeType.value.id
-  if (flangeAdapter.value) {
-    model.value!.adapter = flangeAdapter.value!.id!
-    const adapter = flangeAdaptersFiltered.value.find((item) => item.id == flangeAdapter.value!.id!);
-    model.value!.name = adapter?.code_adapter;
-    model.value!.mass = adapter?.mass;
+// Синхронизация flangeAdapter с отфильтрованным списком при изменении типа или данных
+watch([flangeType, flangeAdaptersFiltered], ([newFlangeType, newFiltered]) => {
+  // Пытаемся найти адаптер, указанный в модели, в новом списке
+  let newAdapterValue = null
+  if (model.value?.adapter) {
+    newAdapterValue = newFiltered.find((item) => item.id == model.value?.adapter)
+  }
+  // Если не нашли или модель не указывает, берем первый из списка
+  if (!newAdapterValue && newFiltered.length > 0) {
+    newAdapterValue = newFiltered[0]
   }
 
-  // Формируем изображение для переходного адаптера
-  const flangeAdapterImageId = flangeAdapters.value.data.find(
-    (item) => item.code_adapter === flangeAdapter.value?.code_adapter,
-  )?.adapter_image_id
-  if (flangeAdapterImageId) {
-    flangeAdapterImage.value = outpuAdapterImages.value.data.find(
-      (item) => item.id === Number(flangeAdapterImageId),
-    )!.image
-  }
+  flangeAdapter.value = newAdapterValue || null;
+}, { immediate: true }) // immediate: true, чтобы установить начальное значение при монтировании
 
-  // Формируем данные для переходного адаптера =============================================================
-  // {
-  // const gearSize = gearSizes.value.data.find((item) => item.id === props.red.id_size_gear)
-  // const outputShaft = shaftDimentions.value.data.find((item) => item.gear_type_id === props.red.gear_type_id && item.gearbox_size_id == gearSize!.gear_box_list_size_id)!
-  // outputShaftData.value = shaftDimentionData.value.data.find((item) => Number(item.dimention_size_output_shaft) == outputShaft.output_shaft_size && item.shaft_type_id === props.shaftType)
+// Синхронизация модели компонента и получение данных вала/фланца при изменении flangeAdapter
+watch(flangeAdapter, (newAdapter) => {
+  if (newAdapter) {
+    // Обновляем модель компонента
+    model.value!.adapter = newAdapter.id!
+    model.value!.name = newAdapter.code_adapter
+    model.value!.mass = newAdapter.mass
 
-  if (flangeAdapter.value && flangeAdapter.value.id) {
+    // Получаем данные для вала и фланца
     outputShaftData.value = getAdapterShaftData(
       flangeAdapters.value.data,
       shaftDimentionData.value.data,
-      flangeAdapter.value.id,
+      newAdapter.id,
     )
     outputFlangeData.value = getAdapterFlangeData(
       flangeAdapters.value.data,
       flangeDimentions.value.data,
-      flangeAdapter.value.id,
+      newAdapter.id,
     )
   } else {
+    // Сбрасываем модель и данные, если адаптер не выбран
+    model.value!.adapter = undefined
+    model.value!.name = undefined
+    model.value!.mass = undefined
     outputShaftData.value = null
     outputFlangeData.value = null
   }
-
-  // }
-  // Формируем данные для переходного адаптера =============================================================
-
-    const imageId = flangeDimentions.value.data.find((item) => item.name == flangeAdapter?.value?.flange_name);
-    flangeAdapterImage2.value = flangeDimentionImages.value.data.find((item) => item.id == imageId?.flange_image_id)
 })
 
+// Обработка изменения типа фланца (B5/B14) - если используется где-то
 watch(flangeTypeSize, () => {
-  const flangeDimention = flangeDimentions.value.data.find(
-    (item) => item.name === flangeAdapter.value!.flange_name,
-  )
-  let imageId: number = 0
-  if (flangeTypeSize.value!.id === 10) imageId = flangeDimention!.flange_imageB5_id
-  if (flangeTypeSize.value!.id === 20) imageId = flangeDimention!.flange_imageB14_id
-
-  flangeTypeSizeImage.value = flangeDimentionImages.value.data.find(
-    (item) => item.id === imageId,
-  )!.image
-  flangeTypeSizeImage2.value = flangeDimentionImages.value.data.find(
-    (item) => item.id === imageId,
-  )!.image2
+  // Логика для изображений типа фланца (если они нужны в шаблоне)
+  // const flangeDimention = flangeDimentions.value.data.find(
+  //   (item) => item.name === flangeAdapter.value!.flange_name,
+  // )
+  // let imageId: number = 0
+  // if (flangeTypeSize.value!.id === 10) imageId = flangeDimention!.flange_imageB5_id
+  // if (flangeTypeSize.value!.id === 20) imageId = flangeDimention!.flange_imageB14_id
+  //
+  // flangeTypeSizeImage.value = flangeDimentionImages.value.data.find(
+  //   (item) => item.id === imageId,
+  // )!.image
+  // flangeTypeSizeImage2.value = flangeDimentionImages.value.data.find(
+  //   (item) => item.id === imageId,
+  // )!.image2
 })
 
-watch(flangeType, () => {
-  filter()
-})
+// --- Загрузка данных ---
+const loadData = async () => {
+  try {
+    const [
+      adaptersRes,
+      typesRes,
+      imagesRes,
+      shaftDimsRes,
+      gearSizesRes,
+      shaftDimDataRes,
+      flangeDimsRes,
+      flangeDimImagesRes,
+    ] = await Promise.all([
+      useFetch('/data/OutputAdapters', 'reductors'),
+      useFetch('/data/FlangeTypes?not_null=1', 'reductors'),
+      useFetch(`/data/OutputAdapterImages`, 'reductors'),
+      useFetch(`/data/ShaftDimentions`, 'reductors'),
+      useFetch(`/data/RedGearSizes`, 'reductors'),
+      useFetch(`/data/ShaftDimentionDatas`, 'reductors'),
+      useFetch(`/data/FlangeDimentions`, 'reductors'),
+      useFetch(`/data/FlangeDimentionImages`, 'reductors'),
+    ])
 
-onBeforeMount(async () => {
-  await loadData()
-})
+    flangeAdapters.value = adaptersRes
+    flangeTypeSizes.value = typesRes
+    outpuAdapterImages.value = imagesRes
+    shaftDimentions.value = shaftDimsRes
+    gearSizes.value = gearSizesRes
+    shaftDimentionData.value = shaftDimDataRes
+    flangeDimentions.value = flangeDimsRes
+    flangeDimentionImages.value = flangeDimImagesRes
+
+    // Устанавливаем начальное значение типа фланца B5 (или другое по умолчанию)
+    flangeTypeSize.value = flangeTypeSizes.value.data[0] || null
+
+    // Устанавливаем начальный тип адаптера из модели или по умолчанию
+    flangeType.value = model.value?.type
+      ? flangeTypes.find((item) => item.id == model.value?.type)!
+      : flangeTypes[0] // или flangeType.value по умолчанию
+
+  } catch (error) {
+    console.error("Error loading ", error)
+    // Можно добавить логику обработки ошибки
+  } finally {
+    loading.value = false
+  }
+}
+
+// --- Монтирование компонента ---
+onBeforeMount(loadData)
 </script>
 
 <template>
   <div class="mt-5" v-if="!loading">
-    <!-- <span class="text-2xl font-semibold mt-5 text-primary">Адаптер</span> -->
-
     <span class="text-2xl font-semibold mt-5 text-primary">Тип переходного адаптера</span>
     <div class="grid">
-
       <div class="col-4">
         <div>
           <div v-for="flange in flangeTypes" :key="flange.id" class="flex items-center gap-2 mt-1">
@@ -218,7 +245,9 @@ onBeforeMount(async () => {
       </div>
 
       <div class="col-5 flex justify-content-center flex-wrap">
-        <div><img :src="`${baseUrl.s3Storage}/${flangeAdapterImage}`" height="300"/></div>
+        <div>
+          <img v-if="selectedAdapterImage" :src="`${baseUrl.s3Storage}/${selectedAdapterImage}`" height="300" alt="Adapter Image"/>
+        </div>
       </div>
 
       <div class="col-1 flex justify-content-center align-content-center flex-wrap">
@@ -262,9 +291,10 @@ onBeforeMount(async () => {
       <div class="col-4">
         <div class="mt-5">
           <span class="mt-5 text-2xl font-semibold text-primary">Габарит переходного адаптера</span>
+          <!-- Используем ID как ключ для v-for -->
           <div
             v-for="adapter in flangeAdaptersFiltered"
-            :key="adapter"
+            :key="adapter.id"
             class="flex items-center gap-2 mt-1"
           >
             <RadioButton
@@ -278,18 +308,15 @@ onBeforeMount(async () => {
         </div>
       </div>
       <div class="col-5 flex justify-content-center flex-wrap">
-        <div v-if="flangeAdapterImage2?.image"><img :src="`${baseUrl.s3Storage}/${flangeAdapterImage2?.image}`" height="200"/></div>
-
-      </div>
-
-
+        <div>
+          <img
+            v-if="selectedAdapterImage2?.image"
+            :src="`${baseUrl.s3Storage}/${selectedAdapterImage2.image}`"
+            height="200"
+            alt="Adapter Detail Image"
+          />
+        </div>
       </div>
     </div>
-
-
-        <!-- <div><img :src="`${baseUrl.s3Storage}/${flangeType.image}`" height="200"/></div> -->
-        <!-- <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage}`"/>
-        <img :src="`${baseUrl.s3Storage}/${flangeTypeSizeImage2}`"/> -->
-
-
+  </div>
 </template>

@@ -22,6 +22,23 @@ const findDeliveryValue = (data: ILogistic[], mass: number) => {
     return {id: 0, name: '', value: 0}
 }
 
+function convertCommaToDot(numStr: string): number {
+  // Проверяем, является ли строка допустимым числом с запятой
+  if (!/^-?\d{1,3}(,?\d{3})*(\.\d+)?$/.test(numStr.replace(',', '.'))) {
+    throw new Error('Invalid number format');
+  }
+
+  // Заменяем запятую на точку и преобразуем в число
+  const converted = parseFloat(numStr.replace(',', '.'));
+
+  // Проверяем, является ли результат действительным числом
+  if (isNaN(converted)) {
+    throw new Error('Invalid number format');
+  }
+
+  return converted;
+}
+
 const props = defineProps(['red','display'])
 const loading = ref<boolean>(true)
 const redDiscount = 0.5
@@ -90,7 +107,7 @@ const compute = async () => {
   total1.value = (Number(props.red?.gear_price || 0) + // Цена редуктора
                   Number(adapterPrice.value?.data?.[0]?.price || 0) + // Цена адаптера
                   Number(gearOptionsPrice.value || 0) + // Цена опций
-                  Number(options.value?.oil_options?.price * Number(oilL?.value?.data?.[0]?.description || 0) || 0)); // Цена масла
+                  Number(options.value?.oil_options?.price * convertCommaToDot(oilL?.value?.data?.[0]?.description || '0') || 0)); // Цена масла
   totalMass.value = (Number(mass?.value?.data[0]?.mass || 0 ) + Number(props.red.flange_adapter.mass));
   deliveryToChinaLogistic.value = findDeliveryValue(deliveryToChinaLogistics.value.data, totalMass.value); // стоимость доставки до логистимческого центра в Китае
   deliveryToChinaBorder.value = findDeliveryValue(deliveryToChinaBorders.value.data, totalMass.value);// стоимость доставки до границы КИтая
@@ -118,7 +135,7 @@ const compute = async () => {
               + Number(NDS.value)
               + Number(deliveryRussia.value.value) * Number(totalMass.value)
               + Number((options.value?.color_options?.price || 0)) // стоимость опций покраски
-              + Number(options.value?.oil_options?.price * Number(oilL?.value?.data?.[0]?.description || 0)|| 0 / exchangeRate) // стоимость опций масла
+              + Number(options.value?.oil_options?.price * convertCommaToDot(oilL?.value?.data?.[0]?.description || '0') || 0 / exchangeRate) // стоимость опций масла
             ) * 1.01;
 
   warrantyPrice.value = getWarrantyPrice(options.value);
@@ -213,14 +230,14 @@ onBeforeMount(async () => {
         <tr>
           <td>Опции масла</td>
           <td><DisplayPrice
-                      :price="options?.oil_options?.price * Number(oilL?.data?.[0]?.description || 0)|| 0"
+                      :price="Number(options?.oil_options?.price) * convertCommaToDot(oilL?.data?.[0]?.description || '0') || 0"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
                     /></td>
           <td>{{ displayDiscount(redDiscount) }} %</td>
           <td><DisplayPrice
-                      :price="(options?.oil_options?.price * Number(oilL?.data?.[0]?.description || 0) || 0) * redDiscount"
+                      :price="(options?.oil_options?.price * convertCommaToDot(oilL?.data?.[0]?.description || '0') || 0) * redDiscount"
                       :discount="0"
                       currency-symbol="&#165;"
                       size="S"
@@ -468,7 +485,7 @@ onBeforeMount(async () => {
       <Tag value="Масло" severity="info" />
       {{ options?.oil_options?.description }},
       <DisplayPrice
-        :price="options?.oil_options?.price * Number(oilL?.data?.[0]?.description || 0) / exchangeRate"
+        :price="options?.oil_options?.price * convertCommaToDot(oilL?.data?.[0]?.description || '0')"
         :discount="0"
         currency-symbol="&#165;"
         size="S"
