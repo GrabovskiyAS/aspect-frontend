@@ -29,7 +29,7 @@ interface IFlangeType {
 
 const baseUrl = useBaseUrl()
 const props = defineProps(['inputSpeed', 'shaftType', 't2n', 'ex_ratio'])
-const model = defineModel<IFlange>() // Предполагаем, что IFlange может иметь необязательные поля adapter, name, mass
+const model = defineModel<IFlange>()
 
 const flangeTypes: IFlangeType[] = [
   { name: 'AP фланец с перех муфтой под вал ЭД', id: 10, image: 'AE.png' },
@@ -38,6 +38,7 @@ const flangeTypes: IFlangeType[] = [
 
 // --- Реактивные Refs для загрузки данных ---
 const flangeAdapters = ref<IDocument<OutputAdapter>>({ data: [], error: [], loading: true })
+// Исправлено: добавлено 'data:' перед первым массивом
 const flangeTypeSizes = ref<IDocument<IFlangeType>>({ data: [], error: [], loading: true })
 const outpuAdapterImages = ref<IDocument<IOutputAdapterImage>>({ data: [], error: [], loading: true })
 const shaftDimentions = ref<IDocument<IShaftDimention>>({ data: [], error: [], loading: true })
@@ -48,23 +49,18 @@ const flangeDimentionImages = ref<IDocument<IFlangeDimentionImage>>({ data: [], 
 
 // --- Реактивные Refs для выбранных значений ---
 const flangeType = ref<IFlangeType>(flangeTypes[0]) // Установим начальное значение сразу
-// --- Используем тип, соответствующий фильтрованному списку ---
-interface FilteredAdapter {
-  id: number;
-  name: string;
-  code_adapter: string;
-  flange_name: string;
-  L: number;
-  height_id: number;
-  mass: number; // mass может быть строкой или числом, в зависимости от данных
-}
-const flangeAdapter = ref<FilteredAdapter | null>(null) // Теперь имеет тип FilteredAdapter
-// --------------------------
+const flangeAdapter = ref<OutputAdapter | null>(null) // Будет управляться watch
 const flangeTypeSize = ref<IFlangeType | null>(null) // Устанавливается после загрузки
 
 // --- Refs для данных вала/фланца ---
 const outputShaftData = ref<IShaftData | null>(null)
 const outputFlangeData = ref<IFlangeData | null>(null)
+
+// --- Refs для изображений (теперь вычисляются) ---
+// const flangeTypeSizeImage = ref<string>('') // Не используется в шаблоне
+// const flangeTypeSizeImage2 = ref<string>('') // Не используется в шаблоне
+// const flangeAdapterImage = ref<string>('') // Заменено computed
+// const flangeAdapterImage2 = ref<any>('') // Заменено computed
 
 // --- Ref для состояния загрузки ---
 const loading = ref<boolean>(true)
@@ -89,14 +85,12 @@ const flangeAdaptersFiltered = computed(() => {
         item.adapter_type_id == flangeType.value.id
     )
     .map((item: OutputAdapter) => ({
-      id: item.id!,
+      id: item.id,
       name: `${item.code_adapter} - высота: ${item.height_id.toString()}`,
       code_adapter: item.code_adapter,
       flange_name: item.flange_name,
       L: item.L,
       height_id: item.height_id,
-      // Предполагаем, что mass может быть числом или строкой, конвертируем к строке для вывода
-      // Если в IFlange.mass число, оставьте item.mass как есть
       mass: item.mass,
     }))
 })
@@ -128,44 +122,61 @@ watch([flangeType, flangeAdaptersFiltered], ([newFlangeType, newFiltered]) => {
   // Пытаемся найти адаптер, указанный в модели, в новом списке
   let newAdapterValue = null
   if (model.value?.adapter) {
-    // Ищем в новом отфильтрованном списке, который имеет тип FilteredAdapter
     newAdapterValue = newFiltered.find((item) => item.id == model.value?.adapter)
   }
   // Если не нашли или модель не указывает, берем первый из списка
   if (!newAdapterValue && newFiltered.length > 0) {
     newAdapterValue = newFiltered[0]
   }
-  flangeAdapter.value = newAdapterValue || null
+
+  flangeAdapter.value = newAdapterValue || null;
 }, { immediate: true }) // immediate: true, чтобы установить начальное значение при монтировании
 
 // Синхронизация модели компонента и получение данных вала/фланца при изменении flangeAdapter
 watch(flangeAdapter, (newAdapter) => {
-  if (newAdapter && newAdapter.id !== undefined) { // Проверяем, что id определён
+  if (newAdapter) {
     // Обновляем модель компонента
-    // Убедитесь, что IFlange позволяет adapter, name, mass быть необязательными
-    model.value!.adapter = newAdapter.id
+    model.value!.adapter = newAdapter.id!
     model.value!.name = newAdapter.code_adapter
-    model.value!.mass = newAdapter.mass // Если mass в IFlange строка, возможно, нужно .toString()
+    model.value!.mass = newAdapter.mass
 
-    // Получаем данные для вала и фланца, используя оригинальные данные (OutputAdapter)
+    // Получаем данные для вала и фланца
     outputShaftData.value = getAdapterShaftData(
       flangeAdapters.value.data,
       shaftDimentionData.value.data,
-      newAdapter.id, // id теперь определено
+      newAdapter.id,
     )
     outputFlangeData.value = getAdapterFlangeData(
       flangeAdapters.value.data,
       flangeDimentions.value.data,
-      newAdapter.id, // id теперь определено
+      newAdapter.id,
     )
   } else {
-    // Сбрасываем модель и данные, если адаптер не выбран или id undefined
-    model.value!.adapter = 0; // Убедитесь, что IFlange позволяет это
-    model.value!.name = '';
-    model.value!.mass = 0;
-    outputShaftData.value = null;
-    outputFlangeData.value = null;
+    // Сбрасываем модель и данные, если адаптер не выбран
+    model.value!.adapter = null;
+    model.value!.name = undefined
+    model.value!.mass = undefined
+    outputShaftData.value = null
+    outputFlangeData.value = null
   }
+})
+
+// Обработка изменения типа фланца (B5/B14) - если используется где-то
+watch(flangeTypeSize, () => {
+  // Логика для изображений типа фланца (если они нужны в шаблоне)
+  // const flangeDimention = flangeDimentions.value.data.find(
+  //   (item) => item.name === flangeAdapter.value!.flange_name,
+  // )
+  // let imageId: number = 0
+  // if (flangeTypeSize.value!.id === 10) imageId = flangeDimention!.flange_imageB5_id
+  // if (flangeTypeSize.value!.id === 20) imageId = flangeDimention!.flange_imageB14_id
+  //
+  // flangeTypeSizeImage.value = flangeDimentionImages.value.data.find(
+  //   (item) => item.id === imageId,
+  // )!.image
+  // flangeTypeSizeImage2.value = flangeDimentionImages.value.data.find(
+  //   (item) => item.id === imageId,
+  // )!.image2
 })
 
 // --- Загрузка данных ---
