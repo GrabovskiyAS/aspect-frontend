@@ -123,6 +123,12 @@ const selectedAdapterImage2 = computed(() => {
 
 // --- Watch'и ---
 
+watch(flangeType, (newFlangeType) => {
+  if (model.value) {
+    model.value.type = newFlangeType.id
+  }
+}, { immediate: true })
+
 // Синхронизация flangeAdapter с отфильтрованным списком при изменении типа или данных
 watch([flangeType, flangeAdaptersFiltered], ([newFlangeType, newFiltered]) => {
   // Пытаемся найти адаптер, указанный в модели, в новом списке
@@ -160,9 +166,7 @@ watch(flangeAdapter, (newAdapter) => {
     )
   } else {
     // Сбрасываем модель и данные, если адаптер не выбран или id undefined
-    model.value!.adapter = 0; // Убедитесь, что IFlange позволяет это
-    model.value!.name = '';
-    model.value!.mass = 0;
+    model.value = { type: 0, adapter: 0, name: '', mass: 0 };
     outputShaftData.value = null;
     outputFlangeData.value = null;
   }
